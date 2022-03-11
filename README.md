@@ -23,13 +23,12 @@ yarn install
 
 2. In App directory create file `.env.local`, use `.env.local.sample` as a reference.
 
-
-3. Add Saleor URI to the `.env.local`. If you don't have running instance of Saleor, you create a [free dev account](https://cloud.saleor.io/) 
-or run instance [locally](https://github.com/saleor/saleor-platform)
+3. Add Saleor URI to the `.env.local`. If you don't have running instance of Saleor, you create a [free dev account](https://cloud.saleor.io/)
+   or run instance [locally](https://github.com/saleor/saleor-platform)
 
 ## How to add app to Saleor?
 
-You can use https://github.com/localtunnel/localtunnel or ngrok to expose your app.
+For local development you can use [localtunnel](https://github.com/localtunnel/localtunnel) or [ngrok](https://ngrok.com/) to expose your app.
 
 1. Start App dev server
 
