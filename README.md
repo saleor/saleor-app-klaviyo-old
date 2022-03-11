@@ -1,9 +1,12 @@
-# Saleor App x TypeScript Next.js example
+# Saleor App, Next.js example
 
-Bare bones example app with webhook on product update.
+Bare-bones example app with webhook on product update.
 
-Dashboard App docs: https://docs.saleor.io/docs/dashboard/apps
-Dev App docs: https://docs.saleor.io/docs/developer/extending/apps
+Useful resources:
+
+[Apps guide](https://docs.saleor.io/docs/3.x/developer/extending/apps/key-concepts)
+
+[Configuring apps in dashboard](https://docs.saleor.io/docs/3.x/dashboard/apps)
 
 ## Disclaimer
 
