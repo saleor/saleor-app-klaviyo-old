@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { ApolloProvider } from "@apollo/client";
+import { saleor } from "../graphql/client";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -9,7 +11,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <Component {...pageProps} />
+      <ApolloProvider client={saleor}>
+        <Component {...pageProps} />
+      </ApolloProvider>
     </>
   );
 }
