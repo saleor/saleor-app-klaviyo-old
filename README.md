@@ -12,26 +12,17 @@ Treat this project more as proof of concept, there are no security checks on web
 
 ## Installation
 
-0. You'll need [pnpm](https://pnpm.io/) to install dependencies.
+1. You'll need [yarn](https://yarnpkg.com/getting-started/install) to install dependencies.
 
 ```
-npm install -g pnpm
+yarn install
 ```
 
-1. In App directory create file `.env.local` containing:
+2. In App directory create file `.env.local`, use `.env.local.sample` as a reference.
 
-```
-NEXT_PUBLIC_APP_DOMAIN=https://your.app.url
-SECRET=secret-which-should-be-a-secret
-```
 
-2. Configure Saleor URL
-
-https://docs.saleor.io/docs/dashboard/configuration/site#general-information
-
-3. Install App dependencies
-
-`$ pnpm`
+3. Add Saleor URI to the `.env.local`. If you don't have running instance of Saleor, you create a [free dev account](https://cloud.saleor.io/) 
+or run instance [locally](https://github.com/saleor/saleor-platform)
 
 ## How to add app to Saleor?
 
