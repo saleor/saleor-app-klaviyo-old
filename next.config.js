@@ -1,21 +1,21 @@
 module.exports = {
-    experimental: {
-        async headers() {
-        return [
+  experimental: {
+    async headers() {
+      return [
+        {
+          source: "/(.*)?",
+          headers: [
             {
-            source: '/(.*)?',
-            headers: [
-                {
-                key: 'Access-Control-Allow-Origin',
-                value: '*'
-                },
-                {
-                key: 'Access-Control-Allow-Methods',
-                value: 'GET,HEAD,PUT,PATCH,POST,DELETE'
-                },
-            ]
-            }
-        ]
-        }
-    }
-}
+              key: "Access-Control-Allow-Origin",
+              value: "*",
+            },
+            {
+              key: "Access-Control-Allow-Methods",
+              value: "GET,HEAD,PUT,PATCH,POST,DELETE",
+            },
+          ],
+        },
+      ];
+    },
+  },
+};

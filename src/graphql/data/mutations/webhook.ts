@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client"
-import { webhookErrorFragment, webhookFragment } from "../fragments/webhook"
+import { gql } from "@apollo/client";
+import { webhookErrorFragment, webhookFragment } from "../fragments/webhook";
 
 export const createWebhook = gql`
   mutation CreateWebhook(
@@ -27,4 +27,4 @@ export const createWebhook = gql`
   }
   ${webhookErrorFragment}
   ${webhookFragment}
-`
+`;

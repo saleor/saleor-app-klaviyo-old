@@ -35,8 +35,7 @@ https://docs.saleor.io/docs/dashboard/configuration/site#general-information
 
 ## How to add app to Saleor?
 
-You can use https://github.com/localtunnel/localtunnel  or ngrok to expose your app.
-
+You can use https://github.com/localtunnel/localtunnel or ngrok to expose your app.
 
 1. Start App dev server
 

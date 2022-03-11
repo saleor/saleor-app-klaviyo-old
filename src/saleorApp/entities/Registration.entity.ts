@@ -1,14 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Registration {
   @PrimaryGeneratedColumn()
-  id!: number
+  id!: number;
 
   @Column()
-  domain!: string
+  domain!: string;
 
   @Column()
-  authToken!: string
-
+  authToken!: string;
 }

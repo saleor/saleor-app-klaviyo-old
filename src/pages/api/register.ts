@@ -1,45 +1,49 @@
-import { CreateWebhookMutation, WebhookEventTypeEnum } from "./../../graphql/generated/graphql"
-import { NextApiRequest, NextApiResponse } from "next"
 import {
-  SALEOR_DOMAIN_HEADER,
-} from "../../constants"
-import { createWebhook } from "../../graphql/data/mutations/webhook"
-import { initializeApollo } from "../../graphql/withApollo"
-import { Registration } from "../../saleorApp/entities/Registration.entity"
-import { getOrCreateConnection } from "../../utils/database"
+  CreateWebhookMutation,
+  WebhookEventTypeEnum,
+} from "./../../graphql/generated/graphql";
+import { NextApiRequest, NextApiResponse } from "next";
+import { SALEOR_DOMAIN_HEADER } from "../../constants";
+import { createWebhook } from "../../graphql/data/mutations/webhook";
+import { initializeApollo } from "../../graphql/withApollo";
+import { Registration } from "../../saleorApp/entities/Registration.entity";
+import { getOrCreateConnection } from "../../utils/database";
 
-const handler = async (request: NextApiRequest, res: NextApiResponse): Promise<undefined> => {
-  console.log(request)
-  const saleor_domain = request.headers[SALEOR_DOMAIN_HEADER]
+const handler = async (
+  request: NextApiRequest,
+  res: NextApiResponse
+): Promise<undefined> => {
+  console.log(request);
+  const saleor_domain = request.headers[SALEOR_DOMAIN_HEADER];
   if (!saleor_domain) {
-    res.statusCode = 400
+    res.statusCode = 400;
     res.end(
       JSON.stringify({
         success: false,
         message: "Missing saleor domain token.",
       })
-    )
-    return
+    );
+    return;
   }
-  const auth_token = request.body?.auth_token as string
+  const auth_token = request.body?.auth_token as string;
   if (!auth_token) {
-    res.statusCode = 400
-    res.end(JSON.stringify({ success: false, message: "Missing auth token." }))
-    return
+    res.statusCode = 400;
+    res.end(JSON.stringify({ success: false, message: "Missing auth token." }));
+    return;
   }
-  const conn = await getOrCreateConnection()
-  const registrationRepo = conn.getRepository<Registration>(Registration)
-  const newRegistration = new Registration()
-  const domain = saleor_domain.toString()
-  newRegistration.domain = domain
-  newRegistration.authToken = auth_token
-  await registrationRepo.insert(newRegistration)
+  const conn = await getOrCreateConnection();
+  const registrationRepo = conn.getRepository<Registration>(Registration);
+  const newRegistration = new Registration();
+  const domain = saleor_domain.toString();
+  newRegistration.domain = domain;
+  newRegistration.authToken = auth_token;
+  await registrationRepo.insert(newRegistration);
 
   // async ftw
-  res.end(JSON.stringify({ success: true }))
+  res.end(JSON.stringify({ success: true }));
 
   // webhook registration
-  const client = initializeApollo()
+  const client = initializeApollo();
   await client.mutate<CreateWebhookMutation>({
     mutation: createWebhook,
     variables: {
@@ -53,7 +57,7 @@ const handler = async (request: NextApiRequest, res: NextApiResponse): Promise<u
         Authorization: `Bearer ${newRegistration.authToken}`,
       },
     },
-  })
-}
+  });
+};
 
-export default handler
+export default handler;

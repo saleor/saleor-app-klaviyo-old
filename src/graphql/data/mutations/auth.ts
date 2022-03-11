@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const verifyToken = gql`
   mutation VerifyToken($token: String!) {
@@ -9,4 +9,4 @@ export const verifyToken = gql`
       isValid
     }
   }
-`
+`;

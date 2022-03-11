@@ -19,6 +19,7 @@
     "target": "esnext",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "incremental": true
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx"]
