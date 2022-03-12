@@ -1,23 +1,19 @@
 import Layout from "../components/Layout";
-import { gql, useQuery } from "@apollo/client";
+import { useTypedQuery } from "../../zeus/apollo";
 
 const IndexPage = () => {
-  const { data } = useQuery(gql`
-    {
-      shop {
-        domain {
-          host
-          url
-        }
-        name
-      }
-    }
-  `);
+  const { data } = useTypedQuery({
+    shop: {
+      name: true,
+      description: true,
+    },
+  });
 
   return (
     <Layout title="Home">
       <h1>👋</h1>
-      <div>{data}</div>
+      <p>{data?.shop.name}</p>
+      <p>{data?.shop.description}</p>
     </Layout>
   );
 };
