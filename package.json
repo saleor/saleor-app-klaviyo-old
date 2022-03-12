@@ -7,7 +7,9 @@
     "start": "next start",
     "type-check": "tsc",
     "lint": "prettier --write . && next lint --fix",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "postinstall": "yarn run update-schema",
+    "update-schema": "export $(cat .env.local| xargs) && npx get-graphql-schema $NEXT_PUBLIC_SALEOR_URI > ./src/graphql/schema.graphql; npx zeus ./src/graphql/schema.graphql ./src/graphql/zeus --apollo"
   },
   "dependencies": {
     "@apollo/client": "^3.5.7",

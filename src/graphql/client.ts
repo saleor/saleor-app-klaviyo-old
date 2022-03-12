@@ -20,7 +20,7 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: process.env.SAELOR_URI,
+      uri: process.env.NEXT_PUBLIC_SALEOR_URI,
     }),
     cache: new InMemoryCache(),
     defaultOptions,
