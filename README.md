@@ -15,16 +15,17 @@ Treat this project more as proof of concept, there are no security checks on web
 
 ## Installation
 
-1. You'll need [yarn](https://yarnpkg.com/getting-started/install) to install dependencies.
+
+
+1. In App directory create file `.env.local`, use `.env.local.sample` as a reference.
+
+2. Add Saleor URI to the `.env.local`. If you don't have running instance of Saleor, you create a [free dev account](https://cloud.saleor.io/)
+   or run instance [locally](https://github.com/saleor/saleor-platform)
+3. You'll need [yarn](https://yarnpkg.com/getting-started/install) to install dependencies.
 
 ```
 yarn install
 ```
-
-2. In App directory create file `.env.local`, use `.env.local.sample` as a reference.
-
-3. Add Saleor URI to the `.env.local`. If you don't have running instance of Saleor, you create a [free dev account](https://cloud.saleor.io/)
-   or run instance [locally](https://github.com/saleor/saleor-platform)
 
 ## How to add app to Saleor?
 
