@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import { useTypedQuery } from "../../zeus/apollo";
+import { useTypedQuery } from "../graphql/zeus/apollo";
 
 const IndexPage = () => {
   const { data } = useTypedQuery({
