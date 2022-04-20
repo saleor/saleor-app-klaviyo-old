@@ -16,9 +16,9 @@ const ApolloWrapper: React.FC = ({ children }) => {
 
   const { token, domain } = app.getState()!;
 
-  const saleor = createApolloClient(token, domain);
+  const client = createApolloClient(token, domain);
 
-  return <ApolloProvider client={saleor}>{children}</ApolloProvider>;
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
