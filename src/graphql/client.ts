@@ -1,5 +1,7 @@
 import {
   ApolloClient,
+  ApolloLink,
+  concat,
   DefaultOptions,
   HttpLink,
   InMemoryCache,
@@ -16,15 +18,31 @@ const defaultOptions: DefaultOptions = {
   },
 };
 
-function createApolloClient() {
+const authMiddleware = (token?: string) =>
+  new ApolloLink((operation, forward) => {
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      },
+    }));
+
+    return forward(operation);
+  });
+
+const httpLink = (domain?: string) =>
+  new HttpLink({
+    uri: `https://${domain}/graphql/`,
+  });
+
+function createApolloClient(token?: string, domain?: string) {
+  console.log(token);
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: process.env.NEXT_PUBLIC_SALEOR_URI,
-    }),
+    link: concat(authMiddleware(token), httpLink(domain)),
     cache: new InMemoryCache(),
     defaultOptions,
   });
 }
 
-export const saleor = createApolloClient();
+export { createApolloClient };
