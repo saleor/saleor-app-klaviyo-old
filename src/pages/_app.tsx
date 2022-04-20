@@ -11,7 +11,7 @@ const ApolloWrapper: React.FC = ({ children }) => {
   const app = useApp();
 
   if (!app) {
-    return null;
+    return <div>👋</div>;
   }
 
   const { token, domain } = app.getState()!;
