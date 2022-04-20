@@ -36,7 +36,6 @@ const httpLink = (domain?: string) =>
   });
 
 function createApolloClient(token?: string, domain?: string) {
-  console.log(token);
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: concat(authMiddleware(token), httpLink(domain)),
