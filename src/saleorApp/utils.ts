@@ -1,11 +1,12 @@
 import { verifyToken } from "../graphql/data/mutations/auth";
 import { VerifyTokenMutation } from "../graphql/generated/graphql";
-import { saleor } from "../graphql/client";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 export async function verifyRequestToken(
-  requestToken: string
+  requestToken: string,
+  client: ApolloClient<NormalizedCacheObject>
 ): Promise<boolean> {
-  const validationResponse = await saleor.mutate<VerifyTokenMutation>({
+  const validationResponse = await client.mutate<VerifyTokenMutation>({
     mutation: verifyToken,
     variables: { token: requestToken },
   });
