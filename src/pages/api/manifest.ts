@@ -3,8 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getBaseURL } from "../../utils/middleware";
 import { version, name } from "../../../package.json";
 
-
-
 const handler = (_req: NextApiRequest, res: NextApiResponse) => {
   const baseURL = getBaseURL(_req);
 
@@ -12,7 +10,7 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
     id: "saleor.app",
     version: version,
     name: name,
-    permissions: ["MANAGE_ORDERS"],
+    permissions: ["MANAGE_ORDERS", "MANAGE_APPS"],
     configurationUrl: `${baseURL}/configuration`,
     tokenTargetUrl: `${baseURL}/api/register`,
   };
