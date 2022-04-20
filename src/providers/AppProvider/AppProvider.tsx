@@ -1,8 +1,8 @@
-import { App, createApp } from "@saleor/app-bridge";
+import { createApp } from "@saleor/app-bridge";
 import { createContext, useMemo } from "react";
 
 interface IAppContext {
-  app?: App;
+  app?: any;
 }
 
 export const AppContext = createContext<IAppContext>({ app: undefined });

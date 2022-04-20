@@ -17,7 +17,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@prisma/client": "^3.8.0",
-    "@saleor/app-bridge": "^0.1.6",
+    "@saleor/app-bridge": "^0.1.5",
     "@saleor/macaw-ui": "^0.3.3",
     "@types/cors": "^2.8.12",
     "cors": "^2.8.5",

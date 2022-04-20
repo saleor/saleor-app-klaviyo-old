@@ -1165,10 +1165,10 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.0.tgz#7f698254aadf921e48dda8c0a6b304026b8a9323"
   integrity sha512-JLo+Y592QzIE+q7Dl2pMUtt4q8SKYI5jDrZxrozEQxnGVOyYE+GWK9eLkwTaeN9DDctlaRAQ3TBmzZ1qdLE30A==
 
-"@saleor/app-bridge@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@saleor/app-bridge/-/app-bridge-0.1.6.tgz#5a7cc837501c8ca485a2c0b2ec8daff8d6f01a64"
-  integrity sha512-kWjJDWc7xv+fymZv0E1hQaNrhk+KEdk2ipisdbJ7dzW+YrBtCWsvH/dtnpoQpMqSxet0O+35Q5nZbI6T5Dfulg==
+"@saleor/app-bridge@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@saleor/app-bridge/-/app-bridge-0.1.5.tgz#134fcb8c636b864834f72872ae053ecbdce532d7"
+  integrity sha512-AkttPM/lLY1TOKjxoynKald659lb5+56NBwU22YEYWitguQDRR3zPrdti0KuzCkQ8CL99NeNo7JGr8T314kjVA==
   dependencies:
     uuid "^8.3.2"
 
