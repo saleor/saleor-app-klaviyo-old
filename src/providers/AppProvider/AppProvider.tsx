@@ -1,4 +1,4 @@
-import { App, createApp } from "@saleor/app-bridge";
+import { createApp, App } from "@saleor/app-bridge";
 import { createContext, useMemo } from "react";
 
 interface IAppContext {
@@ -10,7 +10,11 @@ export const AppContext = createContext<IAppContext>({ app: undefined });
 const AppProvider: React.FC = (props) => {
   const app = useMemo(() => {
     if (typeof window !== "undefined") {
-      return createApp();
+      try {
+        return createApp();
+      } catch (e) {
+        console.error(e);
+      }
     }
   }, []);
 
