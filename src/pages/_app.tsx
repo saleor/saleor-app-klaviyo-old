@@ -16,7 +16,14 @@ const ApolloWrapper: React.FC = ({ children }) => {
 
   const { token, domain } = app.getState()!;
 
-  const client = createApolloClient(token, domain);
+  const authToken = process.env.SALEOR_AUTH_TOKEN;
+
+  console.log(process.env.SALEOR_AUTH_TOKEN);
+
+  const client = createApolloClient(
+    authToken ?? "nCJYzPzhrp7Sew2FZe8aXLeQ9evwRv",
+    domain
+  );
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };

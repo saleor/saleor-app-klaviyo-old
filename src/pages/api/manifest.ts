@@ -9,8 +9,8 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
   const manifest = {
     id: "saleor.app",
     version: version,
-    name: name,
-    permissions: ["MANAGE_ORDERS", "MANAGE_APPS"],
+    name: "Email app v1",
+    permissions: ["MANAGE_ORDERS"],
     configurationUrl: `${baseURL}/configuration`,
     tokenTargetUrl: `${baseURL}/api/register`,
   };

@@ -24,6 +24,7 @@ const authMiddleware = (token?: string) =>
       headers: {
         ...headers,
         authorization: token ? `Bearer ${token}` : "",
+        // authorization: `Bearer nCJYzPzhrp7Sew2FZe8aXLeQ9evwRv`,
       },
     }));
 

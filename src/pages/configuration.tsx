@@ -24,40 +24,19 @@ type FormFieldType = {
 
 const privateMetadataFields: FormFieldType[] = [
   {
-    name: "name",
-    label: "Sender name",
+    name: "example_metadata_value",
+    label: "Example metadata value",
   },
   {
-    name: "email",
-    label: "Sender email",
-  },
-  {
-    name: "order_created_template",
-    label: "Order created template",
-    helperText: "Email template for order created",
-  },
-  {
-    name: "order_fully_paid_template",
-    label: "Order fully paid template",
-    helperText: "Email template for order fully paid",
-  },
-  {
-    name: "customer_created_template",
-    label: "Customer created template",
-    helperText: "Email template for customer created",
-  },
-  {
-    name: "fulfillment_created_template",
-    label: "Fulfillment created template",
-    helperText: "Email template for fulfillment created",
-  },
-  {
-    name: "secret_api_key",
-    label: "Secret API key",
-    helperText: "Secret API key for email provider",
+    name: "klaviyo_public_key",
+    label: "Klaviyo public key",
+    helperText: "Klaviyo public key for email provider",
     type: "secret",
   },
 ];
+
+const removeEmptyMetadata = (metadata: MetadataInput[]) =>
+  metadata.filter((item) => item.value);
 
 const ConfigurationPage = () => {
   const classes = useStyles();
@@ -93,12 +72,14 @@ const ConfigurationPage = () => {
     e.preventDefault();
 
     updateMetadata({
-      metadataArray: fields.map(
-        (field) =>
-          ({
-            key: field.name,
-            value: field.value,
-          } as MetadataInput)
+      metadataArray: removeEmptyMetadata(
+        fields.map(
+          (field) =>
+            ({
+              key: field.name,
+              value: field.value,
+            } as MetadataInput)
+        )
       ),
     }).finally(() => {
       setIsApiKeyReadOnly(true);
