@@ -1,5 +1,5 @@
 {
-  "name": "best-app",
+  "name": "saleor-app-klaviyo",
   "version": "1.0.0",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
