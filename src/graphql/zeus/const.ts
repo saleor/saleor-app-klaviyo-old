@@ -154,13 +154,47 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	AddressTypeEnum: "enum",
+	App:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	AppErrorCode: "enum",
 	AppExtensionFilterInput:{
 		mount:{
 			type:"AppExtensionMountEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		target:{
 			type:"AppExtensionTargetEnum",
@@ -202,7 +236,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"PermissionEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	AppInstallInput:{
@@ -228,7 +262,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"PermissionEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	AppSortField: "enum",
@@ -263,6 +297,38 @@ export const AllTypesProps: Record<string,any> = {
 	AppTypeEnum: "enum",
 	AreaUnitsEnum: "enum",
 	Attribute:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		choices:{
 			sortBy:{
 				type:"AttributeChoicesSortingInput",
@@ -418,7 +484,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"AttributeValueCreateInput",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		valueRequired:{
 			type:"Boolean",
@@ -506,7 +572,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		search:{
 			type:"String",
@@ -518,7 +584,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		type:{
 			type:"AttributeTypeEnum",
@@ -556,7 +622,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		valuesRange:{
 			type:"IntRangeInput",
@@ -633,13 +699,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		addValues:{
 			type:"AttributeValueUpdateInput",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		valueRequired:{
 			type:"Boolean",
@@ -732,6 +798,12 @@ export const AllTypesProps: Record<string,any> = {
 			array:false,
 			arrayRequired:false,
 			required:false
+		},
+		ids:{
+			type:"ID",
+			array:true,
+			arrayRequired:false,
+			required:true
 		}
 	},
 	AttributeValueInput:{
@@ -891,28 +963,60 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		categories:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		collections:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		variants:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	Category:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		ancestors:{
 			before:{
 				type:"String",
@@ -1025,13 +1129,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		ids:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	CategoryInput:{
@@ -1188,6 +1292,40 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	Checkout:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	CheckoutCreateInput:{
 		channel:{
 			type:"String",
@@ -1198,7 +1336,7 @@ export const AllTypesProps: Record<string,any> = {
 		lines:{
 			type:"CheckoutLineInput",
 			array:true,
-			arrayRequired:false,
+			arrayRequired:true,
 			required:true
 		},
 		email:{
@@ -1250,13 +1388,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		channels:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	CheckoutLineInput:{
@@ -1271,6 +1409,32 @@ export const AllTypesProps: Record<string,any> = {
 			array:false,
 			arrayRequired:false,
 			required:true
+		},
+		price:{
+			type:"PositiveDecimal",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	CheckoutLineUpdateInput:{
+		quantity:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		variantId:{
+			type:"ID",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		price:{
+			type:"PositiveDecimal",
+			array:false,
+			arrayRequired:false,
+			required:false
 		}
 	},
 	CheckoutSortField: "enum",
@@ -1289,6 +1453,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	Collection:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		products:{
 			filter:{
 				type:"ProductFilterInput",
@@ -1358,6 +1554,16 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	CollectionCreated:{
+		collection:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	CollectionCreateInput:{
 		isPublished:{
 			type:"Boolean",
@@ -1411,7 +1617,17 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
+		}
+	},
+	CollectionDeleted:{
+		collection:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
 		}
 	},
 	CollectionErrorCode: "enum",
@@ -1432,13 +1648,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		ids:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		channel:{
 			type:"String",
@@ -1529,6 +1745,16 @@ export const AllTypesProps: Record<string,any> = {
 			}
 		}
 	},
+	CollectionUpdated:{
+		collection:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ConfigurationItemInput:{
 		name:{
 			type:"String",
@@ -1583,7 +1809,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		updatedAt:{
 			type:"DateTimeRangeInput",
@@ -1670,6 +1896,40 @@ export const AllTypesProps: Record<string,any> = {
 			array:false,
 			arrayRequired:false,
 			required:false
+		}
+	},
+	DigitalContent:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	},
 	DigitalContentInput:{
@@ -1807,7 +2067,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"OrderLineCreateInput",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	DraftOrderInput:{
@@ -2090,7 +2350,7 @@ export const AllTypesProps: Record<string,any> = {
 		ids:{
 			type:"ID",
 			array:true,
-			arrayRequired:false,
+			arrayRequired:true,
 			required:true
 		},
 		extraPayload:{
@@ -2107,6 +2367,40 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	FileTypesEnum: "enum",
+	Fulfillment:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	FulfillmentCancelInput:{
 		warehouseId:{
 			type:"ID",
@@ -2132,6 +2426,38 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	GenericScalar: "String",
 	GiftCard:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		events:{
 			filter:{
 				type:"GiftCardEventFilterInput",
@@ -2270,25 +2596,25 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		tags:{
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		products:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		usedBy:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		used:{
 			type:"Boolean",
@@ -2432,6 +2758,40 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		}
 	},
+	Invoice:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	InvoiceCreateInput:{
 		number:{
 			type:"String",
@@ -2451,6 +2811,40 @@ export const AllTypesProps: Record<string,any> = {
 	JSONString: "String",
 	LanguageCodeEnum: "enum",
 	MeasurementUnitsEnum: "enum",
+	Menu:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	MenuCreateInput:{
 		name:{
 			type:"String",
@@ -2468,7 +2862,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MenuItemInput",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	MenuErrorCode: "enum",
@@ -2483,13 +2877,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		metadata:{
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	MenuInput:{
@@ -2507,6 +2901,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	MenuItem:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		translation:{
 			languageCode:{
 				type:"LanguageCodeEnum",
@@ -2571,7 +2997,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	MenuItemInput:{
@@ -2666,6 +3092,7 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	Metadata: "String",
 	MetadataErrorCode: "enum",
 	MetadataFilter:{
 		key:{
@@ -2938,7 +3365,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3000,7 +3427,7 @@ export const AllTypesProps: Record<string,any> = {
 			products:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3024,7 +3451,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3046,7 +3473,7 @@ export const AllTypesProps: Record<string,any> = {
 			operations:{
 				type:"ProductAttributeAssignInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productTypeId:{
@@ -3060,7 +3487,7 @@ export const AllTypesProps: Record<string,any> = {
 			operations:{
 				type:"ProductAttributeAssignmentUpdateInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productTypeId:{
@@ -3074,7 +3501,7 @@ export const AllTypesProps: Record<string,any> = {
 			attributeIds:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productTypeId:{
@@ -3110,7 +3537,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3158,7 +3585,7 @@ export const AllTypesProps: Record<string,any> = {
 			products:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3188,7 +3615,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"MoveProductInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3196,7 +3623,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3210,7 +3637,7 @@ export const AllTypesProps: Record<string,any> = {
 			products:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3282,7 +3709,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3346,7 +3773,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"ReorderInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productId:{
@@ -3368,7 +3795,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3376,7 +3803,7 @@ export const AllTypesProps: Record<string,any> = {
 			mediaIds:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productId:{
@@ -3420,7 +3847,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3442,7 +3869,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"ReorderInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productTypeId:{
@@ -3468,7 +3895,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"ReorderInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			productId:{
@@ -3548,7 +3975,7 @@ export const AllTypesProps: Record<string,any> = {
 			variants:{
 				type:"ProductVariantBulkCreateInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3556,7 +3983,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3674,7 +4101,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"ReorderInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			variantId:{
@@ -3784,46 +4211,6 @@ export const AllTypesProps: Record<string,any> = {
 				required:true
 			}
 		},
-		paymentCreate:{
-			id:{
-				type:"ID",
-				array:false,
-				arrayRequired:false,
-				required:true
-			},
-			payment:{
-				type:"PaymentPOCCreateInput",
-				array:false,
-				arrayRequired:false,
-				required:true
-			},
-			transaction:{
-				type:"TransactionInput",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		},
-		paymentUpdate:{
-			id:{
-				type:"ID",
-				array:false,
-				arrayRequired:false,
-				required:true
-			},
-			payment:{
-				type:"PaymentPOCUpdateInput",
-				array:false,
-				arrayRequired:false,
-				required:true
-			},
-			transaction:{
-				type:"TransactionInput",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		},
 		pageCreate:{
 			input:{
 				type:"PageCreateInput",
@@ -3844,7 +4231,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -3852,7 +4239,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			isPublished:{
@@ -3986,7 +4373,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"ReorderInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			pageId:{
@@ -4024,7 +4411,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4032,7 +4419,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4194,7 +4581,7 @@ export const AllTypesProps: Record<string,any> = {
 			input:{
 				type:"OrderLineCreateInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4346,7 +4733,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4440,7 +4827,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4478,7 +4865,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4526,7 +4913,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"MenuItemMoveInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4676,7 +5063,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4684,7 +5071,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4692,7 +5079,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4756,7 +5143,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -4856,7 +5243,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -5118,7 +5505,7 @@ export const AllTypesProps: Record<string,any> = {
 			linesIds:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			token:{
@@ -5138,7 +5525,7 @@ export const AllTypesProps: Record<string,any> = {
 			lines:{
 				type:"CheckoutLineInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			token:{
@@ -5156,9 +5543,9 @@ export const AllTypesProps: Record<string,any> = {
 				required:false
 			},
 			lines:{
-				type:"CheckoutLineInput",
+				type:"CheckoutLineUpdateInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			token:{
@@ -5288,12 +5675,18 @@ export const AllTypesProps: Record<string,any> = {
 				required:false
 			}
 		},
-		orderFromCheckoutCreate:{
+		orderCreateFromCheckout:{
 			id:{
 				type:"ID",
 				array:false,
 				arrayRequired:false,
 				required:true
+			},
+			removeCheckout:{
+				type:"Boolean",
+				array:false,
+				arrayRequired:false,
+				required:false
 			}
 		},
 		channelCreate:{
@@ -5402,7 +5795,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -5410,7 +5803,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -5480,7 +5873,7 @@ export const AllTypesProps: Record<string,any> = {
 			moves:{
 				type:"ReorderInput",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -5984,7 +6377,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -6022,7 +6415,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			}
 		},
@@ -6038,7 +6431,7 @@ export const AllTypesProps: Record<string,any> = {
 			ids:{
 				type:"ID",
 				array:true,
-				arrayRequired:false,
+				arrayRequired:true,
 				required:true
 			},
 			isActive:{
@@ -6088,6 +6481,74 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	NavigationType: "enum",
+	ObjectWithMetadata:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	Order:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	OrderAction: "enum",
 	OrderAddNoteInput:{
 		message:{
@@ -6097,6 +6558,7 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	OrderCreateFromCheckoutErrorCode: "enum",
 	OrderDirection: "enum",
 	OrderDiscountCommonInput:{
 		valueType:{
@@ -6142,13 +6604,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		channels:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	OrderErrorCode: "enum",
@@ -6159,13 +6621,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"PaymentChargeStatusEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		status:{
 			type:"OrderStatusFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		customer:{
 			type:"String",
@@ -6189,13 +6651,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		channels:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		updatedAt:{
 			type:"DateTimeRangeInput",
@@ -6219,7 +6681,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		giftCardUsed:{
 			type:"Boolean",
@@ -6234,7 +6696,6 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		}
 	},
-	OrderFromCheckoutCreateErrorCode: "enum",
 	OrderFulfillInput:{
 		lines:{
 			type:"OrderFulfillLineInput",
@@ -6503,6 +6964,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	Page:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		translation:{
 			languageCode:{
 				type:"LanguageCodeEnum",
@@ -6549,6 +7042,12 @@ export const AllTypesProps: Record<string,any> = {
 			arrayRequired:false,
 			required:false
 		},
+		publishedAt:{
+			type:"DateTime",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		seo:{
 			type:"SeoInput",
 			array:false,
@@ -6574,19 +7073,19 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		pageTypes:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		ids:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	PageInput:{
@@ -6622,6 +7121,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		publicationDate:{
 			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		publishedAt:{
+			type:"DateTime",
 			array:false,
 			arrayRequired:false,
 			required:false
@@ -6685,6 +7190,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	PageType:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		availableAttributes:{
 			filter:{
 				type:"AttributeFilterInput",
@@ -6787,7 +7324,40 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
-	PaymentActionEnum: "enum",
+	Payment:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	PaymentChargeStatusEnum: "enum",
 	PaymentCheckBalanceInput:{
 		gatewayId:{
@@ -6815,14 +7385,13 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
-	PaymentCreateErrorCode: "enum",
 	PaymentErrorCode: "enum",
 	PaymentFilterInput:{
 		checkouts:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	PaymentInput:{
@@ -6863,130 +7432,6 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
-	PaymentPOCCreateInput:{
-		status:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		type:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		reference:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		availableActions:{
-			type:"PaymentActionEnum",
-			array:true,
-			arrayRequired:false,
-			required:true
-		},
-		amountAuthorized:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		amountCaptured:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		amountRefunded:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		amountVoided:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		publicMetadata:{
-			type:"MetadataInput",
-			array:true,
-			arrayRequired:false,
-			required:true
-		},
-		privateMetadata:{
-			type:"MetadataInput",
-			array:true,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	PaymentPOCUpdateInput:{
-		status:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		type:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		reference:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		availableActions:{
-			type:"PaymentActionEnum",
-			array:true,
-			arrayRequired:false,
-			required:true
-		},
-		amountAuthorized:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		amountCaptured:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		amountRefunded:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		amountVoided:{
-			type:"MoneyInput",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		publicMetadata:{
-			type:"MetadataInput",
-			array:true,
-			arrayRequired:false,
-			required:true
-		},
-		privateMetadata:{
-			type:"MetadataInput",
-			array:true,
-			arrayRequired:false,
-			required:true
-		}
-	},
 	PermissionEnum: "enum",
 	PermissionGroupCreateInput:{
 		addPermissions:{
@@ -7020,7 +7465,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	PermissionGroupSortField: "enum",
@@ -7132,7 +7577,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ConfigurationItemInput",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	PositiveDecimal: "String",
@@ -7180,6 +7625,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	Product:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		thumbnail:{
 			size:{
 				type:"Int",
@@ -7293,6 +7770,12 @@ export const AllTypesProps: Record<string,any> = {
 			arrayRequired:false,
 			required:false
 		},
+		publishedAt:{
+			type:"DateTime",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		visibleInListings:{
 			type:"Boolean",
 			array:false,
@@ -7307,6 +7790,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		availableForPurchaseDate:{
 			type:"Date",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		availableForPurchaseAt:{
+			type:"DateTime",
 			array:false,
 			arrayRequired:false,
 			required:false
@@ -7336,6 +7825,16 @@ export const AllTypesProps: Record<string,any> = {
 			array:true,
 			arrayRequired:false,
 			required:true
+		}
+	},
+	ProductCreated:{
+		product:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
 		}
 	},
 	ProductCreateInput:{
@@ -7412,6 +7911,16 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	ProductDeleted:{
+		product:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ProductErrorCode: "enum",
 	ProductFieldEnum: "enum",
 	ProductFilterInput:{
@@ -7425,13 +7934,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		categories:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		hasCategory:{
 			type:"Boolean",
@@ -7443,7 +7952,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"AttributeInput",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		stockAvailability:{
 			type:"StockAvailability",
@@ -7467,7 +7976,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		price:{
 			type:"PriceRangeInput",
@@ -7491,7 +8000,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		giftCard:{
 			type:"Boolean",
@@ -7503,7 +8012,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		hasPreorderedVariants:{
 			type:"Boolean",
@@ -7693,6 +8202,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	ProductType:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		products:{
 			channel:{
 				type:"String",
@@ -7799,7 +8340,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		kind:{
 			type:"ProductTypeKindEnum",
@@ -7811,7 +8352,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	ProductTypeInput:{
@@ -7843,13 +8384,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		variantAttributes:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		isShippingRequired:{
 			type:"Boolean",
@@ -7892,7 +8433,49 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	ProductUpdated:{
+		product:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ProductVariant:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		pricing:{
 			address:{
 				type:"AddressInput",
@@ -7948,6 +8531,16 @@ export const AllTypesProps: Record<string,any> = {
 			},
 			countryCode:{
 				type:"CountryCode",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	ProductVariantBackInStock:{
+		productVariant:{
+			channel:{
+				type:"String",
 				array:false,
 				arrayRequired:false,
 				required:false
@@ -8030,6 +8623,16 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		}
 	},
+	ProductVariantCreated:{
+		productVariant:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ProductVariantCreateInput:{
 		attributes:{
 			type:"AttributeValueInput",
@@ -8080,6 +8683,16 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	ProductVariantDeleted:{
+		productVariant:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ProductVariantFilterInput:{
 		search:{
 			type:"String",
@@ -8091,13 +8704,13 @@ export const AllTypesProps: Record<string,any> = {
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		metadata:{
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		isPreorder:{
 			type:"Boolean",
@@ -8150,6 +8763,31 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		}
 	},
+	ProductVariantOutOfStock:{
+		productVariant:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	ProductVariantSortField: "enum",
+	ProductVariantSortingInput:{
+		direction:{
+			type:"OrderDirection",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		field:{
+			type:"ProductVariantSortField",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
 	ProductVariantTranslatableContent:{
 		translation:{
 			languageCode:{
@@ -8157,6 +8795,16 @@ export const AllTypesProps: Record<string,any> = {
 				array:false,
 				arrayRequired:false,
 				required:true
+			}
+		}
+	},
+	ProductVariantUpdated:{
+		productVariant:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
 			}
 		}
 	},
@@ -8175,6 +8823,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		publicationDate:{
 			type:"Date",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		publishedAt:{
+			type:"DateTime",
 			array:false,
 			arrayRequired:false,
 			required:false
@@ -8672,7 +9326,7 @@ export const AllTypesProps: Record<string,any> = {
 				type:"ID",
 				array:true,
 				arrayRequired:false,
-				required:false
+				required:true
 			},
 			channel:{
 				type:"String",
@@ -8682,6 +9336,12 @@ export const AllTypesProps: Record<string,any> = {
 			},
 			filter:{
 				type:"ProductVariantFilterInput",
+				array:false,
+				arrayRequired:false,
+				required:false
+			},
+			sortBy:{
+				type:"ProductVariantSortingInput",
 				array:false,
 				arrayRequired:false,
 				required:false
@@ -9876,6 +10536,38 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	ReportingPeriod: "enum",
 	Sale:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		categories:{
 			before:{
 				type:"String",
@@ -10017,12 +10709,32 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	SaleCreated:{
+		sale:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	SaleDeleted:{
+		sale:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	SaleFilterInput:{
 		status:{
 			type:"DiscountStatusEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		saleType:{
 			type:"DiscountValueTypeEnum",
@@ -10046,7 +10758,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		updatedAt:{
 			type:"DateTimeRangeInput",
@@ -10078,25 +10790,25 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		variants:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		categories:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		collections:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		startDate:{
 			type:"DateTime",
@@ -10143,6 +10855,16 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	SaleType: "enum",
+	SaleUpdated:{
+		sale:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	SeoInput:{
 		title:{
 			type:"String",
@@ -10159,6 +10881,38 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	ShippingErrorCode: "enum",
 	ShippingMethod:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		translation:{
 			languageCode:{
 				type:"LanguageCodeEnum",
@@ -10219,6 +10973,38 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	ShippingMethodType:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		translation:{
 			languageCode:{
 				type:"LanguageCodeEnum",
@@ -10269,11 +11055,47 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		}
 	},
+	ShippingPriceCreated:{
+		shippingMethod:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		},
+		shippingZone:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	ShippingPriceDeleted:{
+		shippingMethod:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		},
+		shippingZone:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ShippingPriceExcludeProductsInput:{
 		products:{
 			type:"ID",
 			array:true,
-			arrayRequired:false,
+			arrayRequired:true,
 			required:true
 		}
 	},
@@ -10359,6 +11181,68 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		}
 	},
+	ShippingPriceUpdated:{
+		shippingMethod:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		},
+		shippingZone:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	ShippingZone:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	ShippingZoneCreated:{
+		shippingZone:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	ShippingZoneCreateInput:{
 		name:{
 			type:"String",
@@ -10376,7 +11260,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		default:{
 			type:"Boolean",
@@ -10388,13 +11272,23 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		addChannels:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
 			required:true
+		}
+	},
+	ShippingZoneDeleted:{
+		shippingZone:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
 		}
 	},
 	ShippingZoneFilterInput:{
@@ -10408,7 +11302,17 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
+		}
+	},
+	ShippingZoneUpdated:{
+		shippingZone:{
+			channel:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
 		}
 	},
 	ShippingZoneUpdateInput:{
@@ -10428,7 +11332,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		default:{
 			type:"Boolean",
@@ -10440,7 +11344,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		addChannels:{
 			type:"ID",
@@ -10452,7 +11356,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		removeChannels:{
 			type:"ID",
@@ -10778,7 +11682,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	StockAvailability: "enum",
@@ -10827,28 +11731,7 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	TimePeriodTypeEnum: "enum",
-	TransactionInput:{
-		status:{
-			type:"TransactionStatus",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		reference:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		name:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
 	TransactionKind: "enum",
-	TransactionStatus: "enum",
 	TranslatableKinds: "enum",
 	TranslationErrorCode: "enum",
 	TranslationInput:{
@@ -10894,6 +11777,38 @@ export const AllTypesProps: Record<string,any> = {
 	Upload: "String",
 	UploadErrorCode: "enum",
 	User:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		checkoutTokens:{
 			channel:{
 				type:"String",
@@ -11062,6 +11977,38 @@ export const AllTypesProps: Record<string,any> = {
 	VariantAttributeScope: "enum",
 	VolumeUnitsEnum: "enum",
 	Voucher:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		categories:{
 			before:{
 				type:"String",
@@ -11215,7 +12162,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"DiscountStatusEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		timesUsed:{
 			type:"IntRangeInput",
@@ -11227,7 +12174,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"VoucherDiscountType",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		started:{
 			type:"DateTimeRangeInput",
@@ -11245,7 +12192,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"MetadataFilter",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	VoucherInput:{
@@ -11289,25 +12236,25 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		variants:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		collections:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		categories:{
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		minCheckoutItemsQuantity:{
 			type:"Int",
@@ -11319,7 +12266,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"String",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		applyOncePerOrder:{
 			type:"Boolean",
@@ -11379,6 +12326,38 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	VoucherTypeEnum: "enum",
 	Warehouse:{
+		privateMetafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		privateMetafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafield:{
+			key:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		metafields:{
+			keys:{
+				type:"String",
+				array:true,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		shippingZones:{
 			before:{
 				type:"String",
@@ -11436,7 +12415,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	WarehouseErrorCode: "enum",
@@ -11457,7 +12436,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"ID",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		isPrivate:{
 			type:"Boolean",
@@ -11576,7 +12555,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"WebhookEventTypeEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		asyncEvents:{
 			type:"WebhookEventTypeAsyncEnum",
@@ -11603,6 +12582,12 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		},
 		secretKey:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		query:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
@@ -11631,7 +12616,7 @@ export const AllTypesProps: Record<string,any> = {
 			type:"WebhookEventTypeEnum",
 			array:true,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
 		asyncEvents:{
 			type:"WebhookEventTypeAsyncEnum",
@@ -11658,6 +12643,12 @@ export const AllTypesProps: Record<string,any> = {
 			required:false
 		},
 		secretKey:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		query:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
@@ -11800,7 +12791,11 @@ export const ReturnTypes: Record<string,any> = {
 	App:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		permissions:"Permission",
 		created:"DateTime",
 		isActive:"Boolean",
@@ -11948,7 +12943,11 @@ export const ReturnTypes: Record<string,any> = {
 	Attribute:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		inputType:"AttributeInputTypeEnum",
 		entityType:"AttributeEntityTypeEnum",
 		name:"String",
@@ -11961,8 +12960,8 @@ export const ReturnTypes: Record<string,any> = {
 		filterableInStorefront:"Boolean",
 		filterableInDashboard:"Boolean",
 		availableInGrid:"Boolean",
-		translation:"AttributeTranslation",
 		storefrontSearchPosition:"Int",
+		translation:"AttributeTranslation",
 		withChoices:"Boolean",
 		productTypes:"ProductTypeCountableConnection",
 		productVariantTypes:"ProductTypeCountableConnection"
@@ -12107,7 +13106,11 @@ export const ReturnTypes: Record<string,any> = {
 	Category:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		seoTitle:"String",
 		seoDescription:"String",
 		name:"String",
@@ -12141,9 +13144,15 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ProductError",
 		category:"Category"
 	},
+	CategoryCreated:{
+		category:"Category"
+	},
 	CategoryDelete:{
 		productErrors:"ProductError",
 		errors:"ProductError",
+		category:"Category"
+	},
+	CategoryDeleted:{
 		category:"Category"
 	},
 	CategoryTranslatableContent:{
@@ -12175,6 +13184,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ProductError",
 		category:"Category"
 	},
+	CategoryUpdated:{
+		category:"Category"
+	},
 	Channel:{
 		id:"ID",
 		name:"String",
@@ -12194,6 +13206,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ChannelError",
 		channel:"Channel"
 	},
+	ChannelCreated:{
+		channel:"Channel"
+	},
 	ChannelDeactivate:{
 		channel:"Channel",
 		channelErrors:"ChannelError",
@@ -12204,21 +13219,34 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ChannelError",
 		channel:"Channel"
 	},
+	ChannelDeleted:{
+		channel:"Channel"
+	},
 	ChannelError:{
 		field:"String",
 		message:"String",
 		code:"ChannelErrorCode",
 		shippingZones:"ID"
 	},
+	ChannelStatusChanged:{
+		channel:"Channel"
+	},
 	ChannelUpdate:{
 		channelErrors:"ChannelError",
 		errors:"ChannelError",
 		channel:"Channel"
 	},
+	ChannelUpdated:{
+		channel:"Channel"
+	},
 	Checkout:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		created:"DateTime",
 		lastChange:"DateTime",
 		user:"User",
@@ -12278,6 +13306,9 @@ export const ReturnTypes: Record<string,any> = {
 		created:"Boolean",
 		checkoutErrors:"CheckoutError",
 		errors:"CheckoutError",
+		checkout:"Checkout"
+	},
+	CheckoutCreated:{
 		checkout:"Checkout"
 	},
 	CheckoutCustomerAttach:{
@@ -12368,6 +13399,9 @@ export const ReturnTypes: Record<string,any> = {
 		checkoutErrors:"CheckoutError",
 		errors:"CheckoutError"
 	},
+	CheckoutUpdated:{
+		checkout:"Checkout"
+	},
 	ChoiceValue:{
 		raw:"String",
 		verbose:"String"
@@ -12375,7 +13409,11 @@ export const ReturnTypes: Record<string,any> = {
 	Collection:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		seoTitle:"String",
 		seoDescription:"String",
 		name:"String",
@@ -12401,6 +13439,7 @@ export const ReturnTypes: Record<string,any> = {
 	CollectionChannelListing:{
 		id:"ID",
 		publicationDate:"Date",
+		publishedAt:"DateTime",
 		isPublished:"Boolean",
 		channel:"Channel"
 	},
@@ -12431,9 +13470,15 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"CollectionError",
 		collection:"Collection"
 	},
+	CollectionCreated:{
+		collection:"Collection"
+	},
 	CollectionDelete:{
 		collectionErrors:"CollectionError",
 		errors:"CollectionError",
+		collection:"Collection"
+	},
+	CollectionDeleted:{
 		collection:"Collection"
 	},
 	CollectionError:{
@@ -12479,6 +13524,9 @@ export const ReturnTypes: Record<string,any> = {
 	CollectionUpdate:{
 		collectionErrors:"CollectionError",
 		errors:"CollectionError",
+		collection:"Collection"
+	},
+	CollectionUpdated:{
 		collection:"Collection"
 	},
 	ConfigurationItem:{
@@ -12528,6 +13576,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"AccountError",
 		user:"User"
 	},
+	CustomerCreated:{
+		user:"User"
+	},
 	CustomerDelete:{
 		accountErrors:"AccountError",
 		errors:"AccountError",
@@ -12547,6 +13598,9 @@ export const ReturnTypes: Record<string,any> = {
 	CustomerUpdate:{
 		accountErrors:"AccountError",
 		errors:"AccountError",
+		user:"User"
+	},
+	CustomerUpdated:{
 		user:"User"
 	},
 	DeactivateAllUserTokens:{
@@ -12570,7 +13624,11 @@ export const ReturnTypes: Record<string,any> = {
 	DigitalContent:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		useDefaultSettings:"Boolean",
 		automaticFulfillment:"Boolean",
 		contentFile:"String",
@@ -12645,9 +13703,15 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"OrderError",
 		order:"Order"
 	},
+	DraftOrderCreated:{
+		order:"Order"
+	},
 	DraftOrderDelete:{
 		orderErrors:"OrderError",
 		errors:"OrderError",
+		order:"Order"
+	},
+	DraftOrderDeleted:{
 		order:"Order"
 	},
 	DraftOrderLinesBulkDelete:{
@@ -12659,6 +13723,65 @@ export const ReturnTypes: Record<string,any> = {
 		orderErrors:"OrderError",
 		errors:"OrderError",
 		order:"Order"
+	},
+	DraftOrderUpdated:{
+		order:"Order"
+	},
+	Event:{
+		"...on CategoryCreated":"CategoryCreated",
+		"...on CategoryUpdated":"CategoryUpdated",
+		"...on CategoryDeleted":"CategoryDeleted",
+		"...on ChannelCreated":"ChannelCreated",
+		"...on ChannelUpdated":"ChannelUpdated",
+		"...on ChannelDeleted":"ChannelDeleted",
+		"...on ChannelStatusChanged":"ChannelStatusChanged",
+		"...on GiftCardCreated":"GiftCardCreated",
+		"...on GiftCardUpdated":"GiftCardUpdated",
+		"...on GiftCardDeleted":"GiftCardDeleted",
+		"...on GiftCardStatusChanged":"GiftCardStatusChanged",
+		"...on OrderCreated":"OrderCreated",
+		"...on OrderUpdated":"OrderUpdated",
+		"...on OrderConfirmed":"OrderConfirmed",
+		"...on OrderFullyPaid":"OrderFullyPaid",
+		"...on OrderCancelled":"OrderCancelled",
+		"...on OrderFulfilled":"OrderFulfilled",
+		"...on DraftOrderCreated":"DraftOrderCreated",
+		"...on DraftOrderUpdated":"DraftOrderUpdated",
+		"...on DraftOrderDeleted":"DraftOrderDeleted",
+		"...on ProductCreated":"ProductCreated",
+		"...on ProductUpdated":"ProductUpdated",
+		"...on ProductDeleted":"ProductDeleted",
+		"...on ProductVariantCreated":"ProductVariantCreated",
+		"...on ProductVariantUpdated":"ProductVariantUpdated",
+		"...on ProductVariantOutOfStock":"ProductVariantOutOfStock",
+		"...on ProductVariantBackInStock":"ProductVariantBackInStock",
+		"...on ProductVariantDeleted":"ProductVariantDeleted",
+		"...on SaleCreated":"SaleCreated",
+		"...on SaleUpdated":"SaleUpdated",
+		"...on SaleDeleted":"SaleDeleted",
+		"...on InvoiceRequested":"InvoiceRequested",
+		"...on InvoiceDeleted":"InvoiceDeleted",
+		"...on InvoiceSent":"InvoiceSent",
+		"...on FulfillmentCreated":"FulfillmentCreated",
+		"...on FulfillmentCanceled":"FulfillmentCanceled",
+		"...on CustomerCreated":"CustomerCreated",
+		"...on CustomerUpdated":"CustomerUpdated",
+		"...on CollectionCreated":"CollectionCreated",
+		"...on CollectionUpdated":"CollectionUpdated",
+		"...on CollectionDeleted":"CollectionDeleted",
+		"...on CheckoutCreated":"CheckoutCreated",
+		"...on CheckoutUpdated":"CheckoutUpdated",
+		"...on PageCreated":"PageCreated",
+		"...on PageUpdated":"PageUpdated",
+		"...on PageDeleted":"PageDeleted",
+		"...on ShippingPriceCreated":"ShippingPriceCreated",
+		"...on ShippingPriceUpdated":"ShippingPriceUpdated",
+		"...on ShippingPriceDeleted":"ShippingPriceDeleted",
+		"...on ShippingZoneCreated":"ShippingZoneCreated",
+		"...on ShippingZoneUpdated":"ShippingZoneUpdated",
+		"...on ShippingZoneDeleted":"ShippingZoneDeleted",
+		"...on TranslationCreated":"TranslationCreated",
+		"...on TranslationUpdated":"TranslationUpdated"
 	},
 	EventDelivery:{
 		id:"ID",
@@ -12675,6 +13798,7 @@ export const ReturnTypes: Record<string,any> = {
 		duration:"Float",
 		response:"String",
 		responseHeaders:"String",
+		responseStatusCode:"Int",
 		requestHeaders:"String",
 		status:"EventDeliveryStatusEnum"
 	},
@@ -12799,7 +13923,11 @@ export const ReturnTypes: Record<string,any> = {
 	Fulfillment:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		fulfillmentOrder:"Int",
 		status:"FulfillmentStatus",
 		trackingNumber:"String",
@@ -12819,6 +13947,12 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Order",
 		orderErrors:"OrderError",
 		errors:"OrderError"
+	},
+	FulfillmentCanceled:{
+		fulfillment:"Fulfillment"
+	},
+	FulfillmentCreated:{
+		fulfillment:"Fulfillment"
 	},
 	FulfillmentLine:{
 		id:"ID",
@@ -12852,7 +13986,11 @@ export const ReturnTypes: Record<string,any> = {
 	GiftCard:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		displayCode:"String",
 		last4CodeChars:"String",
 		code:"String",
@@ -12916,6 +14054,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"GiftCardError",
 		giftCard:"GiftCard"
 	},
+	GiftCardCreated:{
+		giftCard:"GiftCard"
+	},
 	GiftCardDeactivate:{
 		giftCard:"GiftCard",
 		giftCardErrors:"GiftCardError",
@@ -12924,6 +14065,9 @@ export const ReturnTypes: Record<string,any> = {
 	GiftCardDelete:{
 		giftCardErrors:"GiftCardError",
 		errors:"GiftCardError",
+		giftCard:"GiftCard"
+	},
+	GiftCardDeleted:{
 		giftCard:"GiftCard"
 	},
 	GiftCardError:{
@@ -12971,6 +14115,9 @@ export const ReturnTypes: Record<string,any> = {
 		giftCardSettings:"GiftCardSettings",
 		errors:"GiftCardSettingsError"
 	},
+	GiftCardStatusChanged:{
+		giftCard:"GiftCard"
+	},
 	GiftCardTag:{
 		id:"ID",
 		name:"String"
@@ -12987,6 +14134,9 @@ export const ReturnTypes: Record<string,any> = {
 	GiftCardUpdate:{
 		giftCardErrors:"GiftCardError",
 		errors:"GiftCardError",
+		giftCard:"GiftCard"
+	},
+	GiftCardUpdated:{
 		giftCard:"GiftCard"
 	},
 	Group:{
@@ -13011,7 +14161,11 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	Invoice:{
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		status:"JobStatusEnum",
 		createdAt:"DateTime",
 		updatedAt:"DateTime",
@@ -13031,6 +14185,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"InvoiceError",
 		invoice:"Invoice"
 	},
+	InvoiceDeleted:{
+		invoice:"Invoice"
+	},
 	InvoiceError:{
 		field:"String",
 		message:"String",
@@ -13047,9 +14204,15 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"InvoiceError",
 		invoice:"Invoice"
 	},
+	InvoiceRequested:{
+		invoice:"Invoice"
+	},
 	InvoiceSendNotification:{
 		invoiceErrors:"InvoiceError",
 		errors:"InvoiceError",
+		invoice:"Invoice"
+	},
+	InvoiceSent:{
 		invoice:"Invoice"
 	},
 	InvoiceUpdate:{
@@ -13103,7 +14266,11 @@ export const ReturnTypes: Record<string,any> = {
 	Menu:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		slug:"String",
 		items:"MenuItem"
@@ -13140,7 +14307,11 @@ export const ReturnTypes: Record<string,any> = {
 	MenuItem:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		menu:"Menu",
 		parent:"MenuItem",
@@ -13315,8 +14486,6 @@ export const ReturnTypes: Record<string,any> = {
 		paymentVoid:"PaymentVoid",
 		paymentInitialize:"PaymentInitialize",
 		paymentCheckBalance:"PaymentCheckBalance",
-		paymentCreate:"PaymentCreate",
-		paymentUpdate:"PaymentUpdate",
 		pageCreate:"PageCreate",
 		pageDelete:"PageDelete",
 		pageBulkDelete:"PageBulkDelete",
@@ -13431,7 +14600,7 @@ export const ReturnTypes: Record<string,any> = {
 		checkoutShippingMethodUpdate:"CheckoutShippingMethodUpdate",
 		checkoutDeliveryMethodUpdate:"CheckoutDeliveryMethodUpdate",
 		checkoutLanguageCodeUpdate:"CheckoutLanguageCodeUpdate",
-		orderFromCheckoutCreate:"OrderFromCheckoutCreate",
+		orderCreateFromCheckout:"OrderCreateFromCheckout",
 		channelCreate:"ChannelCreate",
 		channelUpdate:"ChannelUpdate",
 		channelDelete:"ChannelDelete",
@@ -13552,7 +14721,6 @@ export const ReturnTypes: Record<string,any> = {
 		"...on PageTranslation": "PageTranslation",
 		"...on PageType": "PageType",
 		"...on Payment": "Payment",
-		"...on PaymentPOC": "PaymentPOC",
 		"...on Product": "Product",
 		"...on ProductChannelListing": "ProductChannelListing",
 		"...on ProductMedia": "ProductMedia",
@@ -13603,7 +14771,6 @@ export const ReturnTypes: Record<string,any> = {
 		"...on Page": "Page",
 		"...on PageType": "PageType",
 		"...on Payment": "Payment",
-		"...on PaymentPOC": "PaymentPOC",
 		"...on Product": "Product",
 		"...on ProductType": "ProductType",
 		"...on ProductVariant": "ProductVariant",
@@ -13615,12 +14782,20 @@ export const ReturnTypes: Record<string,any> = {
 		"...on Voucher": "Voucher",
 		"...on Warehouse": "Warehouse",
 		privateMetadata:"MetadataItem",
-		metadata:"MetadataItem"
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
+		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata"
 	},
 	Order:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		created:"DateTime",
 		updatedAt:"DateTime",
 		status:"OrderStatus",
@@ -13645,7 +14820,6 @@ export const ReturnTypes: Record<string,any> = {
 		paymentStatus:"PaymentChargeStatusEnum",
 		paymentStatusDisplay:"String",
 		payments:"Payment",
-		pocPayments:"PaymentPOC",
 		total:"TaxedMoney",
 		undiscountedTotal:"TaxedMoney",
 		shippingMethod:"ShippingMethod",
@@ -13692,6 +14866,9 @@ export const ReturnTypes: Record<string,any> = {
 		orderErrors:"OrderError",
 		errors:"OrderError"
 	},
+	OrderCancelled:{
+		order:"Order"
+	},
 	OrderCapture:{
 		order:"Order",
 		orderErrors:"OrderError",
@@ -13702,6 +14879,9 @@ export const ReturnTypes: Record<string,any> = {
 		orderErrors:"OrderError",
 		errors:"OrderError"
 	},
+	OrderConfirmed:{
+		order:"Order"
+	},
 	OrderCountableConnection:{
 		pageInfo:"PageInfo",
 		edges:"OrderCountableEdge",
@@ -13710,6 +14890,20 @@ export const ReturnTypes: Record<string,any> = {
 	OrderCountableEdge:{
 		node:"Order",
 		cursor:"String"
+	},
+	OrderCreated:{
+		order:"Order"
+	},
+	OrderCreateFromCheckout:{
+		order:"Order",
+		errors:"OrderCreateFromCheckoutError"
+	},
+	OrderCreateFromCheckoutError:{
+		field:"String",
+		message:"String",
+		code:"OrderCreateFromCheckoutErrorCode",
+		variants:"ID",
+		lines:"ID"
 	},
 	OrderDiscount:{
 		id:"ID",
@@ -13768,9 +14962,7 @@ export const ReturnTypes: Record<string,any> = {
 		transactionReference:"String",
 		shippingCostsIncluded:"Boolean",
 		relatedOrder:"Order",
-		discount:"OrderEventDiscountObject",
-		status:"TransactionStatus",
-		reference:"String"
+		discount:"OrderEventDiscountObject"
 	},
 	OrderEventCountableConnection:{
 		pageInfo:"PageInfo",
@@ -13796,23 +14988,17 @@ export const ReturnTypes: Record<string,any> = {
 		itemName:"String",
 		discount:"OrderEventDiscountObject"
 	},
-	OrderFromCheckoutCreate:{
-		order:"Order",
-		checkoutErrors:"OrderFromCheckoutCreateError",
-		errors:"OrderFromCheckoutCreateError"
-	},
-	OrderFromCheckoutCreateError:{
-		field:"String",
-		message:"String",
-		code:"OrderFromCheckoutCreateErrorCode",
-		variants:"ID",
-		lines:"ID"
-	},
 	OrderFulfill:{
 		fulfillments:"Fulfillment",
 		order:"Order",
 		orderErrors:"OrderError",
 		errors:"OrderError"
+	},
+	OrderFulfilled:{
+		order:"Order"
+	},
+	OrderFullyPaid:{
+		order:"Order"
 	},
 	OrderLine:{
 		id:"ID",
@@ -13898,6 +15084,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"OrderError",
 		order:"Order"
 	},
+	OrderUpdated:{
+		order:"Order"
+	},
 	OrderUpdateShipping:{
 		order:"Order",
 		orderErrors:"OrderError",
@@ -13911,12 +15100,17 @@ export const ReturnTypes: Record<string,any> = {
 	Page:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		seoTitle:"String",
 		seoDescription:"String",
 		title:"String",
 		content:"JSONString",
 		publicationDate:"Date",
+		publishedAt:"DateTime",
 		isPublished:"Boolean",
 		slug:"String",
 		pageType:"PageType",
@@ -13959,9 +15153,15 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"PageError",
 		page:"Page"
 	},
+	PageCreated:{
+		page:"Page"
+	},
 	PageDelete:{
 		pageErrors:"PageError",
 		errors:"PageError",
+		page:"Page"
+	},
+	PageDeleted:{
 		page:"Page"
 	},
 	PageError:{
@@ -14010,7 +15210,11 @@ export const ReturnTypes: Record<string,any> = {
 	PageType:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		slug:"String",
 		attributes:"Attribute",
@@ -14056,6 +15260,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"PageError",
 		page:"Page"
 	},
+	PageUpdated:{
+		page:"Page"
+	},
 	PasswordChange:{
 		user:"User",
 		accountErrors:"AccountError",
@@ -14064,7 +15271,11 @@ export const ReturnTypes: Record<string,any> = {
 	Payment:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		gateway:"String",
 		isActive:"Boolean",
 		created:"DateTime",
@@ -14102,15 +15313,6 @@ export const ReturnTypes: Record<string,any> = {
 		node:"Payment",
 		cursor:"String"
 	},
-	PaymentCreate:{
-		payment:"PaymentPOC",
-		errors:"PaymentCreateError"
-	},
-	PaymentCreateError:{
-		field:"String",
-		message:"String",
-		code:"PaymentCreateErrorCode"
-	},
 	PaymentError:{
 		field:"String",
 		message:"String",
@@ -14133,19 +15335,6 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		data:"JSONString"
 	},
-	PaymentPOC:{
-		id:"ID",
-		privateMetadata:"MetadataItem",
-		metadata:"MetadataItem",
-		status:"String",
-		type:"String",
-		reference:"String",
-		availableActions:"PaymentActionEnum",
-		amountAuthorized:"Money",
-		amountCaptured:"Money",
-		amountRefunded:"Money",
-		amountVoided:"Money"
-	},
 	PaymentRefund:{
 		payment:"Payment",
 		paymentErrors:"PaymentError",
@@ -14156,10 +15345,6 @@ export const ReturnTypes: Record<string,any> = {
 		paymentMethodId:"String",
 		creditCardInfo:"CreditCard",
 		metadata:"MetadataItem"
-	},
-	PaymentUpdate:{
-		payment:"PaymentPOC",
-		errors:"PaymentCreateError"
 	},
 	PaymentVoid:{
 		payment:"Payment",
@@ -14235,7 +15420,11 @@ export const ReturnTypes: Record<string,any> = {
 	Product:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		seoTitle:"String",
 		seoDescription:"String",
 		name:"String",
@@ -14265,6 +15454,7 @@ export const ReturnTypes: Record<string,any> = {
 		collections:"Collection",
 		translation:"ProductTranslation",
 		availableForPurchase:"Date",
+		availableForPurchaseAt:"DateTime",
 		isAvailableForPurchase:"Boolean"
 	},
 	ProductAttributeAssign:{
@@ -14290,10 +15480,12 @@ export const ReturnTypes: Record<string,any> = {
 	ProductChannelListing:{
 		id:"ID",
 		publicationDate:"Date",
+		publishedAt:"DateTime",
 		isPublished:"Boolean",
 		channel:"Channel",
 		visibleInListings:"Boolean",
 		availableForPurchase:"Date",
+		availableForPurchaseAt:"DateTime",
 		discountedPrice:"Money",
 		purchaseCost:"MoneyRange",
 		margin:"Margin",
@@ -14328,10 +15520,18 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ProductError",
 		product:"Product"
 	},
+	ProductCreated:{
+		product:"Product",
+		category:"Category"
+	},
 	ProductDelete:{
 		productErrors:"ProductError",
 		errors:"ProductError",
 		product:"Product"
+	},
+	ProductDeleted:{
+		product:"Product",
+		category:"Category"
 	},
 	ProductError:{
 		field:"String",
@@ -14424,7 +15624,11 @@ export const ReturnTypes: Record<string,any> = {
 	ProductType:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		slug:"String",
 		hasVariants:"Boolean",
@@ -14478,10 +15682,18 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ProductError",
 		product:"Product"
 	},
+	ProductUpdated:{
+		product:"Product",
+		category:"Category"
+	},
 	ProductVariant:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		sku:"String",
 		product:"Product",
@@ -14504,6 +15716,10 @@ export const ReturnTypes: Record<string,any> = {
 		preorder:"PreorderData",
 		created:"DateTime",
 		updatedAt:"DateTime"
+	},
+	ProductVariantBackInStock:{
+		productVariant:"ProductVariant",
+		warehouse:"Warehouse"
 	},
 	ProductVariantBulkCreate:{
 		count:"Int",
@@ -14543,10 +15759,20 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ProductError",
 		productVariant:"ProductVariant"
 	},
+	ProductVariantCreated:{
+		productVariant:"ProductVariant"
+	},
 	ProductVariantDelete:{
 		productErrors:"ProductError",
 		errors:"ProductError",
 		productVariant:"ProductVariant"
+	},
+	ProductVariantDeleted:{
+		productVariant:"ProductVariant"
+	},
+	ProductVariantOutOfStock:{
+		productVariant:"ProductVariant",
+		warehouse:"Warehouse"
 	},
 	ProductVariantPreorderDeactivate:{
 		productVariant:"ProductVariant",
@@ -14602,6 +15828,9 @@ export const ReturnTypes: Record<string,any> = {
 	ProductVariantUpdate:{
 		productErrors:"ProductError",
 		errors:"ProductError",
+		productVariant:"ProductVariant"
+	},
+	ProductVariantUpdated:{
 		productVariant:"ProductVariant"
 	},
 	Query:{
@@ -14706,7 +15935,11 @@ export const ReturnTypes: Record<string,any> = {
 	Sale:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		type:"SaleType",
 		startDate:"DateTime",
@@ -14757,9 +15990,15 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"DiscountError",
 		sale:"Sale"
 	},
+	SaleCreated:{
+		sale:"Sale"
+	},
 	SaleDelete:{
 		discountErrors:"DiscountError",
 		errors:"DiscountError",
+		sale:"Sale"
+	},
+	SaleDeleted:{
 		sale:"Sale"
 	},
 	SaleRemoveCatalogues:{
@@ -14788,6 +16027,9 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"DiscountError",
 		sale:"Sale"
 	},
+	SaleUpdated:{
+		sale:"Sale"
+	},
 	SelectedAttribute:{
 		attribute:"Attribute",
 		values:"AttributeValue"
@@ -14810,7 +16052,11 @@ export const ReturnTypes: Record<string,any> = {
 	ShippingMethod:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		type:"ShippingMethodTypeEnum",
 		name:"String",
 		description:"JSONString",
@@ -14859,7 +16105,11 @@ export const ReturnTypes: Record<string,any> = {
 	ShippingMethodType:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		description:"JSONString",
 		type:"ShippingMethodTypeEnum",
@@ -14885,11 +16135,19 @@ export const ReturnTypes: Record<string,any> = {
 		shippingErrors:"ShippingError",
 		errors:"ShippingError"
 	},
+	ShippingPriceCreated:{
+		shippingMethod:"ShippingMethodType",
+		shippingZone:"ShippingZone"
+	},
 	ShippingPriceDelete:{
 		shippingMethod:"ShippingMethodType",
 		shippingZone:"ShippingZone",
 		shippingErrors:"ShippingError",
 		errors:"ShippingError"
+	},
+	ShippingPriceDeleted:{
+		shippingMethod:"ShippingMethodType",
+		shippingZone:"ShippingZone"
 	},
 	ShippingPriceExcludeProducts:{
 		shippingMethod:"ShippingMethodType",
@@ -14912,10 +16170,18 @@ export const ReturnTypes: Record<string,any> = {
 		shippingErrors:"ShippingError",
 		errors:"ShippingError"
 	},
+	ShippingPriceUpdated:{
+		shippingMethod:"ShippingMethodType",
+		shippingZone:"ShippingZone"
+	},
 	ShippingZone:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		default:"Boolean",
 		priceRange:"MoneyRange",
@@ -14944,14 +16210,23 @@ export const ReturnTypes: Record<string,any> = {
 		errors:"ShippingError",
 		shippingZone:"ShippingZone"
 	},
+	ShippingZoneCreated:{
+		shippingZone:"ShippingZone"
+	},
 	ShippingZoneDelete:{
 		shippingErrors:"ShippingError",
 		errors:"ShippingError",
 		shippingZone:"ShippingZone"
 	},
+	ShippingZoneDeleted:{
+		shippingZone:"ShippingZone"
+	},
 	ShippingZoneUpdate:{
 		shippingErrors:"ShippingError",
 		errors:"ShippingError",
+		shippingZone:"ShippingZone"
+	},
+	ShippingZoneUpdated:{
 		shippingZone:"ShippingZone"
 	},
 	Shop:{
@@ -15098,6 +16373,9 @@ export const ReturnTypes: Record<string,any> = {
 		message:"String",
 		code:"StockErrorCode"
 	},
+	Subscription:{
+		event:"Event"
+	},
 	TaxedMoney:{
 		currency:"String",
 		gross:"Money",
@@ -15149,10 +16427,29 @@ export const ReturnTypes: Record<string,any> = {
 		node:"TranslatableItem",
 		cursor:"String"
 	},
+	TranslationCreated:{
+		translation:"TranslationTypes"
+	},
 	TranslationError:{
 		field:"String",
 		message:"String",
 		code:"TranslationErrorCode"
+	},
+	TranslationTypes:{
+		"...on ProductTranslation":"ProductTranslation",
+		"...on CollectionTranslation":"CollectionTranslation",
+		"...on CategoryTranslation":"CategoryTranslation",
+		"...on AttributeTranslation":"AttributeTranslation",
+		"...on AttributeValueTranslation":"AttributeValueTranslation",
+		"...on ProductVariantTranslation":"ProductVariantTranslation",
+		"...on PageTranslation":"PageTranslation",
+		"...on ShippingMethodTranslation":"ShippingMethodTranslation",
+		"...on SaleTranslation":"SaleTranslation",
+		"...on VoucherTranslation":"VoucherTranslation",
+		"...on MenuItemTranslation":"MenuItemTranslation"
+	},
+	TranslationUpdated:{
+		translation:"TranslationTypes"
 	},
 	UpdateMetadata:{
 		metadataErrors:"MetadataError",
@@ -15172,7 +16469,11 @@ export const ReturnTypes: Record<string,any> = {
 	User:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		email:"String",
 		firstName:"String",
 		lastName:"String",
@@ -15261,7 +16562,11 @@ export const ReturnTypes: Record<string,any> = {
 	Voucher:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		code:"String",
 		usageLimit:"Int",
@@ -15355,7 +16660,11 @@ export const ReturnTypes: Record<string,any> = {
 	Warehouse:{
 		id:"ID",
 		privateMetadata:"MetadataItem",
+		privateMetafield:"String",
+		privateMetafields:"Metadata",
 		metadata:"MetadataItem",
+		metafield:"String",
+		metafields:"Metadata",
 		name:"String",
 		slug:"String",
 		email:"String",
@@ -15414,7 +16723,8 @@ export const ReturnTypes: Record<string,any> = {
 		eventDeliveries:"EventDeliveryCountableConnection",
 		targetUrl:"String",
 		isActive:"Boolean",
-		secretKey:"String"
+		secretKey:"String",
+		subscriptionQuery:"String"
 	},
 	WebhookCreate:{
 		webhookErrors:"WebhookError",

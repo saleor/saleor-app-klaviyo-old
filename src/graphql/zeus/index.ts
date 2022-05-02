@@ -2,7 +2,7 @@
 
 import { AllTypesProps, ReturnTypes } from './const';
 type ZEUS_INTERFACES = GraphQLTypes["Job"] | GraphQLTypes["Node"] | GraphQLTypes["ObjectWithMetadata"]
-type ZEUS_UNIONS = GraphQLTypes["_Entity"] | GraphQLTypes["DeliveryMethod"] | GraphQLTypes["TranslatableItem"]
+type ZEUS_UNIONS = GraphQLTypes["_Entity"] | GraphQLTypes["DeliveryMethod"] | GraphQLTypes["Event"] | GraphQLTypes["TranslatableItem"] | GraphQLTypes["TranslationTypes"]
 
 export type ValueTypes = {
     /** _Any value scalar as defined by Federation spec. */
@@ -26,7 +26,7 @@ export type ValueTypes = {
 	sdl?:boolean,
 		__typename?: boolean
 }>;
-	/** Create a new address for the customer. */
+	/** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountAddressCreate"]: AliasType<{
 	/** A user instance for which the address was created. */
 	user?:ValueTypes["User"],
@@ -35,7 +35,7 @@ export type ValueTypes = {
 	address?:ValueTypes["Address"],
 		__typename?: boolean
 }>;
-	/** Delete an address of the logged-in user. */
+	/** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 ["AccountAddressDelete"]: AliasType<{
 	/** A user instance for which the address was deleted. */
 	user?:ValueTypes["User"],
@@ -44,7 +44,7 @@ export type ValueTypes = {
 	address?:ValueTypes["Address"],
 		__typename?: boolean
 }>;
-	/** Updates an address of the logged-in user. */
+	/** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 ["AccountAddressUpdate"]: AliasType<{
 	/** A user object for which the address was edited. */
 	user?:ValueTypes["User"],
@@ -53,7 +53,7 @@ export type ValueTypes = {
 	address?:ValueTypes["Address"],
 		__typename?: boolean
 }>;
-	/** Remove user account. */
+	/** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountDelete"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
@@ -113,13 +113,14 @@ error isn't associated with a particular field. */
 	/** Slug of a channel which will be used to notify users. Optional when only one channel exists. */
 	channel?:string | null
 };
-	/** Sends an email with the account removal link for the logged-in user. */
+	/** Sends an email with the account removal link for the logged-in user. Requires
+one of the following permissions: AUTHENTICATED_USER. */
 ["AccountRequestDeletion"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
 		__typename?: boolean
 }>;
-	/** Sets a default address for the authenticated user. */
+	/** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountSetDefaultAddress"]: AliasType<{
 	/** An updated user instance. */
 	user?:ValueTypes["User"],
@@ -127,7 +128,7 @@ error isn't associated with a particular field. */
 	errors?:ValueTypes["AccountError"],
 		__typename?: boolean
 }>;
-	/** Updates the account of the logged-in user. */
+	/** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountUpdate"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
@@ -155,7 +156,7 @@ error isn't associated with a particular field. */
 	isDefaultBillingAddress?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates user address. */
+	/** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressCreate"]: AliasType<{
 	/** A user instance for which the address was created. */
 	user?:ValueTypes["User"],
@@ -164,7 +165,7 @@ error isn't associated with a particular field. */
 	address?:ValueTypes["Address"],
 		__typename?: boolean
 }>;
-	/** Deletes an address. */
+	/** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressDelete"]: AliasType<{
 	/** A user instance for which the address was deleted. */
 	user?:ValueTypes["User"],
@@ -197,7 +198,7 @@ error isn't associated with a particular field. */
 	/** Phone number. */
 	phone?:string | null
 };
-	/** Sets a default address for the given user. */
+	/** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressSetDefault"]: AliasType<{
 	/** An updated user instance. */
 	user?:ValueTypes["User"],
@@ -207,7 +208,7 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["AddressTypeEnum"]:AddressTypeEnum;
-	/** Updates an address. */
+	/** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressUpdate"]: AliasType<{
 	/** A user object for which the address was edited. */
 	user?:ValueTypes["User"],
@@ -239,19 +240,23 @@ error isn't associated with a particular field. */
 	/** Represents allocation. */
 ["Allocation"]: AliasType<{
 	id?:boolean,
-	/** Quantity allocated for orders. */
+	/** Quantity allocated for orders. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantity?:boolean,
-	/** The warehouse were items were allocated. */
+	/** The warehouse were items were allocated. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	warehouse?:ValueTypes["Warehouse"],
 		__typename?: boolean
 }>;
 	/** Represents app data. */
 ["App"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	/** List of the app's permissions. */
 	permissions?:ValueTypes["Permission"],
 	/** The date and time when the app was created. */
@@ -284,12 +289,12 @@ error isn't associated with a particular field. */
 	version?:boolean,
 	/** JWT token used to authenticate by thridparty app. */
 	accessToken?:boolean,
-	/** New in Saleor 3.1. App's dashboard extensions. Note: this feature is in a
+	/** Added in Saleor 3.1. App's dashboard extensions. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	extensions?:ValueTypes["AppExtension"],
 		__typename?: boolean
 }>;
-	/** Activate the app. */
+	/** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppActivate"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
@@ -311,7 +316,7 @@ preview state and can be subject to changes at later point. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new app. */
+	/** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 ["AppCreate"]: AliasType<{
 	/** The newly created authentication token. */
 	authToken?:boolean,
@@ -320,21 +325,21 @@ preview state and can be subject to changes at later point. */
 	app?:ValueTypes["App"],
 		__typename?: boolean
 }>;
-	/** Deactivate the app. */
+	/** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDeactivate"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
 	app?:ValueTypes["App"],
 		__typename?: boolean
 }>;
-	/** Deletes an app. */
+	/** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDelete"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
 	app?:ValueTypes["App"],
 		__typename?: boolean
 }>;
-	/** Delete failed installation. */
+	/** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDeleteFailedInstallation"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
@@ -389,7 +394,7 @@ error isn't associated with a particular field. */
 		__typename?: boolean
 }>;
 	["AppExtensionFilterInput"]: {
-	mount?:(ValueTypes["AppExtensionMountEnum"] | undefined | null)[],
+	mount?:ValueTypes["AppExtensionMountEnum"][],
 	target?:ValueTypes["AppExtensionTargetEnum"] | null
 };
 	/** All places where app extension can be mounted. */
@@ -399,7 +404,7 @@ error isn't associated with a particular field. */
     POPUP - app's extension will be mounted as a popup window
     APP_PAGE - redirect to app's page */
 ["AppExtensionTargetEnum"]:AppExtensionTargetEnum;
-	/** Fetch and validate manifest. */
+	/** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
 ["AppFetchManifest"]: AliasType<{
 	manifest?:ValueTypes["Manifest"],
 	appErrors?:ValueTypes["AppError"],
@@ -415,9 +420,9 @@ error isn't associated with a particular field. */
 	/** Name of the app. */
 	name?:string | null,
 	/** List of permission code names to assign to this app. */
-	permissions?:(ValueTypes["PermissionEnum"] | undefined | null)[]
+	permissions?:ValueTypes["PermissionEnum"][]
 };
-	/** Install new app by using app manifest. */
+	/** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 ["AppInstall"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
@@ -447,7 +452,7 @@ error isn't associated with a particular field. */
 	/** Determine if app will be set active or not. */
 	activateAfterInstallation?:boolean | null,
 	/** List of permission code names to assign to this app. */
-	permissions?:(ValueTypes["PermissionEnum"] | undefined | null)[]
+	permissions?:ValueTypes["PermissionEnum"][]
 };
 	["AppManifestExtension"]: AliasType<{
 	/** List of the app extension's permissions. */
@@ -462,7 +467,7 @@ error isn't associated with a particular field. */
 	target?:boolean,
 		__typename?: boolean
 }>;
-	/** Retry failed installation of new app. */
+	/** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppRetryInstall"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
@@ -485,7 +490,7 @@ error isn't associated with a particular field. */
 	authToken?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new token. */
+	/** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
 ["AppTokenCreate"]: AliasType<{
 	/** The newly created authentication token. */
 	authToken?:boolean,
@@ -494,7 +499,7 @@ error isn't associated with a particular field. */
 	appToken?:ValueTypes["AppToken"],
 		__typename?: boolean
 }>;
-	/** Deletes an authentication token assigned to app. */
+	/** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppTokenDelete"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
@@ -517,7 +522,7 @@ error isn't associated with a particular field. */
 }>;
 	/** Enum determining type of your App. */
 ["AppTypeEnum"]:AppTypeEnum;
-	/** Updates an existing app. */
+	/** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppUpdate"]: AliasType<{
 	appErrors?:ValueTypes["AppError"],
 	errors?:ValueTypes["AppError"],
@@ -526,7 +531,7 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["AreaUnitsEnum"]:AreaUnitsEnum;
-	/** New in Saleor 3.1. Represents assigned attribute to variant with variant selection attached. */
+	/** Added in Saleor 3.1. Represents assigned attribute to variant with variant selection attached. */
 ["AssignedVariantAttribute"]: AliasType<{
 	/** Attribute assigned to variant. */
 	attribute?:ValueTypes["Attribute"],
@@ -536,7 +541,7 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	variantSelection?:boolean,
 		__typename?: boolean
 }>;
-	/** Assigns storefront's navigation menus. */
+	/** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
 ["AssignNavigation"]: AliasType<{
 	/** Assigned navigation menu. */
 	menu?:ValueTypes["Menu"],
@@ -547,10 +552,14 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	/** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
 ["Attribute"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	/** The input type to use for entering attribute values in the dashboard. */
 	inputType?:boolean,
 	/** The entity type which can be used as a reference. */
@@ -570,20 +579,44 @@ choices?: [{	/** Sort attribute choices. */
 	after?:string | null,	/** Return the first n elements from the list. */
 	first?:number | null,	/** Return the last n elements from the list. */
 	last?:number | null},ValueTypes["AttributeValueCountableConnection"]],
-	/** Whether the attribute requires values to be passed or not. */
+	/** Whether the attribute requires values to be passed or not. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	valueRequired?:boolean,
-	/** Whether the attribute should be visible or not in storefront. */
+	/** Whether the attribute should be visible or not in storefront. Requires one of
+the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	visibleInStorefront?:boolean,
-	/** Whether the attribute can be filtered in storefront. */
+	/** Whether the attribute can be filtered in storefront. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	filterableInStorefront?:boolean,
-	/** Whether the attribute can be filtered in dashboard. */
+	/** Whether the attribute can be filtered in dashboard. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	filterableInDashboard?:boolean,
-	/** Whether the attribute can be displayed in the admin product list. */
+	/** Whether the attribute can be displayed in the admin product list. Requires one
+of the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	availableInGrid?:boolean,
+	/** The position of the attribute in the storefront navigation (0 by default).
+Requires one of the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
+	storefrontSearchPosition?:boolean,
 translation?: [{	/** A language code to return the translation for attribute. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["AttributeTranslation"]],
-	/** The position of the attribute in the storefront navigation (0 by default). */
-	storefrontSearchPosition?:boolean,
 	/** Flag indicating that attribute has predefined choices. */
 	withChoices?:boolean,
 productTypes?: [{	/** Return the elements in the list that come before the specified cursor. */
@@ -598,7 +631,7 @@ productVariantTypes?: [{	/** Return the elements in the list that come before th
 	last?:number | null},ValueTypes["ProductTypeCountableConnection"]],
 		__typename?: boolean
 }>;
-	/** Deletes attributes. */
+	/** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["AttributeBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -649,7 +682,7 @@ productVariantTypes?: [{	/** Return the elements in the list that come before th
 	/** The unit of attribute values. */
 	unit?:ValueTypes["MeasurementUnitsEnum"] | null,
 	/** List of attribute's values. */
-	values?:(ValueTypes["AttributeValueCreateInput"] | undefined | null)[],
+	values?:ValueTypes["AttributeValueCreateInput"][],
 	/** Whether the attribute requires values to be passed or not. */
 	valueRequired?:boolean | null,
 	/** Whether the attribute is for variants only. */
@@ -665,7 +698,7 @@ productVariantTypes?: [{	/** Return the elements in the list that come before th
 	/** Whether the attribute can be displayed in the admin product list. */
 	availableInGrid?:boolean | null
 };
-	/** Deletes an attribute. */
+	/** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeDelete"]: AliasType<{
 	attributeErrors?:ValueTypes["AttributeError"],
 	errors?:ValueTypes["AttributeError"],
@@ -693,9 +726,9 @@ error isn't associated with a particular field. */
 	filterableInStorefront?:boolean | null,
 	filterableInDashboard?:boolean | null,
 	availableInGrid?:boolean | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
 	search?:string | null,
-	ids?:(string | undefined | null)[],
+	ids?:string[],
 	type?:ValueTypes["AttributeTypeEnum"] | null,
 	inCollection?:string | null,
 	inCategory?:string | null,
@@ -708,19 +741,20 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Internal representation of an attribute name. */
 	slug:string,
 	/** Internal representation of a value (unique per attribute). */
-	values?:(string | undefined | null)[],
+	values?:string[],
 	/** The range that the returned values should be in. */
 	valuesRange?:ValueTypes["IntRangeInput"] | null,
-	/** The date time range that the returned values should be in. */
+	/** The date/time range that the returned values should be in. */
 	dateTime?:ValueTypes["DateTimeRangeInput"] | null,
-	/** The date range that the returned values should be in. */
+	/** The date range that the returned values should be in. In case of date/time
+attributes, the UTC midnight of the given date is used. */
 	date?:ValueTypes["DateRangeInput"] | null,
 	/** The boolean value of the attribute. */
 	boolean?:boolean | null
 };
 	/** An enumeration. */
 ["AttributeInputTypeEnum"]:AttributeInputTypeEnum;
-	/** Reorder the values of an attribute. */
+	/** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeReorderValues"]: AliasType<{
 	/** Attribute from which values are reordered. */
 	attribute?:ValueTypes["Attribute"],
@@ -744,7 +778,7 @@ translation?: [{	/** A language code to return the translation for attribute. */
 	attribute?:ValueTypes["Attribute"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for an attribute. */
+	/** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["AttributeTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -760,7 +794,7 @@ translation?: [{	/** A language code to return the translation for attribute. */
 }>;
 	/** An enumeration. */
 ["AttributeTypeEnum"]:AttributeTypeEnum;
-	/** Updates attribute. */
+	/** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeUpdate"]: AliasType<{
 	attribute?:ValueTypes["Attribute"],
 	attributeErrors?:ValueTypes["AttributeError"],
@@ -775,9 +809,9 @@ translation?: [{	/** A language code to return the translation for attribute. */
 	/** The unit of attribute values. */
 	unit?:ValueTypes["MeasurementUnitsEnum"] | null,
 	/** IDs of values to be removed from this attribute. */
-	removeValues?:(string | undefined | null)[],
+	removeValues?:string[],
 	/** New values to be created for this attribute. */
-	addValues?:(ValueTypes["AttributeValueUpdateInput"] | undefined | null)[],
+	addValues?:ValueTypes["AttributeValueUpdateInput"][],
 	/** Whether the attribute requires values to be passed or not. */
 	valueRequired?:boolean | null,
 	/** Whether the attribute is for variants only. */
@@ -816,11 +850,11 @@ translation?: [{	/** A language code to return the translation for attribute val
 	boolean?:boolean,
 	/** Represents the date value of the attribute value. */
 	date?:boolean,
-	/** Represents the date time value of the attribute value. */
+	/** Represents the date/time value of the attribute value. */
 	dateTime?:boolean,
 		__typename?: boolean
 }>;
-	/** Deletes values of attributes. */
+	/** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -843,7 +877,7 @@ translation?: [{	/** A language code to return the translation for attribute val
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a value for an attribute. */
+	/** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["AttributeValueCreate"]: AliasType<{
 	/** The updated attribute. */
 	attribute?:ValueTypes["Attribute"],
@@ -864,7 +898,7 @@ translation?: [{	/** A language code to return the translation for attribute val
 	/** Name of a value displayed in the interface. */
 	name:string
 };
-	/** Deletes a value of an attribute. */
+	/** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueDelete"]: AliasType<{
 	/** The updated attribute. */
 	attribute?:ValueTypes["Attribute"],
@@ -874,7 +908,8 @@ translation?: [{	/** A language code to return the translation for attribute val
 		__typename?: boolean
 }>;
 	["AttributeValueFilterInput"]: {
-	search?:string | null
+	search?:string | null,
+	ids?:string[]
 };
 	["AttributeValueInput"]: {
 	/** ID of the selected attribute. */
@@ -893,7 +928,7 @@ translation?: [{	/** A language code to return the translation for attribute val
 	boolean?:boolean | null,
 	/** Represents the date value of the attribute value. */
 	date?:ValueTypes["Date"] | null,
-	/** Represents the date time value of the attribute value. */
+	/** Represents the date/time value of the attribute value. */
 	dateTime?:ValueTypes["DateTime"] | null
 };
 	["AttributeValueTranslatableContent"]: AliasType<{
@@ -906,7 +941,7 @@ translation?: [{	/** A language code to return the translation for attribute val
 	attributeValue?:ValueTypes["AttributeValue"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for an attribute value. */
+	/** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["AttributeValueTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -925,7 +960,7 @@ translation?: [{	/** A language code to return the translation for attribute val
 	name?:string | null,
 	richText?:ValueTypes["JSONString"] | null
 };
-	/** Updates value of an attribute. */
+	/** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueUpdate"]: AliasType<{
 	/** The updated attribute. */
 	attribute?:ValueTypes["Attribute"],
@@ -1000,22 +1035,26 @@ error isn't associated with a particular field. */
 };
 	["CatalogueInput"]: {
 	/** Products related to the discount. */
-	products?:(string | undefined | null)[],
+	products?:string[],
 	/** Categories related to the discount. */
-	categories?:(string | undefined | null)[],
+	categories?:string[],
 	/** Collections related to the discount. */
-	collections?:(string | undefined | null)[],
-	/** New in Saleor 3.1. Product variant related to the discount. */
-	variants?:(string | undefined | null)[]
+	collections?:string[],
+	/** Added in Saleor 3.1. Product variant related to the discount. */
+	variants?:string[]
 };
 	/** Represents a single category of products. Categories allow to organize products
 in a tree-hierarchies which can be used for navigation in the storefront. */
 ["Category"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	seoTitle?:boolean,
 	seoDescription?:boolean,
 	name?:boolean,
@@ -1047,7 +1086,7 @@ translation?: [{	/** A language code to return the translation for category. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["CategoryTranslation"]],
 		__typename?: boolean
 }>;
-	/** Deletes categories. */
+	/** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -1070,24 +1109,36 @@ translation?: [{	/** A language code to return the translation for category. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new category. */
+	/** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryCreate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	category?:ValueTypes["Category"],
 		__typename?: boolean
 }>;
-	/** Deletes a category. */
+	["CategoryCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ValueTypes["Category"],
+		__typename?: boolean
+}>;
+	/** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryDelete"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	category?:ValueTypes["Category"],
 		__typename?: boolean
 }>;
+	["CategoryDeleted"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ValueTypes["Category"],
+		__typename?: boolean
+}>;
 	["CategoryFilterInput"]: {
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	ids?:(string | undefined | null)[]
+	metadata?:ValueTypes["MetadataFilter"][],
+	ids?:string[]
 };
 	["CategoryInput"]: {
 	/** Category description (JSON). */
@@ -1107,7 +1158,7 @@ translation?: [{	/** A language code to return the translation for category. */
 	["CategorySortingInput"]: {
 	/** Specifies the direction in which to sort products. */
 	direction:ValueTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?:string | null,
@@ -1128,7 +1179,7 @@ translation?: [{	/** A language code to return the translation for category. */
 	category?:ValueTypes["Category"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a category. */
+	/** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["CategoryTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -1147,10 +1198,16 @@ translation?: [{	/** A language code to return the translation for category. */
 	descriptionJson?:boolean,
 		__typename?: boolean
 }>;
-	/** Updates a category. */
+	/** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryUpdate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
+	category?:ValueTypes["Category"],
+		__typename?: boolean
+}>;
+	["CategoryUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	category?:ValueTypes["Category"],
 		__typename?: boolean
 }>;
@@ -1161,15 +1218,15 @@ translation?: [{	/** A language code to return the translation for category. */
 	isActive?:boolean,
 	currencyCode?:boolean,
 	slug?:boolean,
-	/** Whether a channel has associated orders. */
+	/** Whether a channel has associated orders. Requires one of the following permissions: MANAGE_CHANNELS. */
 	hasOrders?:boolean,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry?:ValueTypes["CountryDisplay"],
 		__typename?: boolean
 }>;
-	/** Activate a channel. */
+	/** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelActivate"]: AliasType<{
 	/** Activated channel. */
 	channel?:ValueTypes["Channel"],
@@ -1177,10 +1234,16 @@ country was not explicitly provided. */
 	errors?:ValueTypes["ChannelError"],
 		__typename?: boolean
 }>;
-	/** Creates new channel. */
+	/** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelCreate"]: AliasType<{
 	channelErrors?:ValueTypes["ChannelError"],
 	errors?:ValueTypes["ChannelError"],
+	channel?:ValueTypes["Channel"],
+		__typename?: boolean
+}>;
+	["ChannelCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?:ValueTypes["Channel"],
 		__typename?: boolean
 }>;
@@ -1193,14 +1256,14 @@ country was not explicitly provided. */
 	slug:string,
 	/** Currency of the channel. */
 	currencyCode:string,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry:ValueTypes["CountryCode"],
 	/** List of shipping zones to assign to the channel. */
 	addShippingZones?:string[]
 };
-	/** Deactivate a channel. */
+	/** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelDeactivate"]: AliasType<{
 	/** Deactivated channel. */
 	channel?:ValueTypes["Channel"],
@@ -1209,10 +1272,17 @@ country was not explicitly provided. */
 		__typename?: boolean
 }>;
 	/** Delete a channel. Orders associated with the deleted channel will be moved to
-the target channel. Checkouts, product availability, and pricing will be removed. */
+the target channel. Checkouts, product availability, and pricing will be
+removed. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelDelete"]: AliasType<{
 	channelErrors?:ValueTypes["ChannelError"],
 	errors?:ValueTypes["ChannelError"],
+	channel?:ValueTypes["Channel"],
+		__typename?: boolean
+}>;
+	["ChannelDeleted"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?:ValueTypes["Channel"],
 		__typename?: boolean
 }>;
@@ -1234,10 +1304,22 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["ChannelErrorCode"]:ChannelErrorCode;
-	/** Update a channel. */
+	["ChannelStatusChanged"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	channel?:ValueTypes["Channel"],
+		__typename?: boolean
+}>;
+	/** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelUpdate"]: AliasType<{
 	channelErrors?:ValueTypes["ChannelError"],
 	errors?:ValueTypes["ChannelError"],
+	channel?:ValueTypes["Channel"],
+		__typename?: boolean
+}>;
+	["ChannelUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?:ValueTypes["Channel"],
 		__typename?: boolean
 }>;
@@ -1248,7 +1330,7 @@ error isn't associated with a particular field. */
 	name?:string | null,
 	/** Slug of the channel. */
 	slug?:string | null,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry?:ValueTypes["CountryCode"] | null,
@@ -1260,10 +1342,14 @@ country was not explicitly provided. */
 	/** Checkout object. */
 ["Checkout"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	created?:boolean,
 	lastChange?:boolean,
 	user?:ValueTypes["User"],
@@ -1279,7 +1365,7 @@ country was not explicitly provided. */
 	availableShippingMethods?:ValueTypes["ShippingMethod"],
 	/** Shipping methods that can be used with this checkout. */
 	shippingMethods?:ValueTypes["ShippingMethod"],
-	/** New in Saleor 3.1. Collection points that can be used for this order. Note:
+	/** Added in Saleor 3.1. Collection points that can be used for this order. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	availableCollectionPoints?:ValueTypes["Warehouse"],
 	/** List of available payment gateways. */
@@ -1292,7 +1378,7 @@ this feature is in a preview state and can be subject to changes at later point.
 	isShippingRequired?:boolean,
 	/** The number of items purchased. */
 	quantity?:boolean,
-	/** New in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
+	/** Added in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
 	stockReservationExpires?:boolean,
 	/** A list of checkout lines, each containing information about an item in the checkout. */
 	lines?:ValueTypes["CheckoutLine"],
@@ -1300,8 +1386,8 @@ this feature is in a preview state and can be subject to changes at later point.
 	shippingPrice?:ValueTypes["TaxedMoney"],
 	/** The shipping method related with checkout. */
 	shippingMethod?:ValueTypes["ShippingMethod"],
-	/** New in Saleor 3.1. The delivery method selected for this checkout. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The delivery method selected for this checkout. Note:
+this feature is in a preview state and can be subject to changes at later point. */
 	deliveryMethod?:ValueTypes["DeliveryMethod"],
 	/** The price of the checkout before shipping, with taxes included. */
 	subtotalPrice?:ValueTypes["TaxedMoney"],
@@ -1370,11 +1456,17 @@ to checkoutLinesAdd and checkoutLinesUpdate to merge a cart with an active check
 	checkout?:ValueTypes["Checkout"],
 		__typename?: boolean
 }>;
+	["CheckoutCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	checkout?:ValueTypes["Checkout"],
+		__typename?: boolean
+}>;
 	["CheckoutCreateInput"]: {
 	/** Slug of a channel in which to create a checkout. */
 	channel?:string | null,
 	/** A list of checkout lines, each containing information about an item in the checkout. */
-	lines?:ValueTypes["CheckoutLineInput"][],
+	lines:ValueTypes["CheckoutLineInput"][],
 	/** The customer's email address. */
 	email?:string | null,
 	/** The mailing address to where the checkout will be shipped. Note: the address
@@ -1385,7 +1477,8 @@ will be ignored if the checkout doesn't contain shippable items. */
 	/** Checkout language code. */
 	languageCode?:ValueTypes["LanguageCodeEnum"] | null
 };
-	/** Sets the customer as the owner of the checkout. */
+	/** Sets the customer as the owner of the checkout. Requires one of the following
+permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 ["CheckoutCustomerAttach"]: AliasType<{
 	/** An updated checkout. */
 	checkout?:ValueTypes["Checkout"],
@@ -1393,7 +1486,8 @@ will be ignored if the checkout doesn't contain shippable items. */
 	errors?:ValueTypes["CheckoutError"],
 		__typename?: boolean
 }>;
-	/** Removes the user assigned as the owner of the checkout. */
+	/** Removes the user assigned as the owner of the checkout. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 ["CheckoutCustomerDetach"]: AliasType<{
 	/** An updated checkout. */
 	checkout?:ValueTypes["Checkout"],
@@ -1401,7 +1495,7 @@ will be ignored if the checkout doesn't contain shippable items. */
 	errors?:ValueTypes["CheckoutError"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Updates the delivery method (shipping method or pick up
+	/** Added in Saleor 3.1. Updates the delivery method (shipping method or pick up
 point) of the checkout. Note: this feature is in a preview state and can be
 subject to changes at later point. */
 ["CheckoutDeliveryMethodUpdate"]: AliasType<{
@@ -1440,8 +1534,8 @@ error isn't associated with a particular field. */
 	customer?:string | null,
 	created?:ValueTypes["DateRangeInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	channels?:(string | undefined | null)[]
+	metadata?:ValueTypes["MetadataFilter"][],
+	channels?:string[]
 };
 	/** Update language code in the existing checkout. */
 ["CheckoutLanguageCodeUpdate"]: AliasType<{
@@ -1489,7 +1583,12 @@ error isn't associated with a particular field. */
 	/** The number of items purchased. */
 	quantity:number,
 	/** ID of the product variant. */
-	variantId:string
+	variantId:string,
+	/** Added in Saleor 3.1. Custom price of the item. Can be set only by apps with
+`HANDLE_CHECKOUTS` permission. When the line with the same variant will be
+provided multiple times, the last price will be used. Note: this feature is in
+a preview state and can be subject to changes at later point. */
+	price?:ValueTypes["PositiveDecimal"] | null
 };
 	/** Adds a checkout line to the existing checkout.If line was already in checkout, its quantity will be increased. */
 ["CheckoutLinesAdd"]: AliasType<{
@@ -1514,6 +1613,17 @@ error isn't associated with a particular field. */
 	errors?:ValueTypes["CheckoutError"],
 		__typename?: boolean
 }>;
+	["CheckoutLineUpdateInput"]: {
+	/** The number of items purchased. Optional for apps, required for any other users. */
+	quantity?:number | null,
+	/** ID of the product variant. */
+	variantId:string,
+	/** Added in Saleor 3.1. Custom price of the item. Can be set only by apps with
+`HANDLE_CHECKOUTS` permission. When the line with the same variant will be
+provided multiple times, the last price will be used. Note: this feature is in
+a preview state and can be subject to changes at later point. */
+	price?:ValueTypes["PositiveDecimal"] | null
+};
 	/** Create a new payment for given checkout. */
 ["CheckoutPaymentCreate"]: AliasType<{
 	/** Related checkout object. */
@@ -1555,6 +1665,12 @@ error isn't associated with a particular field. */
 	/** Sort checkouts by the selected field. */
 	field:ValueTypes["CheckoutSortField"]
 };
+	["CheckoutUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	checkout?:ValueTypes["Checkout"],
+		__typename?: boolean
+}>;
 	["ChoiceValue"]: AliasType<{
 	raw?:boolean,
 	verbose?:boolean,
@@ -1563,10 +1679,14 @@ error isn't associated with a particular field. */
 	/** Represents a collection of products. */
 ["Collection"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	seoTitle?:boolean,
 	seoDescription?:boolean,
 	name?:boolean,
@@ -1587,11 +1707,11 @@ backgroundImage?: [{	/** Size of the image. */
 	size?:number | null},ValueTypes["Image"]],
 translation?: [{	/** A language code to return the translation for collection. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["CollectionTranslation"]],
-	/** List of channels in which the collection is available. */
+	/** List of channels in which the collection is available. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	channelListings?:ValueTypes["CollectionChannelListing"],
 		__typename?: boolean
 }>;
-	/** Adds products to a collection. */
+	/** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionAddProducts"]: AliasType<{
 	/** Collection to which products will be added. */
 	collection?:ValueTypes["Collection"],
@@ -1599,7 +1719,7 @@ translation?: [{	/** A language code to return the translation for collection. *
 	errors?:ValueTypes["CollectionError"],
 		__typename?: boolean
 }>;
-	/** Deletes collections. */
+	/** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -1611,6 +1731,8 @@ translation?: [{	/** A language code to return the translation for collection. *
 ["CollectionChannelListing"]: AliasType<{
 	id?:boolean,
 	publicationDate?:boolean,
+	/** Added in Saleor 3.3. The collection publication date. */
+	publishedAt?:boolean,
 	isPublished?:boolean,
 	channel?:ValueTypes["Channel"],
 		__typename?: boolean
@@ -1631,7 +1753,7 @@ error isn't associated with a particular field. */
 	channels?:boolean,
 		__typename?: boolean
 }>;
-	/** Manage collection's availability in channels. */
+	/** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionChannelListingUpdate"]: AliasType<{
 	/** An updated collection instance. */
 	collection?:ValueTypes["Collection"],
@@ -1660,11 +1782,16 @@ error isn't associated with a particular field. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new collection. */
+	/** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionCreate"]: AliasType<{
 	collectionErrors?:ValueTypes["CollectionError"],
 	errors?:ValueTypes["CollectionError"],
 	collection?:ValueTypes["Collection"],
+		__typename?: boolean
+}>;
+	["CollectionCreated"]: AliasType<{
+collection?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Collection"]],
 		__typename?: boolean
 }>;
 	["CollectionCreateInput"]: {
@@ -1682,16 +1809,23 @@ error isn't associated with a particular field. */
 	backgroundImageAlt?:string | null,
 	/** Search engine optimization fields. */
 	seo?:ValueTypes["SeoInput"] | null,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. */
 	publicationDate?:ValueTypes["Date"] | null,
 	/** List of products to be added to the collection. */
-	products?:(string | undefined | null)[]
+	products?:string[]
 };
-	/** Deletes a collection. */
+	/** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionDelete"]: AliasType<{
 	collectionErrors?:ValueTypes["CollectionError"],
 	errors?:ValueTypes["CollectionError"],
 	collection?:ValueTypes["Collection"],
+		__typename?: boolean
+}>;
+	["CollectionDeleted"]: AliasType<{
+collection?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Collection"]],
 		__typename?: boolean
 }>;
 	["CollectionError"]: AliasType<{
@@ -1711,8 +1845,8 @@ error isn't associated with a particular field. */
 	["CollectionFilterInput"]: {
 	published?:ValueTypes["CollectionPublished"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	ids?:(string | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
+	ids?:string[],
 	/** Specifies the channel by which the data should be filtered. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
@@ -1733,11 +1867,13 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	backgroundImageAlt?:string | null,
 	/** Search engine optimization fields. */
 	seo?:ValueTypes["SeoInput"] | null,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. */
 	publicationDate?:ValueTypes["Date"] | null
 };
 	["CollectionPublished"]:CollectionPublished;
-	/** Remove products from a collection. */
+	/** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionRemoveProducts"]: AliasType<{
 	/** Collection from which products will be removed. */
 	collection?:ValueTypes["Collection"],
@@ -1745,7 +1881,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	errors?:ValueTypes["CollectionError"],
 		__typename?: boolean
 }>;
-	/** Reorder the products of a collection. */
+	/** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionReorderProducts"]: AliasType<{
 	/** Collection from which products are reordered. */
 	collection?:ValueTypes["Collection"],
@@ -1757,7 +1893,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	["CollectionSortingInput"]: {
 	/** Specifies the direction in which to sort products. */
 	direction:ValueTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?:string | null,
@@ -1778,7 +1914,7 @@ translation?: [{	/** A language code to return the translation for collection. *
 	collection?:ValueTypes["Collection"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a collection. */
+	/** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["CollectionTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -1797,11 +1933,16 @@ translation?: [{	/** A language code to return the translation for collection. *
 	descriptionJson?:boolean,
 		__typename?: boolean
 }>;
-	/** Updates a collection. */
+	/** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionUpdate"]: AliasType<{
 	collectionErrors?:ValueTypes["CollectionError"],
 	errors?:ValueTypes["CollectionError"],
 	collection?:ValueTypes["Collection"],
+		__typename?: boolean
+}>;
+	["CollectionUpdated"]: AliasType<{
+collection?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Collection"]],
 		__typename?: boolean
 }>;
 	/** Stores information about a single configuration field. */
@@ -1834,7 +1975,7 @@ translation?: [{	/** A language code to return the translation for collection. *
 	errors?:ValueTypes["AccountError"],
 		__typename?: boolean
 }>;
-	/** Confirm the email change of the logged-in user. */
+	/** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["ConfirmEmailChange"]: AliasType<{
 	/** A user instance with a new email. */
 	user?:ValueTypes["User"],
@@ -1887,7 +2028,7 @@ return all countries. */
 	expYear?:boolean,
 		__typename?: boolean
 }>;
-	/** Deletes customers. */
+	/** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -1895,14 +2036,20 @@ return all countries. */
 	errors?:ValueTypes["AccountError"],
 		__typename?: boolean
 }>;
-	/** Creates a new customer. */
+	/** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerCreate"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
 	user?:ValueTypes["User"],
 		__typename?: boolean
 }>;
-	/** Deletes a customer. */
+	["CustomerCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a user. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	user?:ValueTypes["User"],
+		__typename?: boolean
+}>;
+	/** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerDelete"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
@@ -1937,7 +2084,7 @@ return all countries. */
 	numberOfOrders?:ValueTypes["IntRangeInput"] | null,
 	placedOrders?:ValueTypes["DateRangeInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
 	updatedAt?:ValueTypes["DateTimeRangeInput"] | null
 };
 	["CustomerInput"]: {
@@ -1958,10 +2105,16 @@ return all countries. */
 	/** User language code. */
 	languageCode?:ValueTypes["LanguageCodeEnum"] | null
 };
-	/** Updates an existing customer. */
+	/** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerUpdate"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
+	user?:ValueTypes["User"],
+		__typename?: boolean
+}>;
+	["CustomerUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a user. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	user?:ValueTypes["User"],
 		__typename?: boolean
 }>;
@@ -1985,27 +2138,29 @@ value as specified by
 	/** End date. */
 	lte?:ValueTypes["DateTime"] | null
 };
-	/** Deactivate all JWT tokens of the currently authenticated user. */
+	/** Deactivate all JWT tokens of the currently authenticated user. Requires one of
+the following permissions: AUTHENTICATED_USER. */
 ["DeactivateAllUserTokens"]: AliasType<{
 	accountErrors?:ValueTypes["AccountError"],
 	errors?:ValueTypes["AccountError"],
 		__typename?: boolean
 }>;
-	/** Delete metadata of an object. */
+	/** Delete metadata of an object. To use it, you need to have access to the modified object. */
 ["DeleteMetadata"]: AliasType<{
 	metadataErrors?:ValueTypes["MetadataError"],
 	errors?:ValueTypes["MetadataError"],
 	item?:ValueTypes["ObjectWithMetadata"],
 		__typename?: boolean
 }>;
-	/** Delete object's private metadata. */
+	/** Delete object's private metadata. To use it, you need to be an authenticated
+staff user or an app and have access to the modified object. */
 ["DeletePrivateMetadata"]: AliasType<{
 	metadataErrors?:ValueTypes["MetadataError"],
 	errors?:ValueTypes["MetadataError"],
 	item?:ValueTypes["ObjectWithMetadata"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Represents a delivery method chosen for the checkout.
+	/** Added in Saleor 3.1. Represents a delivery method chosen for the checkout.
 `Warehouse` type is used when checkout is marked as "click and collect" and
 `ShippingMethod` otherwise. Note: this feature is in a preview state and can be
 subject to changes at later point. */
@@ -2015,10 +2170,14 @@ subject to changes at later point. */
 }>;
 	["DigitalContent"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	useDefaultSettings?:boolean,
 	automaticFulfillment?:boolean,
 	contentFile?:boolean,
@@ -2047,7 +2206,8 @@ subject to changes at later point. */
 }>;
 	/** Create new digital content. This mutation must be sent as a `multipart` request.
 More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentCreate"]: AliasType<{
 	variant?:ValueTypes["ProductVariant"],
 	content?:ValueTypes["DigitalContent"],
@@ -2055,7 +2215,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Remove digital content assigned to given variant. */
+	/** Remove digital content assigned to given variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentDelete"]: AliasType<{
 	variant?:ValueTypes["ProductVariant"],
 	productErrors?:ValueTypes["ProductError"],
@@ -2072,7 +2232,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Overwrite default automatic_fulfillment setting for variant. */
 	automaticFulfillment?:boolean | null
 };
-	/** Update digital content. */
+	/** Update digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentUpdate"]: AliasType<{
 	variant?:ValueTypes["ProductVariant"],
 	content?:ValueTypes["DigitalContent"],
@@ -2103,7 +2263,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	token?:boolean,
 		__typename?: boolean
 }>;
-	/** Generate new URL to digital content. */
+	/** Generate new URL to digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentUrlCreate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
@@ -2144,7 +2304,7 @@ error isn't associated with a particular field. */
 	url?:boolean,
 		__typename?: boolean
 }>;
-	/** Deletes draft orders. */
+	/** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -2152,7 +2312,7 @@ error isn't associated with a particular field. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Completes creating an order. */
+	/** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderComplete"]: AliasType<{
 	/** Completed order. */
 	order?:ValueTypes["Order"],
@@ -2160,10 +2320,16 @@ error isn't associated with a particular field. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Creates a new draft order. */
+	/** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderCreate"]: AliasType<{
 	orderErrors?:ValueTypes["OrderError"],
 	errors?:ValueTypes["OrderError"],
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	["DraftOrderCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	order?:ValueTypes["Order"],
 		__typename?: boolean
 }>;
@@ -2189,12 +2355,18 @@ error isn't associated with a particular field. */
 	/** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
 	redirectUrl?:string | null,
 	/** Variant line input consisting of variant ID and quantity of products. */
-	lines?:(ValueTypes["OrderLineCreateInput"] | undefined | null)[]
+	lines?:ValueTypes["OrderLineCreateInput"][]
 };
-	/** Deletes a draft order. */
+	/** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderDelete"]: AliasType<{
 	orderErrors?:ValueTypes["OrderError"],
 	errors?:ValueTypes["OrderError"],
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	["DraftOrderDeleted"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	order?:ValueTypes["Order"],
 		__typename?: boolean
 }>;
@@ -2220,7 +2392,7 @@ error isn't associated with a particular field. */
 	/** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
 	redirectUrl?:string | null
 };
-	/** Deletes order lines. */
+	/** Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderLinesBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -2228,11 +2400,73 @@ error isn't associated with a particular field. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Updates a draft order. */
+	/** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderUpdate"]: AliasType<{
 	orderErrors?:ValueTypes["OrderError"],
 	errors?:ValueTypes["OrderError"],
 	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	["DraftOrderUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	["Event"]: AliasType<{		["...on CategoryCreated"] : ValueTypes["CategoryCreated"],
+		["...on CategoryUpdated"] : ValueTypes["CategoryUpdated"],
+		["...on CategoryDeleted"] : ValueTypes["CategoryDeleted"],
+		["...on ChannelCreated"] : ValueTypes["ChannelCreated"],
+		["...on ChannelUpdated"] : ValueTypes["ChannelUpdated"],
+		["...on ChannelDeleted"] : ValueTypes["ChannelDeleted"],
+		["...on ChannelStatusChanged"] : ValueTypes["ChannelStatusChanged"],
+		["...on GiftCardCreated"] : ValueTypes["GiftCardCreated"],
+		["...on GiftCardUpdated"] : ValueTypes["GiftCardUpdated"],
+		["...on GiftCardDeleted"] : ValueTypes["GiftCardDeleted"],
+		["...on GiftCardStatusChanged"] : ValueTypes["GiftCardStatusChanged"],
+		["...on OrderCreated"] : ValueTypes["OrderCreated"],
+		["...on OrderUpdated"] : ValueTypes["OrderUpdated"],
+		["...on OrderConfirmed"] : ValueTypes["OrderConfirmed"],
+		["...on OrderFullyPaid"] : ValueTypes["OrderFullyPaid"],
+		["...on OrderCancelled"] : ValueTypes["OrderCancelled"],
+		["...on OrderFulfilled"] : ValueTypes["OrderFulfilled"],
+		["...on DraftOrderCreated"] : ValueTypes["DraftOrderCreated"],
+		["...on DraftOrderUpdated"] : ValueTypes["DraftOrderUpdated"],
+		["...on DraftOrderDeleted"] : ValueTypes["DraftOrderDeleted"],
+		["...on ProductCreated"] : ValueTypes["ProductCreated"],
+		["...on ProductUpdated"] : ValueTypes["ProductUpdated"],
+		["...on ProductDeleted"] : ValueTypes["ProductDeleted"],
+		["...on ProductVariantCreated"] : ValueTypes["ProductVariantCreated"],
+		["...on ProductVariantUpdated"] : ValueTypes["ProductVariantUpdated"],
+		["...on ProductVariantOutOfStock"] : ValueTypes["ProductVariantOutOfStock"],
+		["...on ProductVariantBackInStock"] : ValueTypes["ProductVariantBackInStock"],
+		["...on ProductVariantDeleted"] : ValueTypes["ProductVariantDeleted"],
+		["...on SaleCreated"] : ValueTypes["SaleCreated"],
+		["...on SaleUpdated"] : ValueTypes["SaleUpdated"],
+		["...on SaleDeleted"] : ValueTypes["SaleDeleted"],
+		["...on InvoiceRequested"] : ValueTypes["InvoiceRequested"],
+		["...on InvoiceDeleted"] : ValueTypes["InvoiceDeleted"],
+		["...on InvoiceSent"] : ValueTypes["InvoiceSent"],
+		["...on FulfillmentCreated"] : ValueTypes["FulfillmentCreated"],
+		["...on FulfillmentCanceled"] : ValueTypes["FulfillmentCanceled"],
+		["...on CustomerCreated"] : ValueTypes["CustomerCreated"],
+		["...on CustomerUpdated"] : ValueTypes["CustomerUpdated"],
+		["...on CollectionCreated"] : ValueTypes["CollectionCreated"],
+		["...on CollectionUpdated"] : ValueTypes["CollectionUpdated"],
+		["...on CollectionDeleted"] : ValueTypes["CollectionDeleted"],
+		["...on CheckoutCreated"] : ValueTypes["CheckoutCreated"],
+		["...on CheckoutUpdated"] : ValueTypes["CheckoutUpdated"],
+		["...on PageCreated"] : ValueTypes["PageCreated"],
+		["...on PageUpdated"] : ValueTypes["PageUpdated"],
+		["...on PageDeleted"] : ValueTypes["PageDeleted"],
+		["...on ShippingPriceCreated"] : ValueTypes["ShippingPriceCreated"],
+		["...on ShippingPriceUpdated"] : ValueTypes["ShippingPriceUpdated"],
+		["...on ShippingPriceDeleted"] : ValueTypes["ShippingPriceDeleted"],
+		["...on ShippingZoneCreated"] : ValueTypes["ShippingZoneCreated"],
+		["...on ShippingZoneUpdated"] : ValueTypes["ShippingZoneUpdated"],
+		["...on ShippingZoneDeleted"] : ValueTypes["ShippingZoneDeleted"],
+		["...on TranslationCreated"] : ValueTypes["TranslationCreated"],
+		["...on TranslationUpdated"] : ValueTypes["TranslationUpdated"]
 		__typename?: boolean
 }>;
 	/** Event delivery. */
@@ -2258,10 +2492,17 @@ attempts?: [{	/** Event delivery sorter */
 	id?:boolean,
 	/** Event delivery creation date and time. */
 	createdAt?:boolean,
+	/** Task id for delivery attempt. */
 	taskId?:boolean,
+	/** Delivery attempt duration. */
 	duration?:boolean,
+	/** Delivery attempt response content. */
 	response?:boolean,
+	/** Response headers for delivery attempt. */
 	responseHeaders?:boolean,
+	/** Delivery attempt response status code. */
+	responseStatusCode?:boolean,
+	/** Request headers for delivery attempt. */
 	requestHeaders?:boolean,
 	/** Event delivery status. */
 	status?:boolean,
@@ -2308,7 +2549,7 @@ attempts?: [{	/** Event delivery sorter */
 	status?:ValueTypes["EventDeliveryStatusEnum"] | null,
 	eventType?:ValueTypes["WebhookEventTypeEnum"] | null
 };
-	/** Retries event delivery. */
+	/** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
 ["EventDeliveryRetry"]: AliasType<{
 	/** Event delivery. */
 	delivery?:ValueTypes["EventDelivery"],
@@ -2343,9 +2584,11 @@ error isn't associated with a particular field. */
 	date?:boolean,
 	/** Export event type. */
 	type?:boolean,
-	/** User who performed the action. */
+	/** User who performed the action. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AccountPermissions.MANAGE_STAFF. */
 	user?:ValueTypes["User"],
-	/** App which performed the action. */
+	/** App which performed the action. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AppPermission.MANAGE_APPS. */
 	app?:ValueTypes["App"],
 	/** Content of the event. */
 	message?:boolean,
@@ -2401,8 +2644,9 @@ error isn't associated with a particular field. */
 	/** Sort export file by the selected field. */
 	field:ValueTypes["ExportFileSortField"]
 };
-	/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["ExportGiftCards"]: AliasType<{
 	/** The newly created export file job which is responsible for export data. */
 	exportFile?:ValueTypes["ExportFile"],
@@ -2429,7 +2673,7 @@ preview state and can be subject to changes at later point. */
 	/** List of product fields witch should be exported. */
 	fields?:ValueTypes["ProductFieldEnum"][]
 };
-	/** Export products to csv file. */
+	/** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ExportProducts"]: AliasType<{
 	/** The newly created export file job which is responsible for export data. */
 	exportFile?:ValueTypes["ExportFile"],
@@ -2485,8 +2729,8 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["ExternalNotificationErrorCodes"]:ExternalNotificationErrorCodes;
-	/** New in Saleor 3.1. Trigger sending a notification with the notify plugin method.
-Serializes nodes provided as ids parameter and includes this data in the
+	/** Added in Saleor 3.1. Trigger sending a notification with the notify plugin
+method. Serializes nodes provided as ids parameter and includes this data in the
 notification payload. */
 ["ExternalNotificationTrigger"]: AliasType<{
 	errors?:ValueTypes["ExternalNotificationError"],
@@ -2494,7 +2738,7 @@ notification payload. */
 }>;
 	["ExternalNotificationTriggerInput"]: {
 	/** The list of customers or orders node IDs that will be serialized and included in the notification payload. */
-	ids?:string[],
+	ids:string[],
 	/** Additional payload that will be merged with the one based on the bussines object ID. */
 	extraPayload?:ValueTypes["JSONString"] | null,
 	/** External event type. This field is passed to a plugin as an event type. */
@@ -2551,7 +2795,8 @@ notification payload. */
 ["FileTypesEnum"]:FileTypesEnum;
 	/** Upload a file. This mutation must be sent as a `multipart` request. More
 detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 ["FileUpload"]: AliasType<{
 	uploadedFile?:ValueTypes["File"],
 	uploadErrors?:ValueTypes["UploadError"],
@@ -2561,10 +2806,14 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Represents order fulfillment. */
 ["Fulfillment"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	fulfillmentOrder?:boolean,
 	status?:boolean,
 	trackingNumber?:boolean,
@@ -2577,7 +2826,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	warehouse?:ValueTypes["Warehouse"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Approve existing fulfillment. */
+	/** Added in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentApprove"]: AliasType<{
 	/** An approved fulfillment. */
 	fulfillment?:ValueTypes["Fulfillment"],
@@ -2587,7 +2836,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Cancels existing fulfillment and optionally restocks items. */
+	/** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentCancel"]: AliasType<{
 	/** A canceled fulfillment. */
 	fulfillment?:ValueTypes["Fulfillment"],
@@ -2597,10 +2846,22 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
+	["FulfillmentCanceled"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	fulfillment?:ValueTypes["Fulfillment"],
+		__typename?: boolean
+}>;
 	["FulfillmentCancelInput"]: {
 	/** ID of a warehouse where items will be restocked. Optional when fulfillment is in WAITING_FOR_APPROVAL state. */
 	warehouseId?:string | null
 };
+	["FulfillmentCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	fulfillment?:ValueTypes["Fulfillment"],
+		__typename?: boolean
+}>;
 	/** Represents line of the fulfillment. */
 ["FulfillmentLine"]: AliasType<{
 	id?:boolean,
@@ -2608,7 +2869,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderLine?:ValueTypes["OrderLine"],
 		__typename?: boolean
 }>;
-	/** Refund products. */
+	/** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentRefundProducts"]: AliasType<{
 	/** A refunded fulfillment. */
 	fulfillment?:ValueTypes["Fulfillment"],
@@ -2618,7 +2879,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Return products. */
+	/** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentReturnProducts"]: AliasType<{
 	/** A return fulfillment. */
 	returnFulfillment?:ValueTypes["Fulfillment"],
@@ -2634,7 +2895,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 }>;
 	/** An enumeration. */
 ["FulfillmentStatus"]:FulfillmentStatus;
-	/** Updates a fulfillment for an order. */
+	/** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentUpdateTracking"]: AliasType<{
 	/** A fulfillment with updated tracking. */
 	fulfillment?:ValueTypes["Fulfillment"],
@@ -2666,44 +2927,53 @@ String, Boolean, Int, Float, List or Object. */
 used during checkout by providing a valid gift card codes. */
 ["GiftCard"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	/** Code in format which allows displaying in a user interface. */
 	displayCode?:boolean,
 	/** Last 4 characters of gift card code. */
 	last4CodeChars?:boolean,
-	/** Gift card code. Can be fetched by staff member with manage gift card
-permission when gift card wasn't used yet and by the gift card owner. */
+	/** Gift card code. Can be fetched by a staff member with
+GiftcardPermissions.MANAGE_GIFT_CARD when gift card wasn't yet used and by the
+gift card owner. */
 	code?:boolean,
 	created?:boolean,
-	/** New in Saleor 3.1. The user who bought or issued a gift card. Note: this
+	/** Added in Saleor 3.1. The user who bought or issued a gift card. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	createdBy?:ValueTypes["User"],
-	/** New in Saleor 3.1. The customer who used a gift card. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The customer who used a gift card. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	usedBy?:ValueTypes["User"],
-	/** New in Saleor 3.1. Email address of the user who bought or issued gift card.
-Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Email address of the user who bought or issued gift card.
+Requires one of the following permissions: AccountPermissions.MANAGE_USERS,
+AuthorizationFilters.OWNER. Note: this feature is in a preview state and can
+be subject to changes at later point. */
 	createdByEmail?:boolean,
-	/** New in Saleor 3.1. Email address of the customer who used a gift card. Note:
+	/** Added in Saleor 3.1. Email address of the customer who used a gift card. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	usedByEmail?:boolean,
 	lastUsedOn?:boolean,
 	expiryDate?:boolean,
-	/** New in Saleor 3.1. App which created the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. App which created the gift card. Requires one of the
+following permissions: AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER.
+Note: this feature is in a preview state and can be subject to changes at later point. */
 	app?:ValueTypes["App"],
-	/** New in Saleor 3.1. Related gift card product. Note: this feature is in a
+	/** Added in Saleor 3.1. Related gift card product. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	product?:ValueTypes["Product"],
 events?: [{	/** Filtering options for gift card events. */
 	filter?:ValueTypes["GiftCardEventFilterInput"] | null},ValueTypes["GiftCardEvent"]],
-	/** New in Saleor 3.1. The gift card tag. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The gift card tag. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	tags?:ValueTypes["GiftCardTag"],
-	/** New in Saleor 3.1. Slug of the channel where the gift card was bought. Note:
+	/** Added in Saleor 3.1. Slug of the channel where the gift card was bought. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	boughtInChannel?:boolean,
 	isActive?:boolean,
@@ -2717,7 +2987,7 @@ this feature is in a preview state and can be subject to changes at later point.
 	startDate?:boolean,
 		__typename?: boolean
 }>;
-	/** Activate a gift card. */
+	/** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardActivate"]: AliasType<{
 	/** Activated gift card. */
 	giftCard?:ValueTypes["GiftCard"],
@@ -2725,8 +2995,9 @@ this feature is in a preview state and can be subject to changes at later point.
 	errors?:ValueTypes["GiftCardError"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardAddNote"]: AliasType<{
 	/** Gift card with the note added. */
 	giftCard?:ValueTypes["GiftCard"],
@@ -2739,15 +3010,18 @@ preview state and can be subject to changes at later point. */
 	/** Note message. */
 	message:string
 };
-	/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkActivate"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
 	errors?:ValueTypes["GiftCardError"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Create gift cards. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkCreate"]: AliasType<{
 	/** Returns how many objects were created. */
 	count?:boolean,
@@ -2768,15 +3042,18 @@ and can be subject to changes at later point. */
 	/** Determine if gift card is active. */
 	isActive:boolean
 };
-	/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkDeactivate"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
 	errors?:ValueTypes["GiftCardError"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -2798,18 +3075,24 @@ state and can be subject to changes at later point. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new gift card. */
+	/** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardCreate"]: AliasType<{
 	giftCardErrors?:ValueTypes["GiftCardError"],
 	errors?:ValueTypes["GiftCardError"],
 	giftCard?:ValueTypes["GiftCard"],
 		__typename?: boolean
 }>;
+	["GiftCardCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?:ValueTypes["GiftCard"],
+		__typename?: boolean
+}>;
 	["GiftCardCreateInput"]: {
-	/** New in Saleor 3.1. The gift card tags to add. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card tags to add. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	addTags?:string[],
-	/** New in Saleor 3.1. The gift card expiry date. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card expiry date. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	expiryDate?:ValueTypes["Date"] | null,
 	/** Start date of the gift card in ISO 8601 format. 
@@ -2824,21 +3107,21 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `expiryDate` from `exp
 	balance:ValueTypes["PriceInput"],
 	/** Email of the customer to whom gift card will be sent. */
 	userEmail?:string | null,
-	/** New in Saleor 3.1. Slug of a channel from which the email should be sent.
+	/** Added in Saleor 3.1. Slug of a channel from which the email should be sent.
 Note: this feature is in a preview state and can be subject to changes at later point. */
 	channel?:string | null,
-	/** New in Saleor 3.1. Determine if gift card is active. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determine if gift card is active. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	isActive:boolean,
 	/** Code to use the gift card. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. The code is now auto generated. */
 	code?:string | null,
-	/** New in Saleor 3.1. The gift card note from the staff member. Note: this
+	/** Added in Saleor 3.1. The gift card note from the staff member. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	note?:string | null
 };
-	/** Deactivate a gift card. */
+	/** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardDeactivate"]: AliasType<{
 	/** Deactivated gift card. */
 	giftCard?:ValueTypes["GiftCard"],
@@ -2846,10 +3129,18 @@ feature is in a preview state and can be subject to changes at later point. */
 	errors?:ValueTypes["GiftCardError"],
 		__typename?: boolean
 }>;
-	/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift card. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardDelete"]: AliasType<{
 	giftCardErrors?:ValueTypes["GiftCardError"],
 	errors?:ValueTypes["GiftCardError"],
+	giftCard?:ValueTypes["GiftCard"],
+		__typename?: boolean
+}>;
+	["GiftCardDeleted"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	giftCard?:ValueTypes["GiftCard"],
 		__typename?: boolean
 }>;
@@ -2867,7 +3158,7 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["GiftCardErrorCode"]:GiftCardErrorCode;
-	/** New in Saleor 3.1. History log of the gift card. Note: this feature is in a
+	/** Added in Saleor 3.1. History log of the gift card. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 ["GiftCardEvent"]: AliasType<{
 	id?:boolean,
@@ -2875,9 +3166,12 @@ preview state and can be subject to changes at later point. */
 	date?:boolean,
 	/** Gift card event type. */
 	type?:boolean,
-	/** User who performed the action. */
+	/** User who performed the action. Requires one of the following permissions:
+AccountPermissions.MANAGE_USERS, AccountPermissions.MANAGE_STAFF,
+AuthorizationFilters.OWNER. */
 	user?:ValueTypes["User"],
-	/** App that performed the action. */
+	/** App that performed the action. Requires one of the following permissions:
+AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER. */
 	app?:ValueTypes["App"],
 	/** Content of the event. */
 	message?:boolean,
@@ -2918,18 +3212,19 @@ preview state and can be subject to changes at later point. */
 ["GiftCardEventsEnum"]:GiftCardEventsEnum;
 	["GiftCardFilterInput"]: {
 	isActive?:boolean | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	tags?:(string | undefined | null)[],
-	products?:(string | undefined | null)[],
-	usedBy?:(string | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
+	tags?:string[],
+	products?:string[],
+	usedBy?:string[],
 	used?:boolean | null,
 	currency?:string | null,
 	currentBalance?:ValueTypes["PriceRangeInput"] | null,
 	initialBalance?:ValueTypes["PriceRangeInput"] | null,
 	code?:string | null
 };
-	/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardResend"]: AliasType<{
 	/** Gift card which has been sent. */
 	giftCard?:ValueTypes["GiftCard"],
@@ -2966,7 +3261,7 @@ error isn't associated with a particular field. */
 ["GiftCardSettingsErrorCode"]:GiftCardSettingsErrorCode;
 	/** An enumeration. */
 ["GiftCardSettingsExpiryTypeEnum"]:GiftCardSettingsExpiryTypeEnum;
-	/** Update gift card settings. */
+	/** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardSettingsUpdate"]: AliasType<{
 	/** Gift card settings. */
 	giftCardSettings?:ValueTypes["GiftCardSettings"],
@@ -2986,7 +3281,14 @@ error isn't associated with a particular field. */
 	/** Sort gift cards by the selected field. */
 	field:ValueTypes["GiftCardSortField"]
 };
-	/** New in Saleor 3.1. The gift card tag. Note: this feature is in a preview state and can be subject to changes at later point. */
+	["GiftCardStatusChanged"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?:ValueTypes["GiftCard"],
+		__typename?: boolean
+}>;
+	/** Added in Saleor 3.1. The gift card tag. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 ["GiftCardTag"]: AliasType<{
 	id?:boolean,
 	name?:boolean,
@@ -3010,18 +3312,24 @@ error isn't associated with a particular field. */
 	["GiftCardTagFilterInput"]: {
 	search?:string | null
 };
-	/** Update a gift card. */
+	/** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardUpdate"]: AliasType<{
 	giftCardErrors?:ValueTypes["GiftCardError"],
 	errors?:ValueTypes["GiftCardError"],
 	giftCard?:ValueTypes["GiftCard"],
 		__typename?: boolean
 }>;
+	["GiftCardUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?:ValueTypes["GiftCard"],
+		__typename?: boolean
+}>;
 	["GiftCardUpdateInput"]: {
-	/** New in Saleor 3.1. The gift card tags to add. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card tags to add. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	addTags?:string[],
-	/** New in Saleor 3.1. The gift card expiry date. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card expiry date. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	expiryDate?:ValueTypes["Date"] | null,
 	/** Start date of the gift card in ISO 8601 format. 
@@ -3032,10 +3340,10 @@ DEPRECATED: this field will be removed in Saleor 4.0. */
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `expiryDate` from `expirySettings` instead. */
 	endDate?:ValueTypes["Date"] | null,
-	/** New in Saleor 3.1. The gift card tags to remove. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card tags to remove. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	removeTags?:string[],
-	/** New in Saleor 3.1. The gift card balance amount. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card balance amount. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	balanceAmount?:ValueTypes["PositiveDecimal"] | null
 };
@@ -3043,7 +3351,7 @@ preview state and can be subject to changes at later point. */
 ["Group"]: AliasType<{
 	id?:boolean,
 	name?:boolean,
-	/** List of group users */
+	/** List of group users Requires one of the following permissions: MANAGE_STAFF. */
 	users?:ValueTypes["User"],
 	/** List of group permissions */
 	permissions?:ValueTypes["Permission"],
@@ -3082,10 +3390,14 @@ preview state and can be subject to changes at later point. */
 };
 	/** Represents an Invoice. */
 ["Invoice"]: AliasType<{
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	/** Job status. */
 	status?:boolean,
 	createdAt?:boolean,
@@ -3099,7 +3411,7 @@ preview state and can be subject to changes at later point. */
 	url?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a ready to send invoice. */
+	/** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceCreate"]: AliasType<{
 	invoiceErrors?:ValueTypes["InvoiceError"],
 	errors?:ValueTypes["InvoiceError"],
@@ -3112,10 +3424,16 @@ preview state and can be subject to changes at later point. */
 	/** URL of an invoice to download. */
 	url:string
 };
-	/** Deletes an invoice. */
+	/** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceDelete"]: AliasType<{
 	invoiceErrors?:ValueTypes["InvoiceError"],
 	errors?:ValueTypes["InvoiceError"],
+	invoice?:ValueTypes["Invoice"],
+		__typename?: boolean
+}>;
+	["InvoiceDeleted"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	invoice?:ValueTypes["Invoice"],
 		__typename?: boolean
 }>;
@@ -3131,7 +3449,7 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["InvoiceErrorCode"]:InvoiceErrorCode;
-	/** Request an invoice for the order using plugin. */
+	/** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceRequest"]: AliasType<{
 	/** Order related to an invoice. */
 	order?:ValueTypes["Order"],
@@ -3140,21 +3458,33 @@ error isn't associated with a particular field. */
 	invoice?:ValueTypes["Invoice"],
 		__typename?: boolean
 }>;
-	/** Requests deletion of an invoice. */
+	/** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceRequestDelete"]: AliasType<{
 	invoiceErrors?:ValueTypes["InvoiceError"],
 	errors?:ValueTypes["InvoiceError"],
 	invoice?:ValueTypes["Invoice"],
 		__typename?: boolean
 }>;
-	/** Send an invoice notification to the customer. */
+	["InvoiceRequested"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	invoice?:ValueTypes["Invoice"],
+		__typename?: boolean
+}>;
+	/** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceSendNotification"]: AliasType<{
 	invoiceErrors?:ValueTypes["InvoiceError"],
 	errors?:ValueTypes["InvoiceError"],
 	invoice?:ValueTypes["Invoice"],
 		__typename?: boolean
 }>;
-	/** Updates an invoice. */
+	["InvoiceSent"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	invoice?:ValueTypes["Invoice"],
+		__typename?: boolean
+}>;
+	/** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceUpdate"]: AliasType<{
 	invoiceErrors?:ValueTypes["InvoiceError"],
 	errors?:ValueTypes["InvoiceError"],
@@ -3229,16 +3559,20 @@ error isn't associated with a particular field. */
 	/** Represents a single menu - an object that is used to help navigate through the store. */
 ["Menu"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	slug?:boolean,
 	items?:ValueTypes["MenuItem"],
 		__typename?: boolean
 }>;
-	/** Deletes menus. */
+	/** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -3261,7 +3595,7 @@ error isn't associated with a particular field. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new Menu. */
+	/** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuCreate"]: AliasType<{
 	menuErrors?:ValueTypes["MenuError"],
 	errors?:ValueTypes["MenuError"],
@@ -3274,9 +3608,9 @@ error isn't associated with a particular field. */
 	/** Slug of the menu. Will be generated if not provided. */
 	slug?:string | null,
 	/** List of menu items. */
-	items?:(ValueTypes["MenuItemInput"] | undefined | null)[]
+	items?:ValueTypes["MenuItemInput"][]
 };
-	/** Deletes a menu. */
+	/** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuDelete"]: AliasType<{
 	menuErrors?:ValueTypes["MenuError"],
 	errors?:ValueTypes["MenuError"],
@@ -3297,8 +3631,8 @@ error isn't associated with a particular field. */
 ["MenuErrorCode"]:MenuErrorCode;
 	["MenuFilterInput"]: {
 	search?:string | null,
-	slug?:(string | undefined | null)[],
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[]
+	slug?:string[],
+	metadata?:ValueTypes["MetadataFilter"][]
 };
 	["MenuInput"]: {
 	/** Name of the menu. */
@@ -3309,15 +3643,24 @@ error isn't associated with a particular field. */
 	/** Represents a single item of the related menu. Can store categories, collection or pages. */
 ["MenuItem"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	menu?:ValueTypes["Menu"],
 	parent?:ValueTypes["MenuItem"],
 	category?:ValueTypes["Category"],
+	/** A collection associated with this menu item. Requires one of the following
+permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collection?:ValueTypes["Collection"],
+	/** A page associated with this menu item. Requires one of the following
+permissions to include unpublished items: PagePermissions.MANAGE_PAGES. */
 	page?:ValueTypes["Page"],
 	level?:boolean,
 	children?:ValueTypes["MenuItem"],
@@ -3327,7 +3670,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["MenuItemTranslation"]],
 		__typename?: boolean
 }>;
-	/** Deletes menu items. */
+	/** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -3350,7 +3693,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new menu item. */
+	/** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemCreate"]: AliasType<{
 	menuErrors?:ValueTypes["MenuError"],
 	errors?:ValueTypes["MenuError"],
@@ -3373,7 +3716,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	/** ID of the parent menu. If empty, menu will be top level menu. */
 	parent?:string | null
 };
-	/** Deletes a menu item. */
+	/** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemDelete"]: AliasType<{
 	menuErrors?:ValueTypes["MenuError"],
 	errors?:ValueTypes["MenuError"],
@@ -3382,7 +3725,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 }>;
 	["MenuItemFilterInput"]: {
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[]
+	metadata?:ValueTypes["MetadataFilter"][]
 };
 	["MenuItemInput"]: {
 	/** Name of the menu item. */
@@ -3396,7 +3739,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	/** Page to which item points. */
 	page?:string | null
 };
-	/** Moves items of menus. */
+	/** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemMove"]: AliasType<{
 	/** Assigned menu to move within. */
 	menu?:ValueTypes["Menu"],
@@ -3430,7 +3773,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	menuItem?:ValueTypes["MenuItem"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a menu item. */
+	/** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["MenuItemTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -3444,7 +3787,7 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	name?:boolean,
 		__typename?: boolean
 }>;
-	/** Updates a menu item. */
+	/** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemUpdate"]: AliasType<{
 	menuErrors?:ValueTypes["MenuError"],
 	errors?:ValueTypes["MenuError"],
@@ -3458,13 +3801,23 @@ translation?: [{	/** A language code to return the translation for menu item. */
 	/** Sort menus by the selected field. */
 	field:ValueTypes["MenuSortField"]
 };
-	/** Updates a menu. */
+	/** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuUpdate"]: AliasType<{
 	menuErrors?:ValueTypes["MenuError"],
 	errors?:ValueTypes["MenuError"],
 	menu?:ValueTypes["Menu"],
 		__typename?: boolean
 }>;
+	/** Metadata is a map of key-value pairs, both keys and values are `String`.
+
+Example:
+```
+{
+    "key1": "value1",
+    "key2": "value2"
+}
+``` */
+["Metadata"]:unknown;
 	["MetadataError"]: AliasType<{
 	/** Name of a field that caused the error. A value of `null` indicates that the
 error isn't associated with a particular field. */
@@ -3560,7 +3913,7 @@ shopDomainUpdate?: [{	/** Fields required to update site. */
 	input?:ValueTypes["SiteDomainInput"] | null},ValueTypes["ShopDomainUpdate"]],
 shopSettingsUpdate?: [{	/** Fields required to update shop settings. */
 	input:ValueTypes["ShopSettingsInput"]},ValueTypes["ShopSettingsUpdate"]],
-	/** Fetch tax rates. */
+	/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopFetchTaxRates?:ValueTypes["ShopFetchTaxRates"],
 shopSettingsTranslate?: [{	/** Fields required to update shop settings translations. */
 	input:ValueTypes["ShopSettingsTranslationInput"],	/** Translation language code. */
@@ -3579,11 +3932,11 @@ shippingPriceCreate?: [{	/** Fields required to create a shipping price. */
 shippingPriceDelete?: [{	/** ID of a shipping price to delete. */
 	id:string},ValueTypes["ShippingPriceDelete"]],
 shippingPriceBulkDelete?: [{	/** List of shipping price IDs to delete. */
-	ids?:string[]},ValueTypes["ShippingPriceBulkDelete"]],
+	ids:string[]},ValueTypes["ShippingPriceBulkDelete"]],
 shippingPriceUpdate?: [{	/** ID of a shipping price to update. */
 	id:string,	/** Fields required to update a shipping price. */
 	input:ValueTypes["ShippingPriceInput"]},ValueTypes["ShippingPriceUpdate"]],
-shippingPriceTranslate?: [{	/** ('ShippingMethodType ID or ShippingMethodTranslatableContent ID.',) */
+shippingPriceTranslate?: [{	/** ShippingMethodType ID or ShippingMethodTranslatableContent ID. */
 	id:string,	input:ValueTypes["ShippingPriceTranslationInput"],	/** Translation language code. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["ShippingPriceTranslate"]],
 shippingPriceExcludeProducts?: [{	/** ID of a shipping price. */
@@ -3591,24 +3944,24 @@ shippingPriceExcludeProducts?: [{	/** ID of a shipping price. */
 	input:ValueTypes["ShippingPriceExcludeProductsInput"]},ValueTypes["ShippingPriceExcludeProducts"]],
 shippingPriceRemoveProductFromExclude?: [{	/** ID of a shipping price. */
 	id:string,	/** List of products which will be removed from excluded list. */
-	products?:string[]},ValueTypes["ShippingPriceRemoveProductFromExclude"]],
+	products:string[]},ValueTypes["ShippingPriceRemoveProductFromExclude"]],
 shippingZoneCreate?: [{	/** Fields required to create a shipping zone. */
 	input:ValueTypes["ShippingZoneCreateInput"]},ValueTypes["ShippingZoneCreate"]],
 shippingZoneDelete?: [{	/** ID of a shipping zone to delete. */
 	id:string},ValueTypes["ShippingZoneDelete"]],
 shippingZoneBulkDelete?: [{	/** List of shipping zone IDs to delete. */
-	ids?:string[]},ValueTypes["ShippingZoneBulkDelete"]],
+	ids:string[]},ValueTypes["ShippingZoneBulkDelete"]],
 shippingZoneUpdate?: [{	/** ID of a shipping zone to update. */
 	id:string,	/** Fields required to update a shipping zone. */
 	input:ValueTypes["ShippingZoneUpdateInput"]},ValueTypes["ShippingZoneUpdate"]],
 productAttributeAssign?: [{	/** The operations to perform. */
-	operations?:ValueTypes["ProductAttributeAssignInput"][],	/** ID of the product type to assign the attributes into. */
+	operations:ValueTypes["ProductAttributeAssignInput"][],	/** ID of the product type to assign the attributes into. */
 	productTypeId:string},ValueTypes["ProductAttributeAssign"]],
 productAttributeAssignmentUpdate?: [{	/** The operations to perform. */
-	operations?:ValueTypes["ProductAttributeAssignmentUpdateInput"][],	/** ID of the product type to assign the attributes into. */
+	operations:ValueTypes["ProductAttributeAssignmentUpdateInput"][],	/** ID of the product type to assign the attributes into. */
 	productTypeId:string},ValueTypes["ProductAttributeAssignmentUpdate"]],
 productAttributeUnassign?: [{	/** The IDs of the attributes to unassign. */
-	attributeIds?:string[],	/** ID of the product type from which the attributes should be unassigned. */
+	attributeIds:string[],	/** ID of the product type from which the attributes should be unassigned. */
 	productTypeId:string},ValueTypes["ProductAttributeUnassign"]],
 categoryCreate?: [{	/** Fields required to create a category. */
 	input:ValueTypes["CategoryInput"],	/** ID of the parent category. If empty, category will be top level category. */
@@ -3616,7 +3969,7 @@ categoryCreate?: [{	/** Fields required to create a category. */
 categoryDelete?: [{	/** ID of a category to delete. */
 	id:string},ValueTypes["CategoryDelete"]],
 categoryBulkDelete?: [{	/** List of category IDs to delete. */
-	ids?:string[]},ValueTypes["CategoryBulkDelete"]],
+	ids:string[]},ValueTypes["CategoryBulkDelete"]],
 categoryUpdate?: [{	/** ID of a category to update. */
 	id:string,	/** Fields required to update a category. */
 	input:ValueTypes["CategoryInput"]},ValueTypes["CategoryUpdate"]],
@@ -3625,19 +3978,19 @@ categoryTranslate?: [{	/** Category ID or CategoryTranslatableContent ID. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["CategoryTranslate"]],
 collectionAddProducts?: [{	/** ID of a collection. */
 	collectionId:string,	/** List of product IDs. */
-	products?:string[]},ValueTypes["CollectionAddProducts"]],
+	products:string[]},ValueTypes["CollectionAddProducts"]],
 collectionCreate?: [{	/** Fields required to create a collection. */
 	input:ValueTypes["CollectionCreateInput"]},ValueTypes["CollectionCreate"]],
 collectionDelete?: [{	/** ID of a collection to delete. */
 	id:string},ValueTypes["CollectionDelete"]],
 collectionReorderProducts?: [{	/** ID of a collection. */
 	collectionId:string,	/** The collection products position operations. */
-	moves?:ValueTypes["MoveProductInput"][]},ValueTypes["CollectionReorderProducts"]],
+	moves:ValueTypes["MoveProductInput"][]},ValueTypes["CollectionReorderProducts"]],
 collectionBulkDelete?: [{	/** List of collection IDs to delete. */
-	ids?:string[]},ValueTypes["CollectionBulkDelete"]],
+	ids:string[]},ValueTypes["CollectionBulkDelete"]],
 collectionRemoveProducts?: [{	/** ID of a collection. */
 	collectionId:string,	/** List of product IDs. */
-	products?:string[]},ValueTypes["CollectionRemoveProducts"]],
+	products:string[]},ValueTypes["CollectionRemoveProducts"]],
 collectionUpdate?: [{	/** ID of a collection to update. */
 	id:string,	/** Fields required to update a collection. */
 	input:ValueTypes["CollectionInput"]},ValueTypes["CollectionUpdate"]],
@@ -3652,7 +4005,7 @@ productCreate?: [{	/** Fields required to create a product. */
 productDelete?: [{	/** ID of a product to delete. */
 	id:string},ValueTypes["ProductDelete"]],
 productBulkDelete?: [{	/** List of product IDs to delete. */
-	ids?:string[]},ValueTypes["ProductBulkDelete"]],
+	ids:string[]},ValueTypes["ProductBulkDelete"]],
 productUpdate?: [{	/** ID of a product to update. */
 	id:string,	/** Fields required to update a product. */
 	input:ValueTypes["ProductInput"]},ValueTypes["ProductUpdate"]],
@@ -3665,14 +4018,14 @@ productChannelListingUpdate?: [{	/** ID of a product to update. */
 productMediaCreate?: [{	/** Fields required to create a product media. */
 	input:ValueTypes["ProductMediaCreateInput"]},ValueTypes["ProductMediaCreate"]],
 productVariantReorder?: [{	/** The list of variant reordering operations. */
-	moves?:ValueTypes["ReorderInput"][],	/** Id of product that variants order will be altered. */
+	moves:ValueTypes["ReorderInput"][],	/** Id of product that variants order will be altered. */
 	productId:string},ValueTypes["ProductVariantReorder"]],
 productMediaDelete?: [{	/** ID of a product media to delete. */
 	id:string},ValueTypes["ProductMediaDelete"]],
 productMediaBulkDelete?: [{	/** List of product media IDs to delete. */
-	ids?:string[]},ValueTypes["ProductMediaBulkDelete"]],
+	ids:string[]},ValueTypes["ProductMediaBulkDelete"]],
 productMediaReorder?: [{	/** IDs of a product media in the desired order. */
-	mediaIds?:string[],	/** ID of product that media order will be altered. */
+	mediaIds:string[],	/** ID of product that media order will be altered. */
 	productId:string},ValueTypes["ProductMediaReorder"]],
 productMediaUpdate?: [{	/** ID of a product media to update. */
 	id:string,	/** Fields required to update a product media. */
@@ -3682,17 +4035,17 @@ productTypeCreate?: [{	/** Fields required to create a product type. */
 productTypeDelete?: [{	/** ID of a product type to delete. */
 	id:string},ValueTypes["ProductTypeDelete"]],
 productTypeBulkDelete?: [{	/** List of product type IDs to delete. */
-	ids?:string[]},ValueTypes["ProductTypeBulkDelete"]],
+	ids:string[]},ValueTypes["ProductTypeBulkDelete"]],
 productTypeUpdate?: [{	/** ID of a product type to update. */
 	id:string,	/** Fields required to update a product type. */
 	input:ValueTypes["ProductTypeInput"]},ValueTypes["ProductTypeUpdate"]],
 productTypeReorderAttributes?: [{	/** The list of attribute reordering operations. */
-	moves?:ValueTypes["ReorderInput"][],	/** ID of a product type. */
+	moves:ValueTypes["ReorderInput"][],	/** ID of a product type. */
 	productTypeId:string,	/** The attribute type to reorder. */
 	type:ValueTypes["ProductAttributeType"]},ValueTypes["ProductTypeReorderAttributes"]],
 productReorderAttributeValues?: [{	/** ID of an attribute. */
 	attributeId:string,	/** The list of reordering operations for given attribute values. */
-	moves?:ValueTypes["ReorderInput"][],	/** ID of a product. */
+	moves:ValueTypes["ReorderInput"][],	/** ID of a product. */
 	productId:string},ValueTypes["ProductReorderAttributeValues"]],
 digitalContentCreate?: [{	/** Fields required to create a digital content. */
 	input:ValueTypes["DigitalContentUploadInput"],	/** ID of a product variant to upload digital content. */
@@ -3710,9 +4063,9 @@ productVariantDelete?: [{	/** ID of a product variant to delete. */
 	id:string},ValueTypes["ProductVariantDelete"]],
 productVariantBulkCreate?: [{	/** ID of the product to create the variants for. */
 	product:string,	/** Input list of product variants to create. */
-	variants?:ValueTypes["ProductVariantBulkCreateInput"][]},ValueTypes["ProductVariantBulkCreate"]],
+	variants:ValueTypes["ProductVariantBulkCreateInput"][]},ValueTypes["ProductVariantBulkCreate"]],
 productVariantBulkDelete?: [{	/** List of product variant IDs to delete. */
-	ids?:string[]},ValueTypes["ProductVariantBulkDelete"]],
+	ids:string[]},ValueTypes["ProductVariantBulkDelete"]],
 productVariantStocksCreate?: [{	/** Input list of stocks to create. */
 	stocks:ValueTypes["StockInput"][],	/** ID of a product variant for which stocks will be created. */
 	variantId:string},ValueTypes["ProductVariantStocksCreate"]],
@@ -3735,7 +4088,7 @@ productVariantChannelListingUpdate?: [{	/** ID of a product variant to update. *
 	input:ValueTypes["ProductVariantChannelListingAddInput"][]},ValueTypes["ProductVariantChannelListingUpdate"]],
 productVariantReorderAttributeValues?: [{	/** ID of an attribute. */
 	attributeId:string,	/** The list of reordering operations for given attribute values. */
-	moves?:ValueTypes["ReorderInput"][],	/** ID of a product variant. */
+	moves:ValueTypes["ReorderInput"][],	/** ID of a product variant. */
 	variantId:string},ValueTypes["ProductVariantReorderAttributeValues"]],
 productVariantPreorderDeactivate?: [{	/** ID of a variant which preorder should be deactivated. */
 	id:string},ValueTypes["ProductVariantPreorderDeactivate"]],
@@ -3759,22 +4112,14 @@ paymentInitialize?: [{	/** Slug of a channel for which the data should be return
 	paymentData?:ValueTypes["JSONString"] | null},ValueTypes["PaymentInitialize"]],
 paymentCheckBalance?: [{	/** Fields required to check payment balance. */
 	input:ValueTypes["PaymentCheckBalanceInput"]},ValueTypes["PaymentCheckBalance"]],
-paymentCreate?: [{	/** The ID of the checkout or order. */
-	id:string,	/** Input data required to create a new payment object. */
-	payment:ValueTypes["PaymentPOCCreateInput"],	/** Data that defines a payment transaction. */
-	transaction?:ValueTypes["TransactionInput"] | null},ValueTypes["PaymentCreate"]],
-paymentUpdate?: [{	/** The ID of the payment. */
-	id:string,	/** Input data required to create a new payment object. */
-	payment:ValueTypes["PaymentPOCUpdateInput"],	/** Data that defines a payment transaction. */
-	transaction?:ValueTypes["TransactionInput"] | null},ValueTypes["PaymentUpdate"]],
 pageCreate?: [{	/** Fields required to create a page. */
 	input:ValueTypes["PageCreateInput"]},ValueTypes["PageCreate"]],
 pageDelete?: [{	/** ID of a page to delete. */
 	id:string},ValueTypes["PageDelete"]],
 pageBulkDelete?: [{	/** List of page IDs to delete. */
-	ids?:string[]},ValueTypes["PageBulkDelete"]],
+	ids:string[]},ValueTypes["PageBulkDelete"]],
 pageBulkPublish?: [{	/** List of page IDs to (un)publish. */
-	ids?:string[],	/** Determine if pages will be published or not. */
+	ids:string[],	/** Determine if pages will be published or not. */
 	isPublished:boolean},ValueTypes["PageBulkPublish"]],
 pageUpdate?: [{	/** ID of a page to update. */
 	id:string,	/** Fields required to update a page. */
@@ -3802,7 +4147,7 @@ pageTypeReorderAttributes?: [{	/** The list of attribute reordering operations. 
 	pageTypeId:string},ValueTypes["PageTypeReorderAttributes"]],
 pageReorderAttributeValues?: [{	/** ID of an attribute. */
 	attributeId:string,	/** The list of reordering operations for given attribute values. */
-	moves?:ValueTypes["ReorderInput"][],	/** ID of a page. */
+	moves:ValueTypes["ReorderInput"][],	/** ID of a page. */
 	pageId:string},ValueTypes["PageReorderAttributeValues"]],
 draftOrderComplete?: [{	/** ID of the order that will be completed. */
 	id:string},ValueTypes["DraftOrderComplete"]],
@@ -3811,9 +4156,9 @@ draftOrderCreate?: [{	/** Fields required to create an order. */
 draftOrderDelete?: [{	/** ID of a draft order to delete. */
 	id:string},ValueTypes["DraftOrderDelete"]],
 draftOrderBulkDelete?: [{	/** List of draft order IDs to delete. */
-	ids?:string[]},ValueTypes["DraftOrderBulkDelete"]],
+	ids:string[]},ValueTypes["DraftOrderBulkDelete"]],
 draftOrderLinesBulkDelete?: [{	/** List of order lines IDs to delete. */
-	ids?:string[]},ValueTypes["DraftOrderLinesBulkDelete"]],
+	ids:string[]},ValueTypes["DraftOrderLinesBulkDelete"]],
 draftOrderUpdate?: [{	/** ID of a draft order to update. */
 	id:string,	/** Fields required to update an order. */
 	input:ValueTypes["DraftOrderInput"]},ValueTypes["DraftOrderUpdate"]],
@@ -3848,7 +4193,7 @@ orderFulfillmentReturnProducts?: [{	/** Fields required to return products. */
 	order:string},ValueTypes["FulfillmentReturnProducts"]],
 orderLinesCreate?: [{	/** ID of the order to add the lines to. */
 	id:string,	/** Fields required to add order lines. */
-	input?:ValueTypes["OrderLineCreateInput"][]},ValueTypes["OrderLinesCreate"]],
+	input:ValueTypes["OrderLineCreateInput"][]},ValueTypes["OrderLinesCreate"]],
 orderLineDelete?: [{	/** ID of the order line to delete. */
 	id:string},ValueTypes["OrderLineDelete"]],
 orderLineUpdate?: [{	/** ID of the order line to update. */
@@ -3882,7 +4227,7 @@ orderUpdateShipping?: [{	/** ID of the order to update a shipping method. */
 orderVoid?: [{	/** ID of the order to void. */
 	id:string},ValueTypes["OrderVoid"]],
 orderBulkCancel?: [{	/** List of orders IDs to cancel. */
-	ids?:string[]},ValueTypes["OrderBulkCancel"]],
+	ids:string[]},ValueTypes["OrderBulkCancel"]],
 deleteMetadata?: [{	/** ID or token (for Order and Checkout) of an object to update. */
 	id:string,	/** Metadata keys to delete. */
 	keys:string[]},ValueTypes["DeleteMetadata"]],
@@ -3903,7 +4248,7 @@ menuCreate?: [{	/** Fields required to create a menu. */
 menuDelete?: [{	/** ID of a menu to delete. */
 	id:string},ValueTypes["MenuDelete"]],
 menuBulkDelete?: [{	/** List of menu IDs to delete. */
-	ids?:string[]},ValueTypes["MenuBulkDelete"]],
+	ids:string[]},ValueTypes["MenuBulkDelete"]],
 menuUpdate?: [{	/** ID of a menu to update. */
 	id:string,	/** Fields required to update a menu. */
 	input:ValueTypes["MenuInput"]},ValueTypes["MenuUpdate"]],
@@ -3912,7 +4257,7 @@ menuItemCreate?: [{	/** Fields required to update a menu item. Only one of `url`
 menuItemDelete?: [{	/** ID of a menu item to delete. */
 	id:string},ValueTypes["MenuItemDelete"]],
 menuItemBulkDelete?: [{	/** List of menu item IDs to delete. */
-	ids?:string[]},ValueTypes["MenuItemBulkDelete"]],
+	ids:string[]},ValueTypes["MenuItemBulkDelete"]],
 menuItemUpdate?: [{	/** ID of a menu item to update. */
 	id:string,	/** Fields required to update a menu item. Only one of `url`, `category`, `page`, `collection` is allowed per item. */
 	input:ValueTypes["MenuItemInput"]},ValueTypes["MenuItemUpdate"]],
@@ -3921,7 +4266,7 @@ menuItemTranslate?: [{	/** MenuItem ID or MenuItemTranslatableContent ID. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["MenuItemTranslate"]],
 menuItemMove?: [{	/** ID of the menu. */
 	menu:string,	/** The menu position data. */
-	moves?:ValueTypes["MenuItemMoveInput"][]},ValueTypes["MenuItemMove"]],
+	moves:ValueTypes["MenuItemMoveInput"][]},ValueTypes["MenuItemMove"]],
 invoiceRequest?: [{	/** Invoice number, if not provided it will be generated. */
 	number?:string | null,	/** ID of the order related to invoice. */
 	orderId:string},ValueTypes["InvoiceRequest"]],
@@ -3956,18 +4301,18 @@ giftCardAddNote?: [{	/** ID of the gift card to add a note for. */
 giftCardBulkCreate?: [{	/** Fields required to create gift cards. */
 	input:ValueTypes["GiftCardBulkCreateInput"]},ValueTypes["GiftCardBulkCreate"]],
 giftCardBulkDelete?: [{	/** List of gift card IDs to delete. */
-	ids?:string[]},ValueTypes["GiftCardBulkDelete"]],
+	ids:string[]},ValueTypes["GiftCardBulkDelete"]],
 giftCardBulkActivate?: [{	/** List of gift card IDs to activate. */
-	ids?:string[]},ValueTypes["GiftCardBulkActivate"]],
+	ids:string[]},ValueTypes["GiftCardBulkActivate"]],
 giftCardBulkDeactivate?: [{	/** List of gift card IDs to deactivate. */
-	ids?:string[]},ValueTypes["GiftCardBulkDeactivate"]],
+	ids:string[]},ValueTypes["GiftCardBulkDeactivate"]],
 pluginUpdate?: [{	/** ID of a channel for which the data should be modified. */
 	channelId?:string | null,	/** ID of plugin to update. */
 	id:string,	/** Fields required to update a plugin configuration. */
 	input:ValueTypes["PluginUpdateInput"]},ValueTypes["PluginUpdate"]],
 externalNotificationTrigger?: [{	/** Channel slug. Saleor will send a notification within a provided channel.
 Please, make sure that necessary plugins are active. */
-	channel:string,	/** Input for External Notification Trigger.  */
+	channel:string,	/** Input for External Notification Trigger. */
 	input:ValueTypes["ExternalNotificationTriggerInput"],	/** The ID of notification plugin. */
 	pluginId?:string | null},ValueTypes["ExternalNotificationTrigger"]],
 saleCreate?: [{	/** Fields required to create a sale. */
@@ -3975,7 +4320,7 @@ saleCreate?: [{	/** Fields required to create a sale. */
 saleDelete?: [{	/** ID of a sale to delete. */
 	id:string},ValueTypes["SaleDelete"]],
 saleBulkDelete?: [{	/** List of sale IDs to delete. */
-	ids?:string[]},ValueTypes["SaleBulkDelete"]],
+	ids:string[]},ValueTypes["SaleBulkDelete"]],
 saleUpdate?: [{	/** ID of a sale to update. */
 	id:string,	/** Fields required to update a sale. */
 	input:ValueTypes["SaleInput"]},ValueTypes["SaleUpdate"]],
@@ -3996,7 +4341,7 @@ voucherCreate?: [{	/** Fields required to create a voucher. */
 voucherDelete?: [{	/** ID of a voucher to delete. */
 	id:string},ValueTypes["VoucherDelete"]],
 voucherBulkDelete?: [{	/** List of voucher IDs to delete. */
-	ids?:string[]},ValueTypes["VoucherBulkDelete"]],
+	ids:string[]},ValueTypes["VoucherBulkDelete"]],
 voucherUpdate?: [{	/** ID of a voucher to update. */
 	id:string,	/** Fields required to update a voucher. */
 	input:ValueTypes["VoucherInput"]},ValueTypes["VoucherUpdate"]],
@@ -4067,19 +4412,19 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use token instead. */
 	lineId?:string | null,	/** Checkout token. */
 	token?:ValueTypes["UUID"] | null},ValueTypes["CheckoutLineDelete"]],
 checkoutLinesDelete?: [{	/** A list of checkout lines. */
-	linesIds?:string[],	/** Checkout token. */
+	linesIds:string[],	/** Checkout token. */
 	token:ValueTypes["UUID"]},ValueTypes["CheckoutLinesDelete"]],
 checkoutLinesAdd?: [{	/** The ID of the checkout. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use token instead. */
 	checkoutId?:string | null,	/** A list of checkout lines, each containing information about an item in the checkout. */
-	lines?:ValueTypes["CheckoutLineInput"][],	/** Checkout token. */
+	lines:ValueTypes["CheckoutLineInput"][],	/** Checkout token. */
 	token?:ValueTypes["UUID"] | null},ValueTypes["CheckoutLinesAdd"]],
 checkoutLinesUpdate?: [{	/** The ID of the checkout. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use token instead. */
 	checkoutId?:string | null,	/** A list of checkout lines, each containing information about an item in the checkout. */
-	lines?:ValueTypes["CheckoutLineInput"][],	/** Checkout token. */
+	lines:ValueTypes["CheckoutLineUpdateInput"][],	/** Checkout token. */
 	token?:ValueTypes["UUID"] | null},ValueTypes["CheckoutLinesUpdate"]],
 checkoutRemovePromoCode?: [{	/** The ID of the checkout. 
 
@@ -4115,8 +4460,9 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use token instead. */
 	checkoutId?:string | null,	/** New language code. */
 	languageCode:ValueTypes["LanguageCodeEnum"],	/** Checkout token. */
 	token?:ValueTypes["UUID"] | null},ValueTypes["CheckoutLanguageCodeUpdate"]],
-orderFromCheckoutCreate?: [{	/** ID of a checkout that will be converted to an order. */
-	id:string},ValueTypes["OrderFromCheckoutCreate"]],
+orderCreateFromCheckout?: [{	/** ID of a checkout that will be converted to an order. */
+	id:string,	/** Determines if checkout should be removed after creating an order. Default true. */
+	removeCheckout?:boolean | null},ValueTypes["OrderCreateFromCheckout"]],
 channelCreate?: [{	/** Fields required to create channel. */
 	input:ValueTypes["ChannelCreateInput"]},ValueTypes["ChannelCreate"]],
 channelUpdate?: [{	/** ID of a channel to update. */
@@ -4140,9 +4486,9 @@ attributeTranslate?: [{	/** Attribute ID or AttributeTranslatableContent ID. */
 	id:string,	input:ValueTypes["NameTranslationInput"],	/** Translation language code. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["AttributeTranslate"]],
 attributeBulkDelete?: [{	/** List of attribute IDs to delete. */
-	ids?:string[]},ValueTypes["AttributeBulkDelete"]],
+	ids:string[]},ValueTypes["AttributeBulkDelete"]],
 attributeValueBulkDelete?: [{	/** List of attribute value IDs to delete. */
-	ids?:string[]},ValueTypes["AttributeValueBulkDelete"]],
+	ids:string[]},ValueTypes["AttributeValueBulkDelete"]],
 attributeValueCreate?: [{	/** Attribute to which value will be assigned. */
 	attribute:string,	/** Fields required to create an AttributeValue. */
 	input:ValueTypes["AttributeValueCreateInput"]},ValueTypes["AttributeValueCreate"]],
@@ -4156,7 +4502,7 @@ attributeValueTranslate?: [{	/** AttributeValue ID or AttributeValueTranslatable
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["AttributeValueTranslate"]],
 attributeReorderValues?: [{	/** ID of an attribute. */
 	attributeId:string,	/** The list of reordering operations for given attribute values. */
-	moves?:ValueTypes["ReorderInput"][]},ValueTypes["AttributeReorderValues"]],
+	moves:ValueTypes["ReorderInput"][]},ValueTypes["AttributeReorderValues"]],
 appCreate?: [{	/** Fields required to create a new app. */
 	input:ValueTypes["AppInput"]},ValueTypes["AppCreate"]],
 appUpdate?: [{	/** ID of an app to update. */
@@ -4190,7 +4536,8 @@ tokenRefresh?: [{	/** CSRF token required to refresh token. This argument is req
 	refreshToken?:string | null},ValueTypes["RefreshToken"]],
 tokenVerify?: [{	/** JWT token to validate. */
 	token:string},ValueTypes["VerifyToken"]],
-	/** Deactivate all JWT tokens of the currently authenticated user. */
+	/** Deactivate all JWT tokens of the currently authenticated user. Requires one of
+the following permissions: AUTHENTICATED_USER. */
 	tokensDeactivateAll?:ValueTypes["DeactivateAllUserTokens"],
 externalAuthenticationUrl?: [{	/** The data required by plugin to create external authentication url. */
 	input:ValueTypes["JSONString"],	/** The ID of the authentication plugin. */
@@ -4270,7 +4617,7 @@ customerUpdate?: [{	/** ID of a customer to update. */
 customerDelete?: [{	/** ID of a customer to delete. */
 	id:string},ValueTypes["CustomerDelete"]],
 customerBulkDelete?: [{	/** List of user IDs to delete. */
-	ids?:string[]},ValueTypes["CustomerBulkDelete"]],
+	ids:string[]},ValueTypes["CustomerBulkDelete"]],
 staffCreate?: [{	/** Fields required to create a staff user. */
 	input:ValueTypes["StaffCreateInput"]},ValueTypes["StaffCreate"]],
 staffUpdate?: [{	/** ID of a staff user to update. */
@@ -4279,13 +4626,13 @@ staffUpdate?: [{	/** ID of a staff user to update. */
 staffDelete?: [{	/** ID of a staff user to delete. */
 	id:string},ValueTypes["StaffDelete"]],
 staffBulkDelete?: [{	/** List of user IDs to delete. */
-	ids?:string[]},ValueTypes["StaffBulkDelete"]],
+	ids:string[]},ValueTypes["StaffBulkDelete"]],
 userAvatarUpdate?: [{	/** Represents an image file in a multipart request. */
 	image:ValueTypes["Upload"]},ValueTypes["UserAvatarUpdate"]],
-	/** Deletes a user avatar. Only for staff members. */
+	/** Deletes a user avatar. Only for staff members. Requires one of the following permissions: AUTHENTICATED_STAFF_USER. */
 	userAvatarDelete?:ValueTypes["UserAvatarDelete"],
 userBulkSetActive?: [{	/** List of user IDs to (de)activate). */
-	ids?:string[],	/** Determine if users will be set active or not. */
+	ids:string[],	/** Determine if users will be set active or not. */
 	isActive:boolean},ValueTypes["UserBulkSetActive"]],
 permissionGroupCreate?: [{	/** Input fields to create permission group. */
 	input:ValueTypes["PermissionGroupCreateInput"]},ValueTypes["PermissionGroupCreate"]],
@@ -4353,7 +4700,6 @@ permissionGroupDelete?: [{	/** ID of the group to delete. */
 		['...on PageTranslation']?: Omit<ValueTypes["PageTranslation"],keyof ValueTypes["Node"]>;
 		['...on PageType']?: Omit<ValueTypes["PageType"],keyof ValueTypes["Node"]>;
 		['...on Payment']?: Omit<ValueTypes["Payment"],keyof ValueTypes["Node"]>;
-		['...on PaymentPOC']?: Omit<ValueTypes["PaymentPOC"],keyof ValueTypes["Node"]>;
 		['...on Product']?: Omit<ValueTypes["Product"],keyof ValueTypes["Node"]>;
 		['...on ProductChannelListing']?: Omit<ValueTypes["ProductChannelListing"],keyof ValueTypes["Node"]>;
 		['...on ProductMedia']?: Omit<ValueTypes["ProductMedia"],keyof ValueTypes["Node"]>;
@@ -4389,10 +4735,14 @@ permissionGroupDelete?: [{	/** ID of the group to delete. */
 		__typename?: boolean
 }>;
 	["ObjectWithMetadata"]:AliasType<{
-		/** List of private metadata items.Requires proper staff permissions to access. */
+		/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ValueTypes["MetadataItem"];
+	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean];
 		['...on App']?: Omit<ValueTypes["App"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on Attribute']?: Omit<ValueTypes["Attribute"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on Category']?: Omit<ValueTypes["Category"],keyof ValueTypes["ObjectWithMetadata"]>;
@@ -4408,7 +4758,6 @@ permissionGroupDelete?: [{	/** ID of the group to delete. */
 		['...on Page']?: Omit<ValueTypes["Page"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on PageType']?: Omit<ValueTypes["PageType"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on Payment']?: Omit<ValueTypes["Payment"],keyof ValueTypes["ObjectWithMetadata"]>;
-		['...on PaymentPOC']?: Omit<ValueTypes["PaymentPOC"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on Product']?: Omit<ValueTypes["Product"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on ProductType']?: Omit<ValueTypes["ProductType"],keyof ValueTypes["ObjectWithMetadata"]>;
 		['...on ProductVariant']?: Omit<ValueTypes["ProductVariant"],keyof ValueTypes["ObjectWithMetadata"]>;
@@ -4424,16 +4773,28 @@ permissionGroupDelete?: [{	/** ID of the group to delete. */
 	/** Represents an order in the shop. */
 ["Order"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	created?:boolean,
 	updatedAt?:boolean,
 	status?:boolean,
+	/** User who placed the order. This field is set only for orders placed by
+authenticated users. Requires one of the following permissions:
+AccountPermissions.MANAGE_USERS, OrderPermissions.MANAGE_ORDERS,
+AuthorizationFilters.OWNER. */
 	user?:ValueTypes["User"],
 	trackingClientId?:boolean,
+	/** Billing address. Requires one of the following permissions to view the full
+data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	billingAddress?:ValueTypes["Address"],
+	/** Shipping address. Requires one of the following permissions to view the full
+data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	shippingAddress?:ValueTypes["Address"],
 	shippingMethodName?:boolean,
 	collectionPointName?:boolean,
@@ -4448,10 +4809,11 @@ permissionGroupDelete?: [{	/** ID of the group to delete. */
 	availableShippingMethods?:ValueTypes["ShippingMethod"],
 	/** Shipping methods related to this order. */
 	shippingMethods?:ValueTypes["ShippingMethod"],
-	/** New in Saleor 3.1. Collection points that can be used for this order. Note:
+	/** Added in Saleor 3.1. Collection points that can be used for this order. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	availableCollectionPoints?:ValueTypes["Warehouse"],
-	/** List of order invoices. */
+	/** List of order invoices. Requires one of the following permissions:
+OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	invoices?:ValueTypes["Invoice"],
 	/** User-friendly number of an order. */
 	number?:boolean,
@@ -4467,8 +4829,6 @@ this feature is in a preview state and can be subject to changes at later point.
 	paymentStatusDisplay?:boolean,
 	/** List of payments for the order. */
 	payments?:ValueTypes["Payment"],
-	/** List of payments for the order */
-	pocPayments?:ValueTypes["PaymentPOC"],
 	/** Total amount of the order. */
 	total?:ValueTypes["TaxedMoney"],
 	/** Undiscounted total amount of the order. */
@@ -4496,16 +4856,17 @@ this feature is in a preview state and can be subject to changes at later point.
 	totalAuthorized?:ValueTypes["Money"],
 	/** Amount captured by payment. */
 	totalCaptured?:ValueTypes["Money"],
-	/** List of events associated with the order. */
+	/** List of events associated with the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	events?:ValueTypes["OrderEvent"],
 	/** The difference between the paid and the order total amount. */
 	totalBalance?:ValueTypes["Money"],
-	/** Email address of the customer. */
+	/** Email address of the customer. Requires the following permissions to access
+the full data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER */
 	userEmail?:boolean,
 	/** Returns True, if order requires shipping. */
 	isShippingRequired?:boolean,
-	/** New in Saleor 3.1. The delivery method selected for this checkout. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The delivery method selected for this checkout. Note:
+this feature is in a preview state and can be subject to changes at later point. */
 	deliveryMethod?:ValueTypes["DeliveryMethod"],
 	languageCode?:boolean,
 	/** Order language code. */
@@ -4523,7 +4884,7 @@ feature is in a preview state and can be subject to changes at later point. */
 		__typename?: boolean
 }>;
 	["OrderAction"]:OrderAction;
-	/** Adds note to the order. */
+	/** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderAddNote"]: AliasType<{
 	/** Order with the note added. */
 	order?:ValueTypes["Order"],
@@ -4537,7 +4898,7 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** Note message. */
 	message:string
 };
-	/** Cancels orders. */
+	/** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderBulkCancel"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -4545,7 +4906,7 @@ feature is in a preview state and can be subject to changes at later point. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Cancel an order. */
+	/** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderCancel"]: AliasType<{
 	/** Canceled order. */
 	order?:ValueTypes["Order"],
@@ -4553,7 +4914,13 @@ feature is in a preview state and can be subject to changes at later point. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Capture an order. */
+	["OrderCancelled"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	/** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderCapture"]: AliasType<{
 	/** Captured order. */
 	order?:ValueTypes["Order"],
@@ -4561,11 +4928,17 @@ feature is in a preview state and can be subject to changes at later point. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Confirms an unconfirmed order by changing status to unfulfilled. */
+	/** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderConfirm"]: AliasType<{
 	order?:ValueTypes["Order"],
 	orderErrors?:ValueTypes["OrderError"],
 	errors?:ValueTypes["OrderError"],
+		__typename?: boolean
+}>;
+	["OrderConfirmed"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ValueTypes["Order"],
 		__typename?: boolean
 }>;
 	["OrderCountableConnection"]: AliasType<{
@@ -4583,6 +4956,37 @@ feature is in a preview state and can be subject to changes at later point. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
+	["OrderCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	/** Added in Saleor 3.2. Create new order from existing checkout. Note: this feature
+is in a preview state and can be subject to changes at later point. Requires one
+of the following permissions: HANDLE_CHECKOUTS. */
+["OrderCreateFromCheckout"]: AliasType<{
+	/** Placed order. */
+	order?:ValueTypes["Order"],
+	errors?:ValueTypes["OrderCreateFromCheckoutError"],
+		__typename?: boolean
+}>;
+	["OrderCreateFromCheckoutError"]: AliasType<{
+	/** Name of a field that caused the error. A value of `null` indicates that the
+error isn't associated with a particular field. */
+	field?:boolean,
+	/** The error message. */
+	message?:boolean,
+	/** The error code. */
+	code?:boolean,
+	/** List of variant IDs which causes the error. */
+	variants?:boolean,
+	/** List of line Ids which cause the error. */
+	lines?:boolean,
+		__typename?: boolean
+}>;
+	/** An enumeration. */
+["OrderCreateFromCheckoutErrorCode"]:OrderCreateFromCheckoutErrorCode;
 	["OrderDirection"]:OrderDirection;
 	/** Contains all details related to the applied discount to the order. */
 ["OrderDiscount"]: AliasType<{
@@ -4594,13 +4998,13 @@ feature is in a preview state and can be subject to changes at later point. */
 	valueType?:boolean,
 	/** Value of the discount. Can store fixed value or percent value */
 	value?:boolean,
-	/** Explanation for the applied discount. */
+	/** Explanation for the applied discount. Requires one of the following permissions: MANAGE_ORDERS. */
 	reason?:boolean,
 	/** Returns amount of discount. */
 	amount?:ValueTypes["Money"],
 		__typename?: boolean
 }>;
-	/** Adds discount to the order. */
+	/** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountAdd"]: AliasType<{
 	/** Order which has been discounted. */
 	order?:ValueTypes["Order"],
@@ -4616,7 +5020,7 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** Explanation for the applied discount. */
 	reason?:string | null
 };
-	/** Remove discount from the order. */
+	/** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountDelete"]: AliasType<{
 	/** Order which has removed discount. */
 	order?:ValueTypes["Order"],
@@ -4626,7 +5030,7 @@ feature is in a preview state and can be subject to changes at later point. */
 }>;
 	/** An enumeration. */
 ["OrderDiscountType"]:OrderDiscountType;
-	/** Update discount for the order. */
+	/** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountUpdate"]: AliasType<{
 	/** Order which has been discounted. */
 	order?:ValueTypes["Order"],
@@ -4638,8 +5042,8 @@ feature is in a preview state and can be subject to changes at later point. */
 	customer?:string | null,
 	created?:ValueTypes["DateRangeInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	channels?:(string | undefined | null)[]
+	metadata?:ValueTypes["MetadataFilter"][],
+	channels?:string[]
 };
 	["OrderError"]: AliasType<{
 	/** Name of a field that caused the error. A value of `null` indicates that the
@@ -4670,7 +5074,9 @@ error isn't associated with a particular field. */
 	type?:boolean,
 	/** User who performed the action. */
 	user?:ValueTypes["User"],
-	/** App that performed the action. */
+	/** App that performed the action. Requires of of the following permissions:
+AppPermission.MANAGE_APPS, OrderPermissions.MANAGE_ORDERS,
+AuthorizationFilters.OWNER. */
 	app?:ValueTypes["App"],
 	/** Content of the event. */
 	message?:boolean,
@@ -4708,10 +5114,6 @@ error isn't associated with a particular field. */
 	relatedOrder?:ValueTypes["Order"],
 	/** The discount applied to the order. */
 	discount?:ValueTypes["OrderEventDiscountObject"],
-	/** The status of payment's transaction. */
-	status?:boolean,
-	/** The reference of payment's transaction. */
-	reference?:boolean,
 		__typename?: boolean
 }>;
 	["OrderEventCountableConnection"]: AliasType<{
@@ -4762,45 +5164,21 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["OrderEventsEnum"]:OrderEventsEnum;
 	["OrderFilterInput"]: {
-	paymentStatus?:(ValueTypes["PaymentChargeStatusEnum"] | undefined | null)[],
-	status?:(ValueTypes["OrderStatusFilter"] | undefined | null)[],
+	paymentStatus?:ValueTypes["PaymentChargeStatusEnum"][],
+	status?:ValueTypes["OrderStatusFilter"][],
 	customer?:string | null,
 	created?:ValueTypes["DateRangeInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	channels?:(string | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
+	channels?:string[],
 	updatedAt?:ValueTypes["DateTimeRangeInput"] | null,
 	isClickAndCollect?:boolean | null,
 	isPreorder?:boolean | null,
-	ids?:(string | undefined | null)[],
+	ids?:string[],
 	giftCardUsed?:boolean | null,
 	giftCardBought?:boolean | null
 };
-	/** Create new order from existing checkout. */
-["OrderFromCheckoutCreate"]: AliasType<{
-	/** Placed order. */
-	order?:ValueTypes["Order"],
-	checkoutErrors?:ValueTypes["OrderFromCheckoutCreateError"],
-	errors?:ValueTypes["OrderFromCheckoutCreateError"],
-		__typename?: boolean
-}>;
-	["OrderFromCheckoutCreateError"]: AliasType<{
-	/** Name of a field that caused the error. A value of `null` indicates that the
-error isn't associated with a particular field. */
-	field?:boolean,
-	/** The error message. */
-	message?:boolean,
-	/** The error code. */
-	code?:boolean,
-	/** List of varint IDs which causes the error. */
-	variants?:boolean,
-	/** List of line Ids which cause the error. */
-	lines?:boolean,
-		__typename?: boolean
-}>;
-	/** An enumeration. */
-["OrderFromCheckoutCreateErrorCode"]:OrderFromCheckoutCreateErrorCode;
-	/** Creates new fulfillments for an order. */
+	/** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderFulfill"]: AliasType<{
 	/** List of created fulfillments. */
 	fulfillments?:ValueTypes["Fulfillment"],
@@ -4808,6 +5186,12 @@ error isn't associated with a particular field. */
 	order?:ValueTypes["Order"],
 	orderErrors?:ValueTypes["OrderError"],
 	errors?:ValueTypes["OrderError"],
+		__typename?: boolean
+}>;
+	["OrderFulfilled"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ValueTypes["Order"],
 		__typename?: boolean
 }>;
 	["OrderFulfillInput"]: {
@@ -4830,6 +5214,12 @@ error isn't associated with a particular field. */
 	/** ID of the warehouse from which the item will be fulfilled. */
 	warehouse:string
 };
+	["OrderFullyPaid"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
 	/** Represents order line of particular order. */
 ["OrderLine"]: AliasType<{
 	id?:boolean,
@@ -4855,15 +5245,18 @@ thumbnail?: [{	/** Size of thumbnail. */
 	unitDiscountValue?:boolean,
 	/** Price of the order line. */
 	totalPrice?:ValueTypes["TaxedMoney"],
-	/** A purchased product variant. Note: this field may be null if the variant has been removed from stock at all. */
+	/** A purchased product variant. Note: this field may be null if the variant has
+been removed from stock at all. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	variant?:ValueTypes["ProductVariant"],
 	/** Product name in the customer's language */
 	translatedProductName?:boolean,
 	/** Variant name in the customer's language */
 	translatedVariantName?:boolean,
-	/** List of allocations across warehouses. */
+	/** List of allocations across warehouses. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	allocations?:ValueTypes["Allocation"],
-	/** New in Saleor 3.1. A quantity of items remaining to be fulfilled. */
+	/** Added in Saleor 3.1. A quantity of items remaining to be fulfilled. */
 	quantityToFulfill?:boolean,
 	/** Type of the discount: fixed or percent */
 	unitDiscountType?:boolean,
@@ -4875,7 +5268,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 	/** Product variant ID. */
 	variantId:string
 };
-	/** Deletes an order line from an order. */
+	/** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDelete"]: AliasType<{
 	/** A related order. */
 	order?:ValueTypes["Order"],
@@ -4885,7 +5278,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Remove discount applied to the order line. */
+	/** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDiscountRemove"]: AliasType<{
 	/** Order line which has removed discount. */
 	orderLine?:ValueTypes["OrderLine"],
@@ -4895,7 +5288,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Update discount for the order line. */
+	/** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDiscountUpdate"]: AliasType<{
 	/** Order line which has been discounted. */
 	orderLine?:ValueTypes["OrderLine"],
@@ -4909,7 +5302,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 	/** Number of variant items ordered. */
 	quantity:number
 };
-	/** Create order lines for an order. */
+	/** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLinesCreate"]: AliasType<{
 	/** Related order. */
 	order?:ValueTypes["Order"],
@@ -4919,7 +5312,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 	errors?:ValueTypes["OrderError"],
 		__typename?: boolean
 }>;
-	/** Updates an order line of an order. */
+	/** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineUpdate"]: AliasType<{
 	/** Related order. */
 	order?:ValueTypes["Order"],
@@ -4928,7 +5321,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 	orderLine?:ValueTypes["OrderLine"],
 		__typename?: boolean
 }>;
-	/** Mark order as manually paid. */
+	/** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderMarkAsPaid"]: AliasType<{
 	/** Order marked as paid. */
 	order?:ValueTypes["Order"],
@@ -4938,7 +5331,7 @@ thumbnail?: [{	/** Size of thumbnail. */
 }>;
 	/** An enumeration. */
 ["OrderOriginEnum"]:OrderOriginEnum;
-	/** Refund an order. */
+	/** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderRefund"]: AliasType<{
 	/** A refunded order. */
 	order?:ValueTypes["Order"],
@@ -5014,7 +5407,7 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["OrderSettingsErrorCode"]:OrderSettingsErrorCode;
-	/** Update shop order settings. */
+	/** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderSettingsUpdate"]: AliasType<{
 	/** Order settings. */
 	orderSettings?:ValueTypes["OrderSettings"],
@@ -5039,10 +5432,16 @@ When enabled orders from checkout will become unfulfilled immediately. */
 	/** An enumeration. */
 ["OrderStatus"]:OrderStatus;
 	["OrderStatusFilter"]:OrderStatusFilter;
-	/** Updates an order. */
+	/** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderUpdate"]: AliasType<{
 	orderErrors?:ValueTypes["OrderError"],
 	errors?:ValueTypes["OrderError"],
+	order?:ValueTypes["Order"],
+		__typename?: boolean
+}>;
+	["OrderUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	order?:ValueTypes["Order"],
 		__typename?: boolean
 }>;
@@ -5055,7 +5454,8 @@ When enabled orders from checkout will become unfulfilled immediately. */
 	shippingAddress?:ValueTypes["AddressInput"] | null
 };
 	/** Updates a shipping method of the order. Requires shipping method ID to update,
-when null is passed then currently assigned shipping method is removed. */
+when null is passed then currently assigned shipping method is removed. Requires
+one of the following permissions: MANAGE_ORDERS. */
 ["OrderUpdateShipping"]: AliasType<{
 	/** Order with updated shipping method. */
 	order?:ValueTypes["Order"],
@@ -5067,7 +5467,7 @@ when null is passed then currently assigned shipping method is removed. */
 	/** ID of the selected shipping method, pass null to remove currently assigned shipping method. */
 	shippingMethod?:string | null
 };
-	/** Void an order. */
+	/** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderVoid"]: AliasType<{
 	/** A voided order. */
 	order?:ValueTypes["Order"],
@@ -5078,16 +5478,22 @@ when null is passed then currently assigned shipping method is removed. */
 	/** A static page that can be manually added by a shop operator through the dashboard. */
 ["Page"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	seoTitle?:boolean,
 	seoDescription?:boolean,
 	title?:boolean,
 	/** Content of the page (JSON). */
 	content?:boolean,
 	publicationDate?:boolean,
+	/** Added in Saleor 3.3. The page publication date. */
+	publishedAt?:boolean,
 	isPublished?:boolean,
 	slug?:boolean,
 	pageType?:ValueTypes["PageType"],
@@ -5100,7 +5506,7 @@ translation?: [{	/** A language code to return the translation for page. */
 	attributes?:ValueTypes["SelectedAttribute"],
 		__typename?: boolean
 }>;
-	/** Assign attributes to a given page type. */
+	/** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageAttributeAssign"]: AliasType<{
 	/** The updated page type. */
 	pageType?:ValueTypes["PageType"],
@@ -5108,7 +5514,7 @@ translation?: [{	/** A language code to return the translation for page. */
 	errors?:ValueTypes["PageError"],
 		__typename?: boolean
 }>;
-	/** Unassign attributes from a given page type. */
+	/** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageAttributeUnassign"]: AliasType<{
 	/** The updated page type. */
 	pageType?:ValueTypes["PageType"],
@@ -5116,7 +5522,7 @@ translation?: [{	/** A language code to return the translation for page. */
 	errors?:ValueTypes["PageError"],
 		__typename?: boolean
 }>;
-	/** Deletes pages. */
+	/** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -5124,7 +5530,7 @@ translation?: [{	/** A language code to return the translation for page. */
 	errors?:ValueTypes["PageError"],
 		__typename?: boolean
 }>;
-	/** Publish pages. */
+	/** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageBulkPublish"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -5147,10 +5553,16 @@ translation?: [{	/** A language code to return the translation for page. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new page. */
+	/** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageCreate"]: AliasType<{
 	pageErrors?:ValueTypes["PageError"],
 	errors?:ValueTypes["PageError"],
+	page?:ValueTypes["Page"],
+		__typename?: boolean
+}>;
+	["PageCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	page?:ValueTypes["Page"],
 		__typename?: boolean
 }>;
@@ -5165,17 +5577,27 @@ translation?: [{	/** A language code to return the translation for page. */
 	attributes?:ValueTypes["AttributeValueInput"][],
 	/** Determines if page is visible in the storefront. */
 	isPublished?:boolean | null,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
 	publicationDate?:string | null,
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?:ValueTypes["DateTime"] | null,
 	/** Search engine optimization fields. */
 	seo?:ValueTypes["SeoInput"] | null,
 	/** ID of the page type that page belongs to. */
 	pageType:string
 };
-	/** Deletes a page. */
+	/** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageDelete"]: AliasType<{
 	pageErrors?:ValueTypes["PageError"],
 	errors?:ValueTypes["PageError"],
+	page?:ValueTypes["Page"],
+		__typename?: boolean
+}>;
+	["PageDeleted"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	page?:ValueTypes["Page"],
 		__typename?: boolean
 }>;
@@ -5197,9 +5619,9 @@ error isn't associated with a particular field. */
 ["PageErrorCode"]:PageErrorCode;
 	["PageFilterInput"]: {
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
-	pageTypes?:(string | undefined | null)[],
-	ids?:(string | undefined | null)[]
+	metadata?:ValueTypes["MetadataFilter"][],
+	pageTypes?:string[],
+	ids?:string[]
 };
 	/** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
 ["PageInfo"]: AliasType<{
@@ -5224,12 +5646,16 @@ error isn't associated with a particular field. */
 	attributes?:ValueTypes["AttributeValueInput"][],
 	/** Determines if page is visible in the storefront. */
 	isPublished?:boolean | null,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
 	publicationDate?:string | null,
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?:ValueTypes["DateTime"] | null,
 	/** Search engine optimization fields. */
 	seo?:ValueTypes["SeoInput"] | null
 };
-	/** Reorder page attribute values. */
+	/** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageReorderAttributeValues"]: AliasType<{
 	/** Page from which attribute values are reordered. */
 	page?:ValueTypes["Page"],
@@ -5254,13 +5680,13 @@ error isn't associated with a particular field. */
 	contentJson?:boolean,
 translation?: [{	/** A language code to return the translation for page. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["PageTranslation"]],
-	/** ('A static page that can be manually added by a shop operator ', 'through the dashboard.') */
+	/** A static page that can be manually added by a shop operator through the dashboard. */
 	page?:ValueTypes["Page"],
 	/** List of page content attribute values that can be translated. */
 	attributeValues?:ValueTypes["AttributeValueTranslatableContent"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a page. */
+	/** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["PageTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -5288,10 +5714,14 @@ translation?: [{	/** A language code to return the translation for page. */
 	/** Represents a type of page. It defines what attributes are available to pages of this type. */
 ["PageType"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	slug?:boolean,
 	/** Page attributes of that page type. */
@@ -5301,11 +5731,11 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	after?:string | null,	/** Return the first n elements from the list. */
 	first?:number | null,	/** Return the last n elements from the list. */
 	last?:number | null},ValueTypes["AttributeCountableConnection"]],
-	/** Whether page type has pages assigned. */
+	/** Whether page type has pages assigned. Requires one of the following permissions: MANAGE_PAGES. */
 	hasPages?:boolean,
 		__typename?: boolean
 }>;
-	/** Delete page types. */
+	/** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -5328,7 +5758,7 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Create a new page type. */
+	/** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeCreate"]: AliasType<{
 	pageErrors?:ValueTypes["PageError"],
 	errors?:ValueTypes["PageError"],
@@ -5343,7 +5773,7 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	/** List of attribute IDs to be assigned to the page type. */
 	addAttributes?:string[]
 };
-	/** Delete a page type. */
+	/** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeDelete"]: AliasType<{
 	pageErrors?:ValueTypes["PageError"],
 	errors?:ValueTypes["PageError"],
@@ -5353,7 +5783,7 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	["PageTypeFilterInput"]: {
 	search?:string | null
 };
-	/** Reorder the attributes of a page type. */
+	/** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeReorderAttributes"]: AliasType<{
 	/** Page type from which attributes are reordered. */
 	pageType?:ValueTypes["PageType"],
@@ -5368,7 +5798,7 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	/** Sort page types by the selected field. */
 	field:ValueTypes["PageTypeSortField"]
 };
-	/** Update page type. */
+	/** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeUpdate"]: AliasType<{
 	pageErrors?:ValueTypes["PageError"],
 	errors?:ValueTypes["PageError"],
@@ -5385,14 +5815,20 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	/** List of attribute IDs to be assigned to the page type. */
 	removeAttributes?:string[]
 };
-	/** Updates an existing page. */
+	/** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageUpdate"]: AliasType<{
 	pageErrors?:ValueTypes["PageError"],
 	errors?:ValueTypes["PageError"],
 	page?:ValueTypes["Page"],
 		__typename?: boolean
 }>;
-	/** Change the password of the logged in user. */
+	["PageUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	page?:ValueTypes["Page"],
+		__typename?: boolean
+}>;
+	/** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["PasswordChange"]: AliasType<{
 	/** A user instance with a new password. */
 	user?:ValueTypes["User"],
@@ -5403,10 +5839,14 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	/** Represents a payment of a given type. */
 ["Payment"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	gateway?:boolean,
 	isActive?:boolean,
 	created?:boolean,
@@ -5415,28 +5855,28 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	checkout?:ValueTypes["Checkout"],
 	order?:ValueTypes["Order"],
 	paymentMethodType?:boolean,
+	/** IP address of the user who created the payment. Requires one of the following permissions: MANAGE_ORDERS. */
 	customerIpAddress?:boolean,
 	/** Internal payment status. */
 	chargeStatus?:boolean,
-	/** List of actions that can be performed in the current state of a payment. */
+	/** List of actions that can be performed in the current state of a payment.
+Requires one of the following permissions: MANAGE_ORDERS. */
 	actions?:boolean,
 	/** Total amount of the payment. */
 	total?:ValueTypes["Money"],
 	/** Total amount captured for this payment. */
 	capturedAmount?:ValueTypes["Money"],
-	/** List of all transactions within this payment. */
+	/** List of all transactions within this payment. Requires one of the following permissions: MANAGE_ORDERS. */
 	transactions?:ValueTypes["Transaction"],
-	/** Maximum amount of money that can be captured. */
+	/** Maximum amount of money that can be captured. Requires one of the following permissions: MANAGE_ORDERS. */
 	availableCaptureAmount?:ValueTypes["Money"],
-	/** Maximum amount of money that can be refunded. */
+	/** Maximum amount of money that can be refunded. Requires one of the following permissions: MANAGE_ORDERS. */
 	availableRefundAmount?:ValueTypes["Money"],
 	/** The details of the card used for this payment. */
 	creditCard?:ValueTypes["CreditCard"],
 		__typename?: boolean
 }>;
-	/** An enumeration. */
-["PaymentActionEnum"]:PaymentActionEnum;
-	/** Captures the authorized payment amount. */
+	/** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentCapture"]: AliasType<{
 	/** Updated payment. */
 	payment?:ValueTypes["Payment"],
@@ -5479,24 +5919,6 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Create payment for checkout or order. */
-["PaymentCreate"]: AliasType<{
-	payment?:ValueTypes["PaymentPOC"],
-	errors?:ValueTypes["PaymentCreateError"],
-		__typename?: boolean
-}>;
-	["PaymentCreateError"]: AliasType<{
-	/** Name of a field that caused the error. A value of `null` indicates that the
-error isn't associated with a particular field. */
-	field?:boolean,
-	/** The error message. */
-	message?:boolean,
-	/** The error code. */
-	code?:boolean,
-		__typename?: boolean
-}>;
-	/** An enumeration. */
-["PaymentCreateErrorCode"]:PaymentCreateErrorCode;
 	["PaymentError"]: AliasType<{
 	/** Name of a field that caused the error. A value of `null` indicates that the
 error isn't associated with a particular field. */
@@ -5512,7 +5934,7 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["PaymentErrorCode"]:PaymentErrorCode;
 	["PaymentFilterInput"]: {
-	checkouts?:(string | undefined | null)[]
+	checkouts?:string[]
 };
 	/** Available payment gateway backend with configuration necessary to setup client. */
 ["PaymentGateway"]: AliasType<{
@@ -5556,79 +5978,12 @@ amount is provided, the checkout total will be used. */
 additional actions. Payment with additional actions will not be finished if
 this field is not provided. */
 	returnUrl?:string | null,
-	/** New in Saleor 3.1. Payment store type. */
+	/** Added in Saleor 3.1. Payment store type. */
 	storePaymentMethod?:ValueTypes["StorePaymentMethodEnum"] | null,
-	/** New in Saleor 3.1. User public metadata. */
+	/** Added in Saleor 3.1. User public metadata. */
 	metadata?:ValueTypes["MetadataInput"][]
 };
-	/** Represents a payment of a given type. */
-["PaymentPOC"]: AliasType<{
-	/** The ID of the object. */
-	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ValueTypes["MetadataItem"],
-	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ValueTypes["MetadataItem"],
-	status?:boolean,
-	type?:boolean,
-	reference?:boolean,
-	/** List of all possible actions for the payment */
-	availableActions?:boolean,
-	/** Amount authorized by this payment. */
-	amountAuthorized?:ValueTypes["Money"],
-	/** Amount captured by this payment. */
-	amountCaptured?:ValueTypes["Money"],
-	/** Amount refunded by this payment. */
-	amountRefunded?:ValueTypes["Money"],
-	/** Amount voided by this payment. */
-	amountVoided?:ValueTypes["Money"],
-		__typename?: boolean
-}>;
-	["PaymentPOCCreateInput"]: {
-	/** Status of the payment. */
-	status:string,
-	/** Payment type used for this payment. */
-	type:string,
-	/** Reference of the payment. */
-	reference?:string | null,
-	/** List of all possible actions for the payment */
-	availableActions?:ValueTypes["PaymentActionEnum"][],
-	/** Amount authorized by this payment. */
-	amountAuthorized?:ValueTypes["MoneyInput"] | null,
-	/** Amount captured by this payment. */
-	amountCaptured?:ValueTypes["MoneyInput"] | null,
-	/** Amount refunded by this payment. */
-	amountRefunded?:ValueTypes["MoneyInput"] | null,
-	/** Amount refunded by this payment. */
-	amountVoided?:ValueTypes["MoneyInput"] | null,
-	/** New in Saleor 3.1. User public metadata. */
-	publicMetadata?:ValueTypes["MetadataInput"][],
-	/** New in Saleor 3.1. User public metadata. */
-	privateMetadata?:ValueTypes["MetadataInput"][]
-};
-	["PaymentPOCUpdateInput"]: {
-	/** Status of the payment. */
-	status?:string | null,
-	/** Payment type used for this payment. */
-	type?:string | null,
-	/** Reference of the payment. */
-	reference?:string | null,
-	/** List of all possible actions for the payment */
-	availableActions?:ValueTypes["PaymentActionEnum"][],
-	/** Amount authorized by this payment. */
-	amountAuthorized?:ValueTypes["MoneyInput"] | null,
-	/** Amount captured by this payment. */
-	amountCaptured?:ValueTypes["MoneyInput"] | null,
-	/** Amount refunded by this payment. */
-	amountRefunded?:ValueTypes["MoneyInput"] | null,
-	/** Amount refunded by this payment. */
-	amountVoided?:ValueTypes["MoneyInput"] | null,
-	/** New in Saleor 3.1. User public metadata. */
-	publicMetadata?:ValueTypes["MetadataInput"][],
-	/** New in Saleor 3.1. User public metadata. */
-	privateMetadata?:ValueTypes["MetadataInput"][]
-};
-	/** Refunds the captured payment amount. */
+	/** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentRefund"]: AliasType<{
 	/** Updated payment. */
 	payment?:ValueTypes["Payment"],
@@ -5644,17 +5999,11 @@ this field is not provided. */
 	paymentMethodId?:boolean,
 	/** Stored credit card details if available. */
 	creditCardInfo?:ValueTypes["CreditCard"],
-	/** New in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
+	/** Added in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
 		__typename?: boolean
 }>;
-	/** Create payment for checkout or order. */
-["PaymentUpdate"]: AliasType<{
-	payment?:ValueTypes["PaymentPOC"],
-	errors?:ValueTypes["PaymentCreateError"],
-		__typename?: boolean
-}>;
-	/** Voids the authorized payment. */
+	/** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentVoid"]: AliasType<{
 	/** Updated payment. */
 	payment?:ValueTypes["Payment"],
@@ -5672,7 +6021,7 @@ this field is not provided. */
 }>;
 	/** An enumeration. */
 ["PermissionEnum"]:PermissionEnum;
-	/** Create new permission group. */
+	/** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupCreate"]: AliasType<{
 	permissionGroupErrors?:ValueTypes["PermissionGroupError"],
 	errors?:ValueTypes["PermissionGroupError"],
@@ -5687,7 +6036,7 @@ this field is not provided. */
 	/** Group name. */
 	name:string
 };
-	/** Delete permission group. */
+	/** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupDelete"]: AliasType<{
 	permissionGroupErrors?:ValueTypes["PermissionGroupError"],
 	errors?:ValueTypes["PermissionGroupError"],
@@ -5712,7 +6061,7 @@ error isn't associated with a particular field. */
 ["PermissionGroupErrorCode"]:PermissionGroupErrorCode;
 	["PermissionGroupFilterInput"]: {
 	search?:string | null,
-	ids?:(string | undefined | null)[]
+	ids?:string[]
 };
 	["PermissionGroupSortField"]:PermissionGroupSortField;
 	["PermissionGroupSortingInput"]: {
@@ -5721,7 +6070,7 @@ error isn't associated with a particular field. */
 	/** Sort permission group by the selected field. */
 	field:ValueTypes["PermissionGroupSortField"]
 };
-	/** Update permission group. */
+	/** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupUpdate"]: AliasType<{
 	permissionGroupErrors?:ValueTypes["PermissionGroupError"],
 	errors?:ValueTypes["PermissionGroupError"],
@@ -5808,7 +6157,7 @@ error isn't associated with a particular field. */
 	active:boolean,
 	channels:string[]
 };
-	/** Update plugin configuration. */
+	/** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
 ["PluginUpdate"]: AliasType<{
 	plugin?:ValueTypes["Plugin"],
 	pluginsErrors?:ValueTypes["PluginError"],
@@ -5819,7 +6168,7 @@ error isn't associated with a particular field. */
 	/** Indicates whether the plugin should be enabled. */
 	active?:boolean | null,
 	/** Configuration of the plugin. */
-	configuration?:(ValueTypes["ConfigurationItemInput"] | undefined | null)[]
+	configuration?:ValueTypes["ConfigurationItemInput"][]
 };
 	/** Positive Decimal scalar implementation.
 
@@ -5829,9 +6178,9 @@ Should be used in places where value must be positive. */
 ["PostalCodeRuleInclusionTypeEnum"]:PostalCodeRuleInclusionTypeEnum;
 	/** Represents preorder settings for product variant. */
 ["PreorderData"]: AliasType<{
-	/** The global preorder threshold for product variant. */
+	/** The global preorder threshold for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	globalThreshold?:boolean,
-	/** Total number of sold product variant during preorder. */
+	/** Total number of sold product variant during preorder. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	globalSoldUnits?:boolean,
 	/** Preorder end date. */
 	endDate?:boolean,
@@ -5866,10 +6215,14 @@ Should be used in places where value must be positive. */
 	/** Represents an individual item for sale in the storefront. */
 ["Product"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	seoTitle?:boolean,
 	seoDescription?:boolean,
 	name?:boolean,
@@ -5901,29 +6254,35 @@ fallbacks to server's `settings.DEFAULT_COUNTRY` configuration. */
 	taxType?:ValueTypes["TaxType"],
 	/** List of attributes assigned to this product. */
 	attributes?:ValueTypes["SelectedAttribute"],
-	/** List of availability in channels for the product. */
+	/** List of availability in channels for the product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	channelListings?:ValueTypes["ProductChannelListing"],
 mediaById?: [{	/** ID of a product media. */
 	id?:string | null},ValueTypes["ProductMedia"]],
 imageById?: [{	/** ID of a product image. */
 	id?:string | null},ValueTypes["ProductImage"]],
-	/** List of variants for the product. */
+	/** List of variants for the product. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	variants?:ValueTypes["ProductVariant"],
 	/** List of media for the product. */
 	media?:ValueTypes["ProductMedia"],
 	/** List of images for the product. */
 	images?:ValueTypes["ProductImage"],
-	/** List of collections for the product. */
+	/** List of collections for the product. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collections?:ValueTypes["Collection"],
 translation?: [{	/** A language code to return the translation for product. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["ProductTranslation"]],
-	/** Date when product is available for purchase.  */
+	/** Date when product is available for purchase. */
 	availableForPurchase?:boolean,
+	/** Date when product is available for purchase. */
+	availableForPurchaseAt?:boolean,
 	/** Whether the product is available for purchase. */
 	isAvailableForPurchase?:boolean,
 		__typename?: boolean
 }>;
-	/** Assign attributes to a given product type. */
+	/** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeAssign"]: AliasType<{
 	/** The updated product type. */
 	productType?:ValueTypes["ProductType"],
@@ -5936,11 +6295,13 @@ translation?: [{	/** A language code to return the translation for product. */
 	id:string,
 	/** The attribute type to be assigned as. */
 	type:ValueTypes["ProductAttributeType"],
-	/** New in Saleor 3.1. Whether attribute is allowed in variant selection. Allowed
-types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
+	/** Added in Saleor 3.1. Whether attribute is allowed in variant selection.
+Allowed types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	variantSelection?:boolean | null
 };
-	/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+	/** Added in Saleor 3.1. Update attributes assigned to product variant for given
+product type. Requires one of the following permissions:
+MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeAssignmentUpdate"]: AliasType<{
 	/** The updated product type. */
 	productType?:ValueTypes["ProductType"],
@@ -5951,12 +6312,13 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	["ProductAttributeAssignmentUpdateInput"]: {
 	/** The ID of the attribute to assign. */
 	id:string,
-	/** New in Saleor 3.1. Whether attribute is allowed in variant selection. Allowed
-types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
+	/** Added in Saleor 3.1. Whether attribute is allowed in variant selection.
+Allowed types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	variantSelection:boolean
 };
 	["ProductAttributeType"]:ProductAttributeType;
-	/** Un-assign attributes from a given product type. */
+	/** Un-assign attributes from a given product type. Requires one of the following
+permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeUnassign"]: AliasType<{
 	/** The updated product type. */
 	productType?:ValueTypes["ProductType"],
@@ -5964,7 +6326,7 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Deletes products. */
+	/** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -5976,15 +6338,19 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 ["ProductChannelListing"]: AliasType<{
 	id?:boolean,
 	publicationDate?:boolean,
+	/** Added in Saleor 3.3. The product publication date time. */
+	publishedAt?:boolean,
 	isPublished?:boolean,
 	channel?:ValueTypes["Channel"],
 	visibleInListings?:boolean,
 	availableForPurchase?:boolean,
+	/** Added in Saleor 3.3. The product available for purchase date time. */
+	availableForPurchaseAt?:boolean,
 	/** The price of the cheapest variant (including discounts). */
 	discountedPrice?:ValueTypes["Money"],
-	/** Purchase cost of product. */
+	/** Purchase cost of product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	purchaseCost?:ValueTypes["MoneyRange"],
-	/** Range of margin percentage value. */
+	/** Range of margin percentage value. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	margin?:ValueTypes["Margin"],
 	/** Whether the product is available for purchase. */
 	isAvailableForPurchase?:boolean,
@@ -5999,15 +6365,24 @@ fallbacks to server's `settings.DEFAULT_COUNTRY` configuration. */
 	channelId:string,
 	/** Determines if object is visible to customers. */
 	isPublished?:boolean | null,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
 	publicationDate?:ValueTypes["Date"] | null,
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?:ValueTypes["DateTime"] | null,
 	/** Determines if product is visible in product listings (doesn't apply to product collections). */
 	visibleInListings?:boolean | null,
 	/** Determine if product should be available for purchase. */
 	isAvailableForPurchase?:boolean | null,
 	/** A start date from which a product will be available for purchase. When not set
-and isAvailable is set to True, the current day is assumed. */
+and isAvailable is set to True, the current day is assumed. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `availableForPurchaseAt` field instead. */
 	availableForPurchaseDate?:ValueTypes["Date"] | null,
+	/** Added in Saleor 3.3. A start date time from which a product will be available
+for purchase. When not set and `isAvailable` is set to True, the current day is assumed. */
+	availableForPurchaseAt?:ValueTypes["DateTime"] | null,
 	/** List of variants to which the channel should be assigned. */
 	addVariants?:string[],
 	/** List of variants from which the channel should be unassigned. */
@@ -6031,7 +6406,7 @@ error isn't associated with a particular field. */
 	variants?:boolean,
 		__typename?: boolean
 }>;
-	/** Manage product's availability in channels. */
+	/** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductChannelListingUpdate"]: AliasType<{
 	/** An updated product instance. */
 	product?:ValueTypes["Product"],
@@ -6060,11 +6435,19 @@ error isn't associated with a particular field. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new product. */
+	/** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductCreate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	product?:ValueTypes["Product"],
+		__typename?: boolean
+}>;
+	["ProductCreated"]: AliasType<{
+product?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Product"]],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ValueTypes["Category"],
 		__typename?: boolean
 }>;
 	["ProductCreateInput"]: {
@@ -6093,11 +6476,19 @@ error isn't associated with a particular field. */
 	/** ID of the type that product belongs to. */
 	productType:string
 };
-	/** Deletes a product. */
+	/** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductDelete"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	product?:ValueTypes["Product"],
+		__typename?: boolean
+}>;
+	["ProductDeleted"]: AliasType<{
+product?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Product"]],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ValueTypes["Category"],
 		__typename?: boolean
 }>;
 	["ProductError"]: AliasType<{
@@ -6119,20 +6510,20 @@ error isn't associated with a particular field. */
 	["ProductFieldEnum"]:ProductFieldEnum;
 	["ProductFilterInput"]: {
 	isPublished?:boolean | null,
-	collections?:(string | undefined | null)[],
-	categories?:(string | undefined | null)[],
+	collections?:string[],
+	categories?:string[],
 	hasCategory?:boolean | null,
-	attributes?:(ValueTypes["AttributeInput"] | undefined | null)[],
+	attributes?:ValueTypes["AttributeInput"][],
 	stockAvailability?:ValueTypes["StockAvailability"] | null,
 	stocks?:ValueTypes["ProductStockFilterInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
 	price?:ValueTypes["PriceRangeInput"] | null,
 	minimalPrice?:ValueTypes["PriceRangeInput"] | null,
 	updatedAt?:ValueTypes["DateTimeRangeInput"] | null,
-	productTypes?:(string | undefined | null)[],
+	productTypes?:string[],
 	giftCard?:boolean | null,
-	ids?:(string | undefined | null)[],
+	ids?:string[],
 	hasPreorderedVariants?:boolean | null,
 	/** Specifies the channel by which the data should be filtered. 
 
@@ -6188,7 +6579,7 @@ url?: [{	/** Size of the image. */
 	size?:number | null},boolean],
 		__typename?: boolean
 }>;
-	/** Deletes product media. */
+	/** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -6199,7 +6590,8 @@ url?: [{	/** Size of the image. */
 	/** Create a media object (image or video URL) associated with product. For image,
 this mutation must be sent as a `multipart` request. More detailed specs of the
 upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaCreate"]: AliasType<{
 	product?:ValueTypes["Product"],
 	media?:ValueTypes["ProductMedia"],
@@ -6217,7 +6609,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Represents an URL to an external media. */
 	mediaUrl?:string | null
 };
-	/** Deletes a product media. */
+	/** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaDelete"]: AliasType<{
 	product?:ValueTypes["Product"],
 	media?:ValueTypes["ProductMedia"],
@@ -6225,7 +6617,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Changes ordering of the product media. */
+	/** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaReorder"]: AliasType<{
 	product?:ValueTypes["Product"],
 	media?:ValueTypes["ProductMedia"],
@@ -6235,7 +6627,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 }>;
 	/** An enumeration. */
 ["ProductMediaType"]:ProductMediaType;
-	/** Updates a product media. */
+	/** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaUpdate"]: AliasType<{
 	product?:ValueTypes["Product"],
 	media?:ValueTypes["ProductMedia"],
@@ -6250,7 +6642,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	["ProductOrder"]: {
 	/** Specifies the direction in which to sort products. */
 	direction:ValueTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?:string | null,
@@ -6277,7 +6669,7 @@ Note: this doesn't take translations into account yet. */
 	priceRangeLocalCurrency?:ValueTypes["TaxedMoneyRange"],
 		__typename?: boolean
 }>;
-	/** Reorder product attribute values. */
+	/** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductReorderAttributeValues"]: AliasType<{
 	/** Product from which attribute values are reordered. */
 	product?:ValueTypes["Product"],
@@ -6305,7 +6697,7 @@ translation?: [{	/** A language code to return the translation for product. */
 	attributeValues?:ValueTypes["AttributeValueTranslatableContent"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a product. */
+	/** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ProductTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -6327,10 +6719,14 @@ translation?: [{	/** A language code to return the translation for product. */
 	/** Represents a type of product. It defines what attributes are available to products of this type. */
 ["ProductType"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	slug?:boolean,
 	hasVariants?:boolean,
@@ -6360,7 +6756,7 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	last?:number | null},ValueTypes["AttributeCountableConnection"]],
 		__typename?: boolean
 }>;
-	/** Deletes product types. */
+	/** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -6384,14 +6780,14 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new product type. */
+	/** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeCreate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	productType?:ValueTypes["ProductType"],
 		__typename?: boolean
 }>;
-	/** Deletes a product type. */
+	/** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeDelete"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
@@ -6403,9 +6799,9 @@ availableAttributes?: [{	filter?:ValueTypes["AttributeFilterInput"] | null,	/** 
 	search?:string | null,
 	configurable?:ValueTypes["ProductTypeConfigurable"] | null,
 	productType?:ValueTypes["ProductTypeEnum"] | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
 	kind?:ValueTypes["ProductTypeKindEnum"] | null,
-	ids?:(string | undefined | null)[]
+	ids?:string[]
 };
 	["ProductTypeInput"]: {
 	/** Name of the product type. */
@@ -6419,9 +6815,9 @@ simplifies product management in the dashboard. There is always at least one
 variant created under the hood. */
 	hasVariants?:boolean | null,
 	/** List of attributes shared among all product variants. */
-	productAttributes?:(string | undefined | null)[],
+	productAttributes?:string[],
 	/** List of attributes used to distinguish between different variants of a product. */
-	variantAttributes?:(string | undefined | null)[],
+	variantAttributes?:string[],
 	/** Determines if shipping is required for products of this variant. */
 	isShippingRequired?:boolean | null,
 	/** Determines if products are digital. */
@@ -6433,7 +6829,7 @@ variant created under the hood. */
 };
 	/** An enumeration. */
 ["ProductTypeKindEnum"]:ProductTypeKindEnum;
-	/** Reorder the attributes of a product type. */
+	/** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeReorderAttributes"]: AliasType<{
 	/** Product type from which attributes are reordered. */
 	productType?:ValueTypes["ProductType"],
@@ -6448,27 +6844,39 @@ variant created under the hood. */
 	/** Sort product types by the selected field. */
 	field:ValueTypes["ProductTypeSortField"]
 };
-	/** Updates an existing product type. */
+	/** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeUpdate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	productType?:ValueTypes["ProductType"],
 		__typename?: boolean
 }>;
-	/** Updates an existing product. */
+	/** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductUpdate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	product?:ValueTypes["Product"],
 		__typename?: boolean
 }>;
+	["ProductUpdated"]: AliasType<{
+product?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Product"]],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ValueTypes["Category"],
+		__typename?: boolean
+}>;
 	/** Represents a version of a product such as different size or color. */
 ["ProductVariant"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	sku?:boolean,
 	product?:ValueTypes["Product"],
@@ -6478,7 +6886,8 @@ variant created under the hood. */
 	/** Channel given to retrieve this product variant. Also used by federation
 gateway to resolve this object in a federated query. */
 	channel?:boolean,
-	/** List of price information in channels for the product. */
+	/** List of price information in channels for the product. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channelListings?:ValueTypes["ProductVariantChannelListing"],
 pricing?: [{	/** Destination address used to find warehouses where stock availability for
 this product is checked. If address is empty, uses `Shop.companyAddress` or
@@ -6488,7 +6897,7 @@ attributes?: [{	/** Define scope of returned attributes. */
 	variantSelection?:ValueTypes["VariantAttributeScope"] | null},ValueTypes["SelectedAttribute"]],
 	/** Gross margin percentage value. */
 	margin?:boolean,
-	/** Total quantity ordered. */
+	/** Total quantity ordered. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	quantityOrdered?:boolean,
 revenue?: [{	period?:ValueTypes["ReportingPeriod"] | null},ValueTypes["TaxedMoney"]],
 	/** List of images for the product variant. */
@@ -6497,7 +6906,7 @@ revenue?: [{	period?:ValueTypes["ReportingPeriod"] | null},ValueTypes["TaxedMone
 	media?:ValueTypes["ProductMedia"],
 translation?: [{	/** A language code to return the translation for product variant. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["ProductVariantTranslation"]],
-	/** Digital content for the product variant. */
+	/** Digital content for the product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContent?:ValueTypes["DigitalContent"],
 stocks?: [{	/** Destination address used to find warehouses where stock availability for
 this product is checked. If address is empty, uses `Shop.companyAddress` or
@@ -6515,14 +6924,22 @@ returned. Otherwise, it will return the maximum quantity from all shipping zones
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `address` argument instead. */
 	countryCode?:ValueTypes["CountryCode"] | null},boolean],
-	/** New in Saleor 3.1. Preorder data for product variant. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Preorder data for product variant. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	preorder?:ValueTypes["PreorderData"],
 	created?:boolean,
 	updatedAt?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates product variants for a given product. */
+	["ProductVariantBackInStock"]: AliasType<{
+productVariant?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ProductVariant"]],
+	/** Added in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	warehouse?:ValueTypes["Warehouse"],
+		__typename?: boolean
+}>;
+	/** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantBulkCreate"]: AliasType<{
 	/** Returns how many objects were created. */
 	count?:boolean,
@@ -6542,19 +6959,19 @@ quantity won't change when customers buy this item. */
 	trackInventory?:boolean | null,
 	/** Weight of the Product Variant. */
 	weight?:ValueTypes["WeightScalar"] | null,
-	/** New in Saleor 3.1. Determines if variant is in preorder. Note: this feature is
-in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines if variant is in preorder. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	preorder?:ValueTypes["PreorderSettingsInput"] | null,
-	/** New in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can be
-bought in a single checkout. Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can
+be bought in a single checkout. Note: this feature is in a preview state and
+can be subject to changes at later point. */
 	quantityLimitPerCustomer?:number | null,
 	/** Stocks of a product available for sale. */
 	stocks?:ValueTypes["StockInput"][],
 	/** List of prices assigned to channels. */
 	channelListings?:ValueTypes["ProductVariantChannelListingAddInput"][]
 };
-	/** Deletes product variants. */
+	/** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -6569,9 +6986,9 @@ be subject to changes at later point. */
 	price?:ValueTypes["Money"],
 	/** Cost price of the variant. */
 	costPrice?:ValueTypes["Money"],
-	/** Gross margin percentage value. */
+	/** Gross margin percentage value. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	margin?:boolean,
-	/** New in Saleor 3.1. Preorder variant data. Note: this feature is in a preview
+	/** Added in Saleor 3.1. Preorder variant data. Note: this feature is in a preview
 state and can be subject to changes at later point. */
 	preorderThreshold?:ValueTypes["PreorderThreshold"],
 		__typename?: boolean
@@ -6583,11 +7000,11 @@ state and can be subject to changes at later point. */
 	price:ValueTypes["PositiveDecimal"],
 	/** Cost price of the variant in channel. */
 	costPrice?:ValueTypes["PositiveDecimal"] | null,
-	/** New in Saleor 3.1. The threshold for preorder variant in channel. Note: this
+	/** Added in Saleor 3.1. The threshold for preorder variant in channel. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	preorderThreshold?:number | null
 };
-	/** Manage product variant prices in channels. */
+	/** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantChannelListingUpdate"]: AliasType<{
 	/** An updated product variant instance. */
 	variant?:ValueTypes["ProductVariant"],
@@ -6610,11 +7027,16 @@ feature is in a preview state and can be subject to changes at later point. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new variant for a product. */
+	/** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantCreate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	productVariant?:ValueTypes["ProductVariant"],
+		__typename?: boolean
+}>;
+	["ProductVariantCreated"]: AliasType<{
+productVariant?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ProductVariant"]],
 		__typename?: boolean
 }>;
 	["ProductVariantCreateInput"]: {
@@ -6627,29 +7049,34 @@ quantity won't change when customers buy this item. */
 	trackInventory?:boolean | null,
 	/** Weight of the Product Variant. */
 	weight?:ValueTypes["WeightScalar"] | null,
-	/** New in Saleor 3.1. Determines if variant is in preorder. Note: this feature is
-in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines if variant is in preorder. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	preorder?:ValueTypes["PreorderSettingsInput"] | null,
-	/** New in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can be
-bought in a single checkout. Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can
+be bought in a single checkout. Note: this feature is in a preview state and
+can be subject to changes at later point. */
 	quantityLimitPerCustomer?:number | null,
 	/** Product ID of which type is the variant. */
 	product:string,
 	/** Stocks of a product available for sale. */
 	stocks?:ValueTypes["StockInput"][]
 };
-	/** Deletes a product variant. */
+	/** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantDelete"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	productVariant?:ValueTypes["ProductVariant"],
 		__typename?: boolean
 }>;
+	["ProductVariantDeleted"]: AliasType<{
+productVariant?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ProductVariant"]],
+		__typename?: boolean
+}>;
 	["ProductVariantFilterInput"]: {
 	search?:string | null,
-	sku?:(string | undefined | null)[],
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
+	sku?:string[],
+	metadata?:ValueTypes["MetadataFilter"][],
 	isPreorder?:boolean | null,
 	updatedAt?:ValueTypes["DateTimeRangeInput"] | null
 };
@@ -6663,31 +7090,42 @@ quantity won't change when customers buy this item. */
 	trackInventory?:boolean | null,
 	/** Weight of the Product Variant. */
 	weight?:ValueTypes["WeightScalar"] | null,
-	/** New in Saleor 3.1. Determines if variant is in preorder. Note: this feature is
-in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines if variant is in preorder. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	preorder?:ValueTypes["PreorderSettingsInput"] | null,
-	/** New in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can be
-bought in a single checkout. Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can
+be bought in a single checkout. Note: this feature is in a preview state and
+can be subject to changes at later point. */
 	quantityLimitPerCustomer?:number | null
 };
-	/** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder
-allocation into regular allocation. Note: this feature is in a preview state and
-can be subject to changes at later point. */
+	["ProductVariantOutOfStock"]: AliasType<{
+productVariant?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ProductVariant"]],
+	/** Added in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	warehouse?:ValueTypes["Warehouse"],
+		__typename?: boolean
+}>;
+	/** Added in Saleor 3.1. Deactivates product variant preorder. It changes all
+preorder allocation into regular allocation. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantPreorderDeactivate"]: AliasType<{
 	/** Product variant with ended preorder. */
 	productVariant?:ValueTypes["ProductVariant"],
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+	/** Reorder the variants of a product. Mutation updates updated_at on product and
+triggers PRODUCT_UPDATED webhook. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 ["ProductVariantReorder"]: AliasType<{
 	product?:ValueTypes["Product"],
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Reorder product variant attribute values. */
+	/** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantReorderAttributeValues"]: AliasType<{
 	/** Product variant from which attribute values are reordered. */
 	productVariant?:ValueTypes["ProductVariant"],
@@ -6695,14 +7133,22 @@ can be subject to changes at later point. */
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook.
+Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantSetDefault"]: AliasType<{
 	product?:ValueTypes["Product"],
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Creates stocks for product variant. */
+	["ProductVariantSortField"]:ProductVariantSortField;
+	["ProductVariantSortingInput"]: {
+	/** Specifies the direction in which to sort products. */
+	direction:ValueTypes["OrderDirection"],
+	/** Sort productVariants by the selected field. */
+	field:ValueTypes["ProductVariantSortField"]
+};
+	/** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksCreate"]: AliasType<{
 	/** Updated product variant. */
 	productVariant?:ValueTypes["ProductVariant"],
@@ -6710,7 +7156,7 @@ can be subject to changes at later point. */
 	errors?:ValueTypes["BulkStockError"],
 		__typename?: boolean
 }>;
-	/** Delete stocks from product variant. */
+	/** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksDelete"]: AliasType<{
 	/** Updated product variant. */
 	productVariant?:ValueTypes["ProductVariant"],
@@ -6718,7 +7164,7 @@ can be subject to changes at later point. */
 	errors?:ValueTypes["StockError"],
 		__typename?: boolean
 }>;
-	/** Update stocks for product variant. */
+	/** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksUpdate"]: AliasType<{
 	/** Updated product variant. */
 	productVariant?:ValueTypes["ProductVariant"],
@@ -6737,7 +7183,7 @@ translation?: [{	/** A language code to return the translation for product varia
 	attributeValues?:ValueTypes["AttributeValueTranslatableContent"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a product variant. */
+	/** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ProductVariantTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -6751,11 +7197,16 @@ translation?: [{	/** A language code to return the translation for product varia
 	name?:boolean,
 		__typename?: boolean
 }>;
-	/** Updates an existing variant for product. */
+	/** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantUpdate"]: AliasType<{
 	productErrors?:ValueTypes["ProductError"],
 	errors?:ValueTypes["ProductError"],
 	productVariant?:ValueTypes["ProductVariant"],
+		__typename?: boolean
+}>;
+	["ProductVariantUpdated"]: AliasType<{
+productVariant?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ProductVariant"]],
 		__typename?: boolean
 }>;
 	["PublishableChannelListingInput"]: {
@@ -6763,13 +7214,17 @@ translation?: [{	/** A language code to return the translation for product varia
 	channelId:string,
 	/** Determines if object is visible to customers. */
 	isPublished?:boolean | null,
-	/** Publication date. ISO 8601 standard. */
-	publicationDate?:ValueTypes["Date"] | null
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
+	publicationDate?:ValueTypes["Date"] | null,
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?:ValueTypes["DateTime"] | null
 };
 	["Query"]: AliasType<{
 webhook?: [{	/** ID of the webhook. */
 	id:string},ValueTypes["Webhook"]],
-	/** List of all available webhook events. */
+	/** List of all available webhook events. Requires one of the following permissions: MANAGE_APPS. */
 	webhookEvents?:ValueTypes["WebhookEvent"],
 webhookSamplePayload?: [{	/** Name of the requested event type. */
 	eventType:ValueTypes["WebhookSampleEventTypeEnum"]},boolean],
@@ -6798,9 +7253,9 @@ stocks?: [{	filter?:ValueTypes["StockFilterInput"] | null,	/** Return the elemen
 	last?:number | null},ValueTypes["StockCountableConnection"]],
 	/** Return information about the shop. */
 	shop?:ValueTypes["Shop"],
-	/** Order related settings from site settings. */
+	/** Order related settings from site settings. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderSettings?:ValueTypes["OrderSettings"],
-	/** Gift card related settings from site settings. */
+	/** Gift card related settings from site settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardSettings?:ValueTypes["GiftCardSettings"],
 shippingZone?: [{	/** ID of the shipping zone. */
 	id:string,	/** Slug of a channel for which the data should be returned. */
@@ -6868,9 +7323,10 @@ productVariant?: [{	/** ID of the product variant. */
 	sku?:string | null,	/** Slug of a channel for which the data should be returned. */
 	channel?:string | null},ValueTypes["ProductVariant"]],
 productVariants?: [{	/** Filter product variants by given IDs. */
-	ids?:(string | undefined | null)[],	/** Slug of a channel for which the data should be returned. */
+	ids?:string[],	/** Slug of a channel for which the data should be returned. */
 	channel?:string | null,	/** Filtering options for product variant. */
-	filter?:ValueTypes["ProductVariantFilterInput"] | null,	/** Return the elements in the list that come before the specified cursor. */
+	filter?:ValueTypes["ProductVariantFilterInput"] | null,	/** Sort products variants. */
+	sortBy?:ValueTypes["ProductVariantSortingInput"] | null,	/** Return the elements in the list that come before the specified cursor. */
 	before?:string | null,	/** Return the elements in the list that come after the specified cursor. */
 	after?:string | null,	/** Return the first n elements from the list. */
 	first?:number | null,	/** Return the last n elements from the list. */
@@ -6962,17 +7418,18 @@ menuItems?: [{	/** Slug of a channel for which the data should be returned. */
 	last?:number | null},ValueTypes["MenuItemCountableConnection"]],
 giftCard?: [{	/** ID of the gift card. */
 	id:string},ValueTypes["GiftCard"]],
-giftCards?: [{	/** New in Saleor 3.1. Sort gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
-	sortBy?:ValueTypes["GiftCardSortingInput"] | null,	/** New in Saleor 3.1. Filtering options for gift cards. Note: this feature is
+giftCards?: [{	/** Added in Saleor 3.1. Sort gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	sortBy?:ValueTypes["GiftCardSortingInput"] | null,	/** Added in Saleor 3.1. Filtering options for gift cards. Note: this feature is
 in a preview state and can be subject to changes at later point. */
 	filter?:ValueTypes["GiftCardFilterInput"] | null,	/** Return the elements in the list that come before the specified cursor. */
 	before?:string | null,	/** Return the elements in the list that come after the specified cursor. */
 	after?:string | null,	/** Return the first n elements from the list. */
 	first?:number | null,	/** Return the last n elements from the list. */
 	last?:number | null},ValueTypes["GiftCardCountableConnection"]],
-	/** New in Saleor 3.1. List of gift card currencies. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of gift card currencies. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardCurrencies?:boolean,
 giftCardTags?: [{	/** Filtering options for gift card tags. */
 	filter?:ValueTypes["GiftCardTagFilterInput"] | null,	/** Return the elements in the list that come before the specified cursor. */
@@ -7030,8 +7487,8 @@ exportFiles?: [{	/** Filtering options for export files. */
 	taxTypes?:ValueTypes["TaxType"],
 checkout?: [{	/** The checkout's token. */
 	token?:ValueTypes["UUID"] | null},ValueTypes["Checkout"]],
-checkouts?: [{	/** New in Saleor 3.1. Sort checkouts. */
-	sortBy?:ValueTypes["CheckoutSortingInput"] | null,	/** New in Saleor 3.1. Filtering options for checkouts. */
+checkouts?: [{	/** Added in Saleor 3.1. Sort checkouts. */
+	sortBy?:ValueTypes["CheckoutSortingInput"] | null,	/** Added in Saleor 3.1. Filtering options for checkouts. */
 	filter?:ValueTypes["CheckoutFilterInput"] | null,	/** Slug of a channel for which the data should be returned. */
 	channel?:string | null,	/** Return the elements in the list that come before the specified cursor. */
 	before?:string | null,	/** Return the elements in the list that come after the specified cursor. */
@@ -7045,7 +7502,7 @@ checkoutLines?: [{	/** Return the elements in the list that come before the spec
 	last?:number | null},ValueTypes["CheckoutLineCountableConnection"]],
 channel?: [{	/** ID of the channel. */
 	id?:string | null},ValueTypes["Channel"]],
-	/** List of all channels. */
+	/** List of all channels. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channels?:ValueTypes["Channel"],
 attributes?: [{	/** Filtering options for attributes. */
 	filter?:ValueTypes["AttributeFilterInput"] | null,	/** Sorting options for attributes. */
@@ -7058,7 +7515,7 @@ attributes?: [{	/** Filtering options for attributes. */
 attribute?: [{	/** ID of the attribute. */
 	id?:string | null,	/** Slug of the attribute. */
 	slug?:string | null},ValueTypes["Attribute"]],
-	/** List of all apps installations */
+	/** List of all apps installations Requires one of the following permissions: MANAGE_APPS. */
 	appsInstallations?:ValueTypes["AppInstallation"],
 apps?: [{	/** Filtering options for apps. */
 	filter?:ValueTypes["AppFilterInput"] | null,	/** Sort apps. */
@@ -7145,7 +7602,7 @@ the item unchanged. */
 	sortOrder?:number | null
 };
 	["ReportingPeriod"]:ReportingPeriod;
-	/** Request email change of the logged in user. */
+	/** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["RequestEmailChange"]: AliasType<{
 	/** A user instance. */
 	user?:ValueTypes["User"],
@@ -7162,10 +7619,14 @@ the item unchanged. */
 	/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
 ["Sale"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	type?:boolean,
 	startDate?:boolean,
@@ -7194,7 +7655,7 @@ variants?: [{	/** Return the elements in the list that come before the specified
 	last?:number | null},ValueTypes["ProductVariantCountableConnection"]],
 translation?: [{	/** A language code to return the translation for sale. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["SaleTranslation"]],
-	/** List of channels available for the sale. */
+	/** List of channels available for the sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	channelListings?:ValueTypes["SaleChannelListing"],
 	/** Sale value. */
 	discountValue?:boolean,
@@ -7202,7 +7663,7 @@ translation?: [{	/** A language code to return the translation for sale. */
 	currency?:boolean,
 		__typename?: boolean
 }>;
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleAddCatalogues"]: AliasType<{
 	/** Sale of which catalogue IDs will be modified. */
 	sale?:ValueTypes["Sale"],
@@ -7210,7 +7671,7 @@ translation?: [{	/** A language code to return the translation for sale. */
 	errors?:ValueTypes["DiscountError"],
 		__typename?: boolean
 }>;
-	/** Deletes sales. */
+	/** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -7238,7 +7699,7 @@ translation?: [{	/** A language code to return the translation for sale. */
 	/** List of channels from which the sale should be unassigned. */
 	removeChannels?:string[]
 };
-	/** Manage sale's availability in channels. */
+	/** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleChannelListingUpdate"]: AliasType<{
 	/** An updated sale instance. */
 	sale?:ValueTypes["Sale"],
@@ -7261,26 +7722,36 @@ translation?: [{	/** A language code to return the translation for sale. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new sale. */
+	/** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleCreate"]: AliasType<{
 	discountErrors?:ValueTypes["DiscountError"],
 	errors?:ValueTypes["DiscountError"],
 	sale?:ValueTypes["Sale"],
 		__typename?: boolean
 }>;
-	/** Deletes a sale. */
+	["SaleCreated"]: AliasType<{
+sale?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Sale"]],
+		__typename?: boolean
+}>;
+	/** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleDelete"]: AliasType<{
 	discountErrors?:ValueTypes["DiscountError"],
 	errors?:ValueTypes["DiscountError"],
 	sale?:ValueTypes["Sale"],
 		__typename?: boolean
 }>;
+	["SaleDeleted"]: AliasType<{
+sale?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Sale"]],
+		__typename?: boolean
+}>;
 	["SaleFilterInput"]: {
-	status?:(ValueTypes["DiscountStatusEnum"] | undefined | null)[],
+	status?:ValueTypes["DiscountStatusEnum"][],
 	saleType?:ValueTypes["DiscountValueTypeEnum"] | null,
 	started?:ValueTypes["DateTimeRangeInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[],
+	metadata?:ValueTypes["MetadataFilter"][],
 	updatedAt?:ValueTypes["DateTimeRangeInput"] | null
 };
 	["SaleInput"]: {
@@ -7291,18 +7762,18 @@ translation?: [{	/** A language code to return the translation for sale. */
 	/** Value of the voucher. */
 	value?:ValueTypes["PositiveDecimal"] | null,
 	/** Products related to the discount. */
-	products?:(string | undefined | null)[],
-	variants?:(string | undefined | null)[],
+	products?:string[],
+	variants?:string[],
 	/** Categories related to the discount. */
-	categories?:(string | undefined | null)[],
+	categories?:string[],
 	/** Collections related to the discount. */
-	collections?:(string | undefined | null)[],
+	collections?:string[],
 	/** Start date of the voucher in ISO 8601 format. */
 	startDate?:ValueTypes["DateTime"] | null,
 	/** End date of the voucher in ISO 8601 format. */
 	endDate?:ValueTypes["DateTime"] | null
 };
-	/** Removes products, categories, collections from a sale. */
+	/** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleRemoveCatalogues"]: AliasType<{
 	/** Sale of which catalogue IDs will be modified. */
 	sale?:ValueTypes["Sale"],
@@ -7314,7 +7785,7 @@ translation?: [{	/** A language code to return the translation for sale. */
 	["SaleSortingInput"]: {
 	/** Specifies the direction in which to sort products. */
 	direction:ValueTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?:string | null,
@@ -7326,11 +7797,13 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	name?:boolean,
 translation?: [{	/** A language code to return the translation for sale. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["SaleTranslation"]],
-	/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+	/** Sales allow creating discounts for categories, collections or products and are
+visible to all the customers. Requires one of the following permissions:
+MANAGE_DISCOUNTS. */
 	sale?:ValueTypes["Sale"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a sale. */
+	/** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["SaleTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -7345,11 +7818,16 @@ translation?: [{	/** A language code to return the translation for sale. */
 		__typename?: boolean
 }>;
 	["SaleType"]:SaleType;
-	/** Updates a sale. */
+	/** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleUpdate"]: AliasType<{
 	discountErrors?:ValueTypes["DiscountError"],
 	errors?:ValueTypes["DiscountError"],
 	sale?:ValueTypes["Sale"],
+		__typename?: boolean
+}>;
+	["SaleUpdated"]: AliasType<{
+sale?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["Sale"]],
 		__typename?: boolean
 }>;
 	/** Represents a custom attribute. */
@@ -7400,10 +7878,14 @@ error isn't associated with a particular field. */
 ["ShippingMethod"]: AliasType<{
 	/** Unique ID of ShippingMethod available for Order. */
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	/** Type of the shipping method. */
 	type?:boolean,
 	/** Shipping method name. */
@@ -7457,7 +7939,7 @@ translation?: [{	/** A language code to return the translation for shipping meth
 	/** List of channels from which the shipping method should be unassigned. */
 	removeChannels?:string[]
 };
-	/** Manage shipping method's availability in channels. */
+	/** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingMethodChannelListingUpdate"]: AliasType<{
 	/** An updated shipping method instance. */
 	shippingMethod?:ValueTypes["ShippingMethodType"],
@@ -7483,7 +7965,9 @@ translation?: [{	/** A language code to return the translation for shipping meth
 	description?:boolean,
 translation?: [{	/** A language code to return the translation for shipping method. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["ShippingMethodTranslation"]],
-	/** Shipping method are the methods you'll use to get customer's orders  to them. They are directly exposed to the customers. */
+	/** Shipping method are the methods you'll use to get customer's orders  to them.
+They are directly exposed to the customers. Requires one of the following
+permissions: MANAGE_SHIPPING. */
 	shippingMethod?:ValueTypes["ShippingMethodType"],
 		__typename?: boolean
 }>;
@@ -7499,10 +7983,14 @@ translation?: [{	/** A language code to return the translation for shipping meth
 ["ShippingMethodType"]: AliasType<{
 	/** Shipping method ID. */
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	/** Shipping method name. */
 	name?:boolean,
 	/** Shipping method description. */
@@ -7511,7 +7999,7 @@ translation?: [{	/** A language code to return the translation for shipping meth
 	type?:boolean,
 translation?: [{	/** A language code to return the translation for shipping method. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["ShippingMethodTranslation"]],
-	/** List of channels available for the method. */
+	/** List of channels available for the method. Requires one of the following permissions: MANAGE_SHIPPING. */
 	channelListings?:ValueTypes["ShippingMethodChannelListing"],
 	/** The price of the cheapest variant (including discounts). */
 	maximumOrderPrice?:ValueTypes["Money"],
@@ -7542,7 +8030,7 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	/** End range of the postal code. */
 	end?:string | null
 };
-	/** Deletes shipping prices. */
+	/** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -7550,7 +8038,7 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	errors?:ValueTypes["ShippingError"],
 		__typename?: boolean
 }>;
-	/** Creates a new shipping price. */
+	/** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceCreate"]: AliasType<{
 	/** A shipping zone to which the shipping method belongs. */
 	shippingZone?:ValueTypes["ShippingZone"],
@@ -7559,7 +8047,14 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	errors?:ValueTypes["ShippingError"],
 		__typename?: boolean
 }>;
-	/** Deletes a shipping price. */
+	["ShippingPriceCreated"]: AliasType<{
+shippingMethod?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingMethodType"]],
+shippingZone?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingZone"]],
+		__typename?: boolean
+}>;
+	/** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceDelete"]: AliasType<{
 	/** A shipping method to delete. */
 	shippingMethod?:ValueTypes["ShippingMethodType"],
@@ -7569,7 +8064,14 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	errors?:ValueTypes["ShippingError"],
 		__typename?: boolean
 }>;
-	/** Exclude products from shipping price. */
+	["ShippingPriceDeleted"]: AliasType<{
+shippingMethod?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingMethodType"]],
+shippingZone?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingZone"]],
+		__typename?: boolean
+}>;
+	/** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceExcludeProducts"]: AliasType<{
 	/** A shipping method with new list of excluded products. */
 	shippingMethod?:ValueTypes["ShippingMethodType"],
@@ -7579,7 +8081,7 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 }>;
 	["ShippingPriceExcludeProductsInput"]: {
 	/** List of products which will be excluded. */
-	products?:string[]
+	products:string[]
 };
 	["ShippingPriceInput"]: {
 	/** Name of the shipping method. */
@@ -7605,7 +8107,7 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	/** Inclusion type for currently assigned postal code rules. */
 	inclusionType?:ValueTypes["PostalCodeRuleInclusionTypeEnum"] | null
 };
-	/** Remove product from excluded list for shipping price. */
+	/** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceRemoveProductFromExclude"]: AliasType<{
 	/** A shipping method with new list of excluded products. */
 	shippingMethod?:ValueTypes["ShippingMethodType"],
@@ -7613,7 +8115,7 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	errors?:ValueTypes["ShippingError"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a shipping method. */
+	/** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ShippingPriceTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -7625,7 +8127,7 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	/** Translated shipping method description (JSON). */
 	description?:ValueTypes["JSONString"] | null
 };
-	/** Updates a new shipping price. */
+	/** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceUpdate"]: AliasType<{
 	/** A shipping zone to which the shipping method belongs. */
 	shippingZone?:ValueTypes["ShippingZone"],
@@ -7634,15 +8136,26 @@ excludedProducts?: [{	/** Return the elements in the list that come before the s
 	errors?:ValueTypes["ShippingError"],
 		__typename?: boolean
 }>;
+	["ShippingPriceUpdated"]: AliasType<{
+shippingMethod?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingMethodType"]],
+shippingZone?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingZone"]],
+		__typename?: boolean
+}>;
 	/** Represents a shipping zone in the shop. Zones are the concept used only for
 grouping shipping methods in the dashboard, and are never exposed to the
 customers directly. */
 ["ShippingZone"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	default?:boolean,
 	/** Lowest and highest prices for the shipping. */
@@ -7659,7 +8172,7 @@ customers directly. */
 	description?:boolean,
 		__typename?: boolean
 }>;
-	/** Deletes shipping zones. */
+	/** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -7682,11 +8195,16 @@ customers directly. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new shipping zone. */
+	/** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneCreate"]: AliasType<{
 	shippingErrors?:ValueTypes["ShippingError"],
 	errors?:ValueTypes["ShippingError"],
 	shippingZone?:ValueTypes["ShippingZone"],
+		__typename?: boolean
+}>;
+	["ShippingZoneCreated"]: AliasType<{
+shippingZone?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingZone"]],
 		__typename?: boolean
 }>;
 	["ShippingZoneCreateInput"]: {
@@ -7695,30 +8213,40 @@ customers directly. */
 	/** Description of the shipping zone. */
 	description?:string | null,
 	/** List of countries in this shipping zone. */
-	countries?:(string | undefined | null)[],
+	countries?:string[],
 	/** Default shipping zone will be used for countries not covered by other zones. */
 	default?:boolean | null,
 	/** List of warehouses to assign to a shipping zone */
-	addWarehouses?:(string | undefined | null)[],
+	addWarehouses?:string[],
 	/** List of channels to assign to the shipping zone. */
 	addChannels?:string[]
 };
-	/** Deletes a shipping zone. */
+	/** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneDelete"]: AliasType<{
 	shippingErrors?:ValueTypes["ShippingError"],
 	errors?:ValueTypes["ShippingError"],
 	shippingZone?:ValueTypes["ShippingZone"],
 		__typename?: boolean
 }>;
+	["ShippingZoneDeleted"]: AliasType<{
+shippingZone?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingZone"]],
+		__typename?: boolean
+}>;
 	["ShippingZoneFilterInput"]: {
 	search?:string | null,
-	channels?:(string | undefined | null)[]
+	channels?:string[]
 };
-	/** Updates a new shipping zone. */
+	/** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneUpdate"]: AliasType<{
 	shippingErrors?:ValueTypes["ShippingError"],
 	errors?:ValueTypes["ShippingError"],
 	shippingZone?:ValueTypes["ShippingZone"],
+		__typename?: boolean
+}>;
+	["ShippingZoneUpdated"]: AliasType<{
+shippingZone?: [{	/** Slug of a channel for which the data should be returned. */
+	channel?:string | null},ValueTypes["ShippingZone"]],
 		__typename?: boolean
 }>;
 	["ShippingZoneUpdateInput"]: {
@@ -7727,15 +8255,15 @@ customers directly. */
 	/** Description of the shipping zone. */
 	description?:string | null,
 	/** List of countries in this shipping zone. */
-	countries?:(string | undefined | null)[],
+	countries?:string[],
 	/** Default shipping zone will be used for countries not covered by other zones. */
 	default?:boolean | null,
 	/** List of warehouses to assign to a shipping zone */
-	addWarehouses?:(string | undefined | null)[],
+	addWarehouses?:string[],
 	/** List of channels to assign to the shipping zone. */
 	addChannels?:string[],
 	/** List of warehouses to unassign from a shipping zone */
-	removeWarehouses?:(string | undefined | null)[],
+	removeWarehouses?:string[],
 	/** List of channels to unassign from the shipping zone. */
 	removeChannels?:string[]
 };
@@ -7751,7 +8279,9 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `channel` argument ins
 availableShippingMethods?: [{	/** Slug of a channel for which the data should be returned. */
 	channel:string,	/** Address for which available shipping methods should be returned. */
 	address?:ValueTypes["AddressInput"] | null},ValueTypes["ShippingMethod"]],
-	/** New in Saleor 3.1. List of all currencies supported by shop's channels. */
+	/** Added in Saleor 3.1. List of all currencies supported by shop's channels.
+Requires one of the following permissions: AUTHENTICATED_STAFF_USER,
+AUTHENTICATED_APP. */
 	channelCurrencies?:boolean,
 countries?: [{	/** A language code to return the translation for. 
 
@@ -7760,9 +8290,9 @@ DEPRECATED: this field will be removed in Saleor 4.0. */
 	filter?:ValueTypes["CountryFilterInput"] | null},ValueTypes["CountryDisplay"]],
 	/** Shop's default country. */
 	defaultCountry?:ValueTypes["CountryDisplay"],
-	/** Default shop's email sender's name. */
+	/** Default shop's email sender's name. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultMailSenderName?:boolean,
-	/** Default shop's email sender's address. */
+	/** Default shop's email sender's address. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultMailSenderAddress?:boolean,
 	/** Shop's description. */
 	description?:boolean,
@@ -7780,9 +8310,9 @@ DEPRECATED: this field will be removed in Saleor 4.0. */
 	headerText?:boolean,
 	/** Include taxes in prices. */
 	includeTaxesInPrices?:boolean,
-	/** New in Saleor 3.1. Automatically approve all new fulfillments. */
+	/** Added in Saleor 3.1. Automatically approve all new fulfillments. */
 	fulfillmentAutoApprove?:boolean,
-	/** New in Saleor 3.1. Allow to approve fulfillments which are unpaid. */
+	/** Added in Saleor 3.1. Allow to approve fulfillments which are unpaid. */
 	fulfillmentAllowUnpaid?:boolean,
 	/** Display prices with tax in store. */
 	displayGrossPrices?:boolean,
@@ -7794,35 +8324,42 @@ DEPRECATED: this field will be removed in Saleor 4.0. */
 	defaultWeightUnit?:boolean,
 translation?: [{	/** A language code to return the translation for shop. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["ShopTranslation"]],
-	/** Enable automatic fulfillment for all digital products. */
+	/** Enable automatic fulfillment for all digital products. Requires one of the following permissions: MANAGE_SETTINGS. */
 	automaticFulfillmentDigitalProducts?:boolean,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
-anonymous checkout or null when stock reservation is disabled. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
+anonymous checkout or null when stock reservation is disabled. Requires one of
+the following permissions: MANAGE_SETTINGS. */
 	reserveStockDurationAnonymousUser?:boolean,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
-authenticated checkout or null when stock reservation is disabled. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
+authenticated checkout or null when stock reservation is disabled. Requires
+one of the following permissions: MANAGE_SETTINGS. */
 	reserveStockDurationAuthenticatedUser?:boolean,
-	/** New in Saleor 3.1. Default number of maximum line quantity in single checkout
-(per single checkout line). Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Default number of maximum line quantity in single
+checkout (per single checkout line). Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_SETTINGS. */
 	limitQuantityPerCheckout?:boolean,
-	/** Default number of max downloads per digital content URL. */
+	/** Default number of max downloads per digital content URL. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultDigitalMaxDownloads?:boolean,
-	/** Default number of days which digital content URL will be valid. */
+	/** Default number of days which digital content URL will be valid. Requires one
+of the following permissions: MANAGE_SETTINGS. */
 	defaultDigitalUrlValidDays?:boolean,
 	/** Company address. */
 	companyAddress?:ValueTypes["Address"],
 	/** URL of a view where customers can set their password. */
 	customerSetPasswordUrl?:boolean,
-	/** List of staff notification recipients. */
+	/** List of staff notification recipients. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipients?:ValueTypes["StaffNotificationRecipient"],
-	/** Resource limitations and current usage if any set for a shop */
+	/** Resource limitations and current usage if any set for a shop Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER. */
 	limits?:ValueTypes["LimitInfo"],
-	/** Saleor API version. */
+	/** Saleor API version. Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	version?:boolean,
 		__typename?: boolean
 }>;
-	/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+	/** Update the shop's address. If the `null` value is passed, the currently selected
+address will be deleted. Requires one of the following permissions:
+MANAGE_SETTINGS. */
 ["ShopAddressUpdate"]: AliasType<{
 	/** Updated shop. */
 	shop?:ValueTypes["Shop"],
@@ -7830,7 +8367,7 @@ be subject to changes at later point. */
 	errors?:ValueTypes["ShopError"],
 		__typename?: boolean
 }>;
-	/** Updates site domain of the shop. */
+	/** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopDomainUpdate"]: AliasType<{
 	/** Updated shop. */
 	shop?:ValueTypes["Shop"],
@@ -7850,7 +8387,7 @@ error isn't associated with a particular field. */
 }>;
 	/** An enumeration. */
 ["ShopErrorCode"]:ShopErrorCode;
-	/** Fetch tax rates. */
+	/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopFetchTaxRates"]: AliasType<{
 	/** Updated shop. */
 	shop?:ValueTypes["Shop"],
@@ -7875,9 +8412,9 @@ error isn't associated with a particular field. */
 	defaultWeightUnit?:ValueTypes["WeightUnitsEnum"] | null,
 	/** Enable automatic fulfillment for all digital products. */
 	automaticFulfillmentDigitalProducts?:boolean | null,
-	/** New in Saleor 3.1. Enable automatic approval of all new fulfillments. */
+	/** Added in Saleor 3.1. Enable automatic approval of all new fulfillments. */
 	fulfillmentAutoApprove?:boolean | null,
-	/** New in Saleor 3.1. Enable ability to approve fulfillments which are unpaid. */
+	/** Added in Saleor 3.1. Enable ability to approve fulfillments which are unpaid. */
 	fulfillmentAllowUnpaid?:boolean | null,
 	/** Default number of max downloads per digital content URL. */
 	defaultDigitalMaxDownloads?:number | null,
@@ -7889,17 +8426,17 @@ error isn't associated with a particular field. */
 	defaultMailSenderAddress?:string | null,
 	/** URL of a view where customers can set their password. */
 	customerSetPasswordUrl?:string | null,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for anonymous checkout. Enter 0 or null to disable. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for anonymous checkout. Enter 0 or null to disable. */
 	reserveStockDurationAnonymousUser?:number | null,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
 authenticated checkout. Enter 0 or null to disable. */
 	reserveStockDurationAuthenticatedUser?:number | null,
-	/** New in Saleor 3.1. Default number of maximum line quantity in single checkout.
-Minimum possible value is 1, default value is 50. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Default number of maximum line quantity in single
+checkout. Minimum possible value is 1, default value is 50. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	limitQuantityPerCheckout?:number | null
 };
-	/** Creates/updates translations for shop settings. */
+	/** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ShopSettingsTranslate"]: AliasType<{
 	/** Updated shop settings. */
 	shop?:ValueTypes["Shop"],
@@ -7911,7 +8448,7 @@ preview state and can be subject to changes at later point. */
 	headerText?:string | null,
 	description?:string | null
 };
-	/** Updates shop settings. */
+	/** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopSettingsUpdate"]: AliasType<{
 	/** Updated shop. */
 	shop?:ValueTypes["Shop"],
@@ -7933,7 +8470,7 @@ preview state and can be subject to changes at later point. */
 	/** Shop site name. */
 	name?:string | null
 };
-	/** Deletes staff users. */
+	/** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -7941,7 +8478,7 @@ preview state and can be subject to changes at later point. */
 	errors?:ValueTypes["StaffError"],
 		__typename?: boolean
 }>;
-	/** Creates a new staff user. */
+	/** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffCreate"]: AliasType<{
 	staffErrors?:ValueTypes["StaffError"],
 	errors?:ValueTypes["StaffError"],
@@ -7964,7 +8501,7 @@ preview state and can be subject to changes at later point. */
 	/** URL of a view where users should be redirected to set the password. URL in RFC 1808 format. */
 	redirectUrl?:string | null
 };
-	/** Deletes a staff user. */
+	/** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffDelete"]: AliasType<{
 	staffErrors?:ValueTypes["StaffError"],
 	errors?:ValueTypes["StaffError"],
@@ -8003,14 +8540,14 @@ arbitrary email addresses. */
 	active?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new staff notification recipient. */
+	/** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientCreate"]: AliasType<{
 	shopErrors?:ValueTypes["ShopError"],
 	errors?:ValueTypes["ShopError"],
 	staffNotificationRecipient?:ValueTypes["StaffNotificationRecipient"],
 		__typename?: boolean
 }>;
-	/** Delete staff notification recipient. */
+	/** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientDelete"]: AliasType<{
 	shopErrors?:ValueTypes["ShopError"],
 	errors?:ValueTypes["ShopError"],
@@ -8025,14 +8562,14 @@ arbitrary email addresses. */
 	/** Determines if a notification active. */
 	active?:boolean | null
 };
-	/** Updates a staff notification recipient. */
+	/** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientUpdate"]: AliasType<{
 	shopErrors?:ValueTypes["ShopError"],
 	errors?:ValueTypes["ShopError"],
 	staffNotificationRecipient?:ValueTypes["StaffNotificationRecipient"],
 		__typename?: boolean
 }>;
-	/** Updates an existing staff user. */
+	/** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffUpdate"]: AliasType<{
 	staffErrors?:ValueTypes["StaffError"],
 	errors?:ValueTypes["StaffError"],
@@ -8058,18 +8595,20 @@ arbitrary email addresses. */
 	["StaffUserInput"]: {
 	status?:ValueTypes["StaffMemberStatus"] | null,
 	search?:string | null,
-	ids?:(string | undefined | null)[]
+	ids?:string[]
 };
 	/** Represents stock. */
 ["Stock"]: AliasType<{
 	id?:boolean,
 	warehouse?:ValueTypes["Warehouse"],
 	productVariant?:ValueTypes["ProductVariant"],
-	/** Quantity of a product in the warehouse's possession, including the allocated stock that is waiting for shipment. */
+	/** Quantity of a product in the warehouse's possession, including the allocated
+stock that is waiting for shipment. Requires one of the following permissions:
+MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantity?:boolean,
-	/** Quantity allocated for orders */
+	/** Quantity allocated for orders. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantityAllocated?:boolean,
-	/** Quantity reserved for checkouts */
+	/** Quantity reserved for checkouts. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantityReserved?:boolean,
 		__typename?: boolean
 }>;
@@ -8113,6 +8652,12 @@ error isn't associated with a particular field. */
 };
 	/** Enum representing the type of a payment storage in a gateway. */
 ["StorePaymentMethodEnum"]:StorePaymentMethodEnum;
+	["Subscription"]: AliasType<{
+	/** Added in Saleor 3.2. Look up subscription event. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	event?:ValueTypes["Event"],
+		__typename?: boolean
+}>;
 	/** Represents a monetary value with taxes. In cases where taxes were not applied, net and gross values will be equal. */
 ["TaxedMoney"]: AliasType<{
 	/** Currency code. */
@@ -8170,18 +8715,8 @@ error isn't associated with a particular field. */
 	amount?:ValueTypes["Money"],
 		__typename?: boolean
 }>;
-	["TransactionInput"]: {
-	/** Current status of the payment transaction. */
-	status:ValueTypes["TransactionStatus"],
-	/** Reference of the transaction. */
-	reference?:string | null,
-	/** Name of the transaction. */
-	name?:string | null
-};
 	/** An enumeration. */
 ["TransactionKind"]:TransactionKind;
-	/** An enumeration. */
-["TransactionStatus"]:TransactionStatus;
 	["TranslatableItem"]: AliasType<{		["...on ProductTranslatableContent"] : ValueTypes["ProductTranslatableContent"],
 		["...on CollectionTranslatableContent"] : ValueTypes["CollectionTranslatableContent"],
 		["...on CategoryTranslatableContent"] : ValueTypes["CategoryTranslatableContent"],
@@ -8211,6 +8746,12 @@ error isn't associated with a particular field. */
 		__typename?: boolean
 }>;
 	["TranslatableKinds"]:TranslatableKinds;
+	["TranslationCreated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a translation. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	translation?:ValueTypes["TranslationTypes"],
+		__typename?: boolean
+}>;
 	["TranslationError"]: AliasType<{
 	/** Name of a field that caused the error. A value of `null` indicates that the
 error isn't associated with a particular field. */
@@ -8229,20 +8770,40 @@ error isn't associated with a particular field. */
 	name?:string | null,
 	description?:ValueTypes["JSONString"] | null
 };
+	["TranslationTypes"]: AliasType<{		["...on ProductTranslation"] : ValueTypes["ProductTranslation"],
+		["...on CollectionTranslation"] : ValueTypes["CollectionTranslation"],
+		["...on CategoryTranslation"] : ValueTypes["CategoryTranslation"],
+		["...on AttributeTranslation"] : ValueTypes["AttributeTranslation"],
+		["...on AttributeValueTranslation"] : ValueTypes["AttributeValueTranslation"],
+		["...on ProductVariantTranslation"] : ValueTypes["ProductVariantTranslation"],
+		["...on PageTranslation"] : ValueTypes["PageTranslation"],
+		["...on ShippingMethodTranslation"] : ValueTypes["ShippingMethodTranslation"],
+		["...on SaleTranslation"] : ValueTypes["SaleTranslation"],
+		["...on VoucherTranslation"] : ValueTypes["VoucherTranslation"],
+		["...on MenuItemTranslation"] : ValueTypes["MenuItemTranslation"]
+		__typename?: boolean
+}>;
+	["TranslationUpdated"]: AliasType<{
+	/** Added in Saleor 3.2. Look up a translation. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	translation?:ValueTypes["TranslationTypes"],
+		__typename?: boolean
+}>;
 	["UpdateInvoiceInput"]: {
 	/** Invoice number */
 	number?:string | null,
 	/** URL of an invoice to download. */
 	url?:string | null
 };
-	/** Updates metadata of an object. */
+	/** Updates metadata of an object. To use it, you need to have access to the modified object. */
 ["UpdateMetadata"]: AliasType<{
 	metadataErrors?:ValueTypes["MetadataError"],
 	errors?:ValueTypes["MetadataError"],
 	item?:ValueTypes["ObjectWithMetadata"],
 		__typename?: boolean
 }>;
-	/** Updates private metadata of an object. */
+	/** Updates private metadata of an object. To use it, you need to be an
+authenticated staff user or an app and have access to the modified object. */
 ["UpdatePrivateMetadata"]: AliasType<{
 	metadataErrors?:ValueTypes["MetadataError"],
 	errors?:ValueTypes["MetadataError"],
@@ -8268,10 +8829,14 @@ error isn't associated with a particular field. */
 	/** Represents user data. */
 ["User"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	email?:boolean,
 	firstName?:boolean,
 	lastName?:boolean,
@@ -8288,7 +8853,7 @@ giftCards?: [{	/** Return the elements in the list that come before the specifie
 	after?:string | null,	/** Return the first n elements from the list. */
 	first?:number | null,	/** Return the last n elements from the list. */
 	last?:number | null},ValueTypes["GiftCardCountableConnection"]],
-	/** A note about the customer. */
+	/** A note about the customer. Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF. */
 	note?:boolean,
 orders?: [{	/** Return the elements in the list that come before the specified cursor. */
 	before?:string | null,	/** Return the elements in the list that come after the specified cursor. */
@@ -8303,7 +8868,7 @@ orders?: [{	/** Return the elements in the list that come before the specified c
 	editableGroups?:ValueTypes["Group"],
 avatar?: [{	/** Size of the avatar. */
 	size?:number | null},ValueTypes["Image"]],
-	/** List of events associated with the user. */
+	/** List of events associated with the user. Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF. */
 	events?:ValueTypes["CustomerEvent"],
 storedPaymentSources?: [{	/** Slug of a channel for which the data should be returned. */
 	channel?:string | null},ValueTypes["PaymentSource"]],
@@ -8316,7 +8881,7 @@ storedPaymentSources?: [{	/** Slug of a channel for which the data should be ret
 	updatedAt?:boolean,
 		__typename?: boolean
 }>;
-	/** Deletes a user avatar. Only for staff members. */
+	/** Deletes a user avatar. Only for staff members. Requires one of the following permissions: AUTHENTICATED_STAFF_USER. */
 ["UserAvatarDelete"]: AliasType<{
 	/** An updated user instance. */
 	user?:ValueTypes["User"],
@@ -8326,7 +8891,8 @@ storedPaymentSources?: [{	/** Slug of a channel for which the data should be ret
 }>;
 	/** Create a user avatar. Only for staff members. This mutation must be sent as a
 `multipart` request. More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER. */
 ["UserAvatarUpdate"]: AliasType<{
 	/** An updated user instance. */
 	user?:ValueTypes["User"],
@@ -8334,7 +8900,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors?:ValueTypes["AccountError"],
 		__typename?: boolean
 }>;
-	/** Activate or deactivate users. */
+	/** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
 ["UserBulkSetActive"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -8397,7 +8963,7 @@ sourcePermissionGroups?: [{	/** ID of user whose groups should be returned. */
 };
 	["UUID"]:unknown;
 	["VariantAttributeScope"]:VariantAttributeScope;
-	/** Assign an media to a product variant. */
+	/** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["VariantMediaAssign"]: AliasType<{
 	productVariant?:ValueTypes["ProductVariant"],
 	media?:ValueTypes["ProductMedia"],
@@ -8405,7 +8971,7 @@ sourcePermissionGroups?: [{	/** ID of user whose groups should be returned. */
 	errors?:ValueTypes["ProductError"],
 		__typename?: boolean
 }>;
-	/** Unassign an media from a product variant. */
+	/** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["VariantMediaUnassign"]: AliasType<{
 	productVariant?:ValueTypes["ProductVariant"],
 	media?:ValueTypes["ProductMedia"],
@@ -8458,10 +9024,14 @@ collections or specific products. They can be used during checkout by providing
 valid voucher codes. */
 ["Voucher"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	code?:boolean,
 	usageLimit?:boolean,
@@ -8506,11 +9076,11 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	minSpent?:ValueTypes["Money"],
 	/** Determines a type of voucher. */
 	type?:boolean,
-	/** List of availability in channels for the voucher. */
+	/** List of availability in channels for the voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	channelListings?:ValueTypes["VoucherChannelListing"],
 		__typename?: boolean
 }>;
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherAddCatalogues"]: AliasType<{
 	/** Voucher of which catalogue IDs will be modified. */
 	voucher?:ValueTypes["Voucher"],
@@ -8518,7 +9088,7 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	errors?:ValueTypes["DiscountError"],
 		__typename?: boolean
 }>;
-	/** Deletes vouchers. */
+	/** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherBulkDelete"]: AliasType<{
 	/** Returns how many objects were affected. */
 	count?:boolean,
@@ -8549,7 +9119,7 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	/** List of channels from which the voucher should be unassigned. */
 	removeChannels?:string[]
 };
-	/** Manage voucher's availability in channels. */
+	/** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherChannelListingUpdate"]: AliasType<{
 	/** An updated voucher instance. */
 	voucher?:ValueTypes["Voucher"],
@@ -8572,14 +9142,14 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new voucher. */
+	/** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherCreate"]: AliasType<{
 	discountErrors?:ValueTypes["DiscountError"],
 	errors?:ValueTypes["DiscountError"],
 	voucher?:ValueTypes["Voucher"],
 		__typename?: boolean
 }>;
-	/** Deletes a voucher. */
+	/** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherDelete"]: AliasType<{
 	discountErrors?:ValueTypes["DiscountError"],
 	errors?:ValueTypes["DiscountError"],
@@ -8588,12 +9158,12 @@ translation?: [{	/** A language code to return the translation for voucher. */
 }>;
 	["VoucherDiscountType"]:VoucherDiscountType;
 	["VoucherFilterInput"]: {
-	status?:(ValueTypes["DiscountStatusEnum"] | undefined | null)[],
+	status?:ValueTypes["DiscountStatusEnum"][],
 	timesUsed?:ValueTypes["IntRangeInput"] | null,
-	discountType?:(ValueTypes["VoucherDiscountType"] | undefined | null)[],
+	discountType?:ValueTypes["VoucherDiscountType"][],
 	started?:ValueTypes["DateTimeRangeInput"] | null,
 	search?:string | null,
-	metadata?:(ValueTypes["MetadataFilter"] | undefined | null)[]
+	metadata?:ValueTypes["MetadataFilter"][]
 };
 	["VoucherInput"]: {
 	/** Voucher type: PRODUCT, CATEGORY SHIPPING or ENTIRE_ORDER. */
@@ -8609,17 +9179,17 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	/** Choices: fixed or percentage. */
 	discountValueType?:ValueTypes["DiscountValueTypeEnum"] | null,
 	/** Products discounted by the voucher. */
-	products?:(string | undefined | null)[],
-	/** New in Saleor 3.1. Variants discounted by the voucher. */
-	variants?:(string | undefined | null)[],
+	products?:string[],
+	/** Added in Saleor 3.1. Variants discounted by the voucher. */
+	variants?:string[],
 	/** Collections discounted by the voucher. */
-	collections?:(string | undefined | null)[],
+	collections?:string[],
 	/** Categories discounted by the voucher. */
-	categories?:(string | undefined | null)[],
+	categories?:string[],
 	/** Minimal quantity of checkout items required to apply the voucher. */
 	minCheckoutItemsQuantity?:number | null,
 	/** Country codes that can be used with the shipping voucher. */
-	countries?:(string | undefined | null)[],
+	countries?:string[],
 	/** Voucher should be applied to the cheapest item or entire order. */
 	applyOncePerOrder?:boolean | null,
 	/** Voucher should be applied once per customer. */
@@ -8629,7 +9199,7 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	/** Limit number of times this voucher can be used in total. */
 	usageLimit?:number | null
 };
-	/** Removes products, categories, collections from a voucher. */
+	/** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherRemoveCatalogues"]: AliasType<{
 	/** Voucher of which catalogue IDs will be modified. */
 	voucher?:ValueTypes["Voucher"],
@@ -8641,7 +9211,7 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	["VoucherSortingInput"]: {
 	/** Specifies the direction in which to sort products. */
 	direction:ValueTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?:string | null,
@@ -8655,11 +9225,12 @@ translation?: [{	/** A language code to return the translation for voucher. */
 	languageCode:ValueTypes["LanguageCodeEnum"]},ValueTypes["VoucherTranslation"]],
 	/** Vouchers allow giving discounts to particular customers on categories,
 collections or specific products. They can be used during checkout by
-providing valid voucher codes. */
+providing valid voucher codes. Requires one of the following permissions:
+MANAGE_DISCOUNTS. */
 	voucher?:ValueTypes["Voucher"],
 		__typename?: boolean
 }>;
-	/** Creates/updates translations for a voucher. */
+	/** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["VoucherTranslate"]: AliasType<{
 	translationErrors?:ValueTypes["TranslationError"],
 	errors?:ValueTypes["TranslationError"],
@@ -8674,7 +9245,7 @@ providing valid voucher codes. */
 		__typename?: boolean
 }>;
 	["VoucherTypeEnum"]:VoucherTypeEnum;
-	/** Updates a voucher. */
+	/** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherUpdate"]: AliasType<{
 	discountErrors?:ValueTypes["DiscountError"],
 	errors?:ValueTypes["DiscountError"],
@@ -8684,10 +9255,14 @@ providing valid voucher codes. */
 	/** Represents warehouse. */
 ["Warehouse"]: AliasType<{
 	id?:boolean,
-	/** List of private metadata items.Requires proper staff permissions to access. */
+	/** List of private metadata items. Requires staff permissions to access. */
 	privateMetadata?:ValueTypes["MetadataItem"],
+privateMetafield?: [{	key:string},boolean],
+privateMetafields?: [{	keys?:string[]},boolean],
 	/** List of public metadata items. Can be accessed without permissions. */
 	metadata?:ValueTypes["MetadataItem"],
+metafield?: [{	key:string},boolean],
+metafields?: [{	keys?:string[]},boolean],
 	name?:boolean,
 	slug?:boolean,
 	email?:boolean,
@@ -8695,7 +9270,7 @@ providing valid voucher codes. */
 	address?:ValueTypes["Address"],
 	/** Warehouse company name. */
 	companyName?:boolean,
-	/** New in Saleor 3.1. Click and collect options: local, all or disabled. Note:
+	/** Added in Saleor 3.1. Click and collect options: local, all or disabled. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	clickAndCollectOption?:boolean,
 shippingZones?: [{	/** Return the elements in the list that come before the specified cursor. */
@@ -8722,7 +9297,7 @@ shippingZones?: [{	/** Return the elements in the list that come before the spec
 	cursor?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates new warehouse. */
+	/** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseCreate"]: AliasType<{
 	warehouseErrors?:ValueTypes["WarehouseError"],
 	errors?:ValueTypes["WarehouseError"],
@@ -8739,9 +9314,9 @@ shippingZones?: [{	/** Return the elements in the list that come before the spec
 	/** Address of the warehouse. */
 	address:ValueTypes["AddressInput"],
 	/** Shipping zones supported by the warehouse. */
-	shippingZones?:(string | undefined | null)[]
+	shippingZones?:string[]
 };
-	/** Deletes selected warehouse. */
+	/** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseDelete"]: AliasType<{
 	warehouseErrors?:ValueTypes["WarehouseError"],
 	errors?:ValueTypes["WarehouseError"],
@@ -8763,17 +9338,17 @@ error isn't associated with a particular field. */
 	["WarehouseFilterInput"]: {
 	clickAndCollectOption?:ValueTypes["WarehouseClickAndCollectOptionEnum"] | null,
 	search?:string | null,
-	ids?:(string | undefined | null)[],
+	ids?:string[],
 	isPrivate?:boolean | null
 };
-	/** Add shipping zone to given warehouse. */
+	/** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseShippingZoneAssign"]: AliasType<{
 	warehouseErrors?:ValueTypes["WarehouseError"],
 	errors?:ValueTypes["WarehouseError"],
 	warehouse?:ValueTypes["Warehouse"],
 		__typename?: boolean
 }>;
-	/** Remove shipping zone from given warehouse. */
+	/** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseShippingZoneUnassign"]: AliasType<{
 	warehouseErrors?:ValueTypes["WarehouseError"],
 	errors?:ValueTypes["WarehouseError"],
@@ -8787,7 +9362,7 @@ error isn't associated with a particular field. */
 	/** Sort warehouses by the selected field. */
 	field:ValueTypes["WarehouseSortField"]
 };
-	/** Updates given warehouse. */
+	/** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseUpdate"]: AliasType<{
 	warehouseErrors?:ValueTypes["WarehouseError"],
 	errors?:ValueTypes["WarehouseError"],
@@ -8803,11 +9378,11 @@ error isn't associated with a particular field. */
 	name?:string | null,
 	/** Address of the warehouse. */
 	address?:ValueTypes["AddressInput"] | null,
-	/** New in Saleor 3.1. Click and collect options: local, all or disabled. Note:
+	/** Added in Saleor 3.1. Click and collect options: local, all or disabled. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	clickAndCollectOption?:ValueTypes["WarehouseClickAndCollectOptionEnum"] | null,
-	/** New in Saleor 3.1. Visibility of warehouse stocks. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Visibility of warehouse stocks. Note: this feature is in
+a preview state and can be subject to changes at later point. */
 	isPrivate?:boolean | null
 };
 	/** Webhook. */
@@ -8828,12 +9403,17 @@ eventDeliveries?: [{	/** Event delivery sorter. */
 	after?:string | null,	/** Return the first n elements from the list. */
 	first?:number | null,	/** Return the last n elements from the list. */
 	last?:number | null},ValueTypes["EventDeliveryCountableConnection"]],
+	/** Target URL for webhook. */
 	targetUrl?:boolean,
+	/** Informs if webhook is activated. */
 	isActive?:boolean,
+	/** Used to create a hash signature with each payload. */
 	secretKey?:boolean,
+	/** Used to define payloads for specific events. */
+	subscriptionQuery?:boolean,
 		__typename?: boolean
 }>;
-	/** Creates a new webhook subscription. */
+	/** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 ["WebhookCreate"]: AliasType<{
 	webhookErrors?:ValueTypes["WebhookError"],
 	errors?:ValueTypes["WebhookError"],
@@ -8848,7 +9428,7 @@ eventDeliveries?: [{	/** Event delivery sorter. */
 	/** The events that webhook wants to subscribe. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `syncEvents` instead. */
-	events?:(ValueTypes["WebhookEventTypeEnum"] | undefined | null)[],
+	events?:ValueTypes["WebhookEventTypeEnum"][],
 	/** The asynchronous events that webhook wants to subscribe. */
 	asyncEvents?:ValueTypes["WebhookEventTypeAsyncEnum"][],
 	/** The synchronous events that webhook wants to subscribe. */
@@ -8858,9 +9438,12 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `sync
 	/** Determine if webhook will be set active or not. */
 	isActive?:boolean | null,
 	/** The secret key used to create a hash signature with each payload. */
-	secretKey?:string | null
+	secretKey?:string | null,
+	/** Added in Saleor 3.2. Subscription query used to define a webhook payload.
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	query?:string | null
 };
-	/** Deletes a webhook subscription. */
+	/** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 ["WebhookDelete"]: AliasType<{
 	webhookErrors?:ValueTypes["WebhookError"],
 	errors?:ValueTypes["WebhookError"],
@@ -8911,7 +9494,7 @@ error isn't associated with a particular field. */
 ["WebhookEventTypeSyncEnum"]:WebhookEventTypeSyncEnum;
 	/** An enumeration. */
 ["WebhookSampleEventTypeEnum"]:WebhookSampleEventTypeEnum;
-	/** Updates a webhook subscription. */
+	/** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
 ["WebhookUpdate"]: AliasType<{
 	webhookErrors?:ValueTypes["WebhookError"],
 	errors?:ValueTypes["WebhookError"],
@@ -8926,7 +9509,7 @@ error isn't associated with a particular field. */
 	/** The events that webhook wants to subscribe. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `syncEvents` instead. */
-	events?:(ValueTypes["WebhookEventTypeEnum"] | undefined | null)[],
+	events?:ValueTypes["WebhookEventTypeEnum"][],
 	/** The asynchronous events that webhook wants to subscribe. */
 	asyncEvents?:ValueTypes["WebhookEventTypeAsyncEnum"][],
 	/** The synchronous events that webhook wants to subscribe. */
@@ -8936,7 +9519,10 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `sync
 	/** Determine if webhook will be set active or not. */
 	isActive?:boolean | null,
 	/** Use to create a hash signature with each payload. */
-	secretKey?:string | null
+	secretKey?:string | null,
+	/** Added in Saleor 3.2. Subscription query used to define a webhook payload.
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	query?:string | null
 };
 	/** Represents weight value in a specific weight unit. */
 ["Weight"]: AliasType<{
@@ -8960,7 +9546,7 @@ export type ModelTypes = {
 ["_Service"]: {
 		sdl?:string
 };
-	/** Create a new address for the customer. */
+	/** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountAddressCreate"]: {
 		/** A user instance for which the address was created. */
 	user?:ModelTypes["User"],
@@ -8968,7 +9554,7 @@ export type ModelTypes = {
 	errors:ModelTypes["AccountError"][],
 	address?:ModelTypes["Address"]
 };
-	/** Delete an address of the logged-in user. */
+	/** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 ["AccountAddressDelete"]: {
 		/** A user instance for which the address was deleted. */
 	user?:ModelTypes["User"],
@@ -8976,7 +9562,7 @@ export type ModelTypes = {
 	errors:ModelTypes["AccountError"][],
 	address?:ModelTypes["Address"]
 };
-	/** Updates an address of the logged-in user. */
+	/** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 ["AccountAddressUpdate"]: {
 		/** A user object for which the address was edited. */
 	user?:ModelTypes["User"],
@@ -8984,7 +9570,7 @@ export type ModelTypes = {
 	errors:ModelTypes["AccountError"][],
 	address?:ModelTypes["Address"]
 };
-	/** Remove user account. */
+	/** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountDelete"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][],
@@ -9013,19 +9599,20 @@ error isn't associated with a particular field. */
 	user?:ModelTypes["User"]
 };
 	["AccountRegisterInput"]: GraphQLTypes["AccountRegisterInput"];
-	/** Sends an email with the account removal link for the logged-in user. */
+	/** Sends an email with the account removal link for the logged-in user. Requires
+one of the following permissions: AUTHENTICATED_USER. */
 ["AccountRequestDeletion"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][]
 };
-	/** Sets a default address for the authenticated user. */
+	/** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountSetDefaultAddress"]: {
 		/** An updated user instance. */
 	user?:ModelTypes["User"],
 	accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][]
 };
-	/** Updates the account of the logged-in user. */
+	/** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountUpdate"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][],
@@ -9051,7 +9638,7 @@ error isn't associated with a particular field. */
 	/** Address is user's default billing address. */
 	isDefaultBillingAddress?:boolean
 };
-	/** Creates user address. */
+	/** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressCreate"]: {
 		/** A user instance for which the address was created. */
 	user?:ModelTypes["User"],
@@ -9059,7 +9646,7 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["AccountError"][],
 	address?:ModelTypes["Address"]
 };
-	/** Deletes an address. */
+	/** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressDelete"]: {
 		/** A user instance for which the address was deleted. */
 	user?:ModelTypes["User"],
@@ -9068,7 +9655,7 @@ error isn't associated with a particular field. */
 	address?:ModelTypes["Address"]
 };
 	["AddressInput"]: GraphQLTypes["AddressInput"];
-	/** Sets a default address for the given user. */
+	/** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressSetDefault"]: {
 		/** An updated user instance. */
 	user?:ModelTypes["User"],
@@ -9077,7 +9664,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["AddressTypeEnum"]: GraphQLTypes["AddressTypeEnum"];
-	/** Updates an address. */
+	/** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressUpdate"]: {
 		/** A user object for which the address was edited. */
 	user?:ModelTypes["User"],
@@ -9086,41 +9673,70 @@ error isn't associated with a particular field. */
 	address?:ModelTypes["Address"]
 };
 	["AddressValidationData"]: {
-		countryCode?:string,
-	countryName?:string,
-	addressFormat?:string,
-	addressLatinFormat?:string,
-	allowedFields?:(string | undefined)[],
-	requiredFields?:(string | undefined)[],
-	upperFields?:(string | undefined)[],
-	countryAreaType?:string,
-	countryAreaChoices?:(ModelTypes["ChoiceValue"] | undefined)[],
-	cityType?:string,
-	cityChoices?:(ModelTypes["ChoiceValue"] | undefined)[],
-	cityAreaType?:string,
-	cityAreaChoices?:(ModelTypes["ChoiceValue"] | undefined)[],
-	postalCodeType?:string,
-	postalCodeMatchers?:(string | undefined)[],
-	postalCodeExamples?:(string | undefined)[],
-	postalCodePrefix?:string
+		countryCode:string,
+	countryName:string,
+	addressFormat:string,
+	addressLatinFormat:string,
+	allowedFields:string[],
+	requiredFields:string[],
+	upperFields:string[],
+	countryAreaType:string,
+	countryAreaChoices:ModelTypes["ChoiceValue"][],
+	cityType:string,
+	cityChoices:ModelTypes["ChoiceValue"][],
+	cityAreaType:string,
+	cityAreaChoices:ModelTypes["ChoiceValue"][],
+	postalCodeType:string,
+	postalCodeMatchers:string[],
+	postalCodeExamples:string[],
+	postalCodePrefix:string
 };
 	/** Represents allocation. */
 ["Allocation"]: {
 		id:string,
-	/** Quantity allocated for orders. */
+	/** Quantity allocated for orders. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantity:number,
-	/** The warehouse were items were allocated. */
+	/** The warehouse were items were allocated. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	warehouse:ModelTypes["Warehouse"]
 };
 	/** Represents app data. */
 ["App"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	/** List of the app's permissions. */
-	permissions?:(ModelTypes["Permission"] | undefined)[],
+	permissions?:ModelTypes["Permission"][],
 	/** The date and time when the app was created. */
 	created?:ModelTypes["DateTime"],
 	/** Determine if app will be set active or not. */
@@ -9130,9 +9746,9 @@ error isn't associated with a particular field. */
 	/** Type of the app. */
 	type?:ModelTypes["AppTypeEnum"],
 	/** Last 4 characters of the tokens. */
-	tokens?:(ModelTypes["AppToken"] | undefined)[],
+	tokens?:ModelTypes["AppToken"][],
 	/** List of webhooks assigned to this app. */
-	webhooks?:(ModelTypes["Webhook"] | undefined)[],
+	webhooks?:ModelTypes["Webhook"][],
 	/** Description of this app. */
 	aboutApp?:string,
 	/** Description of the data privacy defined for this app. */
@@ -9151,11 +9767,11 @@ error isn't associated with a particular field. */
 	version?:string,
 	/** JWT token used to authenticate by thridparty app. */
 	accessToken?:string,
-	/** New in Saleor 3.1. App's dashboard extensions. Note: this feature is in a
+	/** Added in Saleor 3.1. App's dashboard extensions. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	extensions:ModelTypes["AppExtension"][]
 };
-	/** Activate the app. */
+	/** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppActivate"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
@@ -9174,7 +9790,7 @@ preview state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new app. */
+	/** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 ["AppCreate"]: {
 		/** The newly created authentication token. */
 	authToken?:string,
@@ -9182,19 +9798,19 @@ preview state and can be subject to changes at later point. */
 	errors:ModelTypes["AppError"][],
 	app?:ModelTypes["App"]
 };
-	/** Deactivate the app. */
+	/** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDeactivate"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
 	app?:ModelTypes["App"]
 };
-	/** Deletes an app. */
+	/** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDelete"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
 	app?:ModelTypes["App"]
 };
-	/** Delete failed installation. */
+	/** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDeleteFailedInstallation"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
@@ -9251,7 +9867,7 @@ error isn't associated with a particular field. */
     POPUP - app's extension will be mounted as a popup window
     APP_PAGE - redirect to app's page */
 ["AppExtensionTargetEnum"]: GraphQLTypes["AppExtensionTargetEnum"];
-	/** Fetch and validate manifest. */
+	/** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
 ["AppFetchManifest"]: {
 		manifest?:ModelTypes["Manifest"],
 	appErrors:ModelTypes["AppError"][],
@@ -9259,7 +9875,7 @@ error isn't associated with a particular field. */
 };
 	["AppFilterInput"]: GraphQLTypes["AppFilterInput"];
 	["AppInput"]: GraphQLTypes["AppInput"];
-	/** Install new app by using app manifest. */
+	/** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 ["AppInstall"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
@@ -9292,7 +9908,7 @@ error isn't associated with a particular field. */
 	/** Type of way how app extension will be opened. */
 	target:ModelTypes["AppExtensionTargetEnum"]
 };
-	/** Retry failed installation of new app. */
+	/** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppRetryInstall"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
@@ -9308,7 +9924,7 @@ error isn't associated with a particular field. */
 	/** Last 4 characters of the token. */
 	authToken?:string
 };
-	/** Creates a new token. */
+	/** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
 ["AppTokenCreate"]: {
 		/** The newly created authentication token. */
 	authToken?:string,
@@ -9316,7 +9932,7 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["AppError"][],
 	appToken?:ModelTypes["AppToken"]
 };
-	/** Deletes an authentication token assigned to app. */
+	/** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppTokenDelete"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
@@ -9332,7 +9948,7 @@ error isn't associated with a particular field. */
 };
 	/** Enum determining type of your App. */
 ["AppTypeEnum"]: GraphQLTypes["AppTypeEnum"];
-	/** Updates an existing app. */
+	/** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppUpdate"]: {
 		appErrors:ModelTypes["AppError"][],
 	errors:ModelTypes["AppError"][],
@@ -9340,7 +9956,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["AreaUnitsEnum"]: GraphQLTypes["AreaUnitsEnum"];
-	/** New in Saleor 3.1. Represents assigned attribute to variant with variant selection attached. */
+	/** Added in Saleor 3.1. Represents assigned attribute to variant with variant selection attached. */
 ["AssignedVariantAttribute"]: {
 		/** Attribute assigned to variant. */
 	attribute:ModelTypes["Attribute"],
@@ -9349,7 +9965,7 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 'swatch', 'numeric'] */
 	variantSelection:boolean
 };
-	/** Assigns storefront's navigation menus. */
+	/** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
 ["AssignNavigation"]: {
 		/** Assigned navigation menu. */
 	menu?:ModelTypes["Menu"],
@@ -9359,10 +9975,39 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	/** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
 ["Attribute"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	/** The input type to use for entering attribute values in the dashboard. */
 	inputType?:ModelTypes["AttributeInputTypeEnum"],
 	/** The entity type which can be used as a reference. */
@@ -9377,26 +10022,50 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	unit?:ModelTypes["MeasurementUnitsEnum"],
 	/** List of attribute's values. */
 	choices?:ModelTypes["AttributeValueCountableConnection"],
-	/** Whether the attribute requires values to be passed or not. */
+	/** Whether the attribute requires values to be passed or not. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	valueRequired:boolean,
-	/** Whether the attribute should be visible or not in storefront. */
+	/** Whether the attribute should be visible or not in storefront. Requires one of
+the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	visibleInStorefront:boolean,
-	/** Whether the attribute can be filtered in storefront. */
+	/** Whether the attribute can be filtered in storefront. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	filterableInStorefront:boolean,
-	/** Whether the attribute can be filtered in dashboard. */
+	/** Whether the attribute can be filtered in dashboard. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	filterableInDashboard:boolean,
-	/** Whether the attribute can be displayed in the admin product list. */
+	/** Whether the attribute can be displayed in the admin product list. Requires one
+of the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	availableInGrid:boolean,
+	/** The position of the attribute in the storefront navigation (0 by default).
+Requires one of the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
+	storefrontSearchPosition:number,
 	/** Returns translated attribute fields for the given language code. */
 	translation?:ModelTypes["AttributeTranslation"],
-	/** The position of the attribute in the storefront navigation (0 by default). */
-	storefrontSearchPosition:number,
 	/** Flag indicating that attribute has predefined choices. */
 	withChoices:boolean,
 	productTypes:ModelTypes["ProductTypeCountableConnection"],
 	productVariantTypes:ModelTypes["ProductTypeCountableConnection"]
 };
-	/** Deletes attributes. */
+	/** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["AttributeBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -9425,7 +10094,7 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	errors:ModelTypes["AttributeError"][]
 };
 	["AttributeCreateInput"]: GraphQLTypes["AttributeCreateInput"];
-	/** Deletes an attribute. */
+	/** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeDelete"]: {
 		attributeErrors:ModelTypes["AttributeError"][],
 	errors:ModelTypes["AttributeError"][],
@@ -9448,7 +10117,7 @@ error isn't associated with a particular field. */
 	["AttributeInput"]: GraphQLTypes["AttributeInput"];
 	/** An enumeration. */
 ["AttributeInputTypeEnum"]: GraphQLTypes["AttributeInputTypeEnum"];
-	/** Reorder the values of an attribute. */
+	/** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeReorderValues"]: {
 		/** Attribute from which values are reordered. */
 	attribute?:ModelTypes["Attribute"],
@@ -9465,7 +10134,7 @@ error isn't associated with a particular field. */
 	/** Custom attribute of a product. */
 	attribute?:ModelTypes["Attribute"]
 };
-	/** Creates/updates translations for an attribute. */
+	/** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["AttributeTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -9479,7 +10148,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["AttributeTypeEnum"]: GraphQLTypes["AttributeTypeEnum"];
-	/** Updates attribute. */
+	/** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeUpdate"]: {
 		attribute?:ModelTypes["Attribute"],
 	attributeErrors:ModelTypes["AttributeError"][],
@@ -9509,10 +10178,10 @@ error isn't associated with a particular field. */
 	boolean?:boolean,
 	/** Represents the date value of the attribute value. */
 	date?:ModelTypes["Date"],
-	/** Represents the date time value of the attribute value. */
+	/** Represents the date/time value of the attribute value. */
 	dateTime?:ModelTypes["DateTime"]
 };
-	/** Deletes values of attributes. */
+	/** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -9532,7 +10201,7 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a value for an attribute. */
+	/** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["AttributeValueCreate"]: {
 		/** The updated attribute. */
 	attribute?:ModelTypes["Attribute"],
@@ -9541,7 +10210,7 @@ error isn't associated with a particular field. */
 	attributeValue?:ModelTypes["AttributeValue"]
 };
 	["AttributeValueCreateInput"]: GraphQLTypes["AttributeValueCreateInput"];
-	/** Deletes a value of an attribute. */
+	/** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueDelete"]: {
 		/** The updated attribute. */
 	attribute?:ModelTypes["Attribute"],
@@ -9560,7 +10229,7 @@ error isn't associated with a particular field. */
 	/** Represents a value of an attribute. */
 	attributeValue?:ModelTypes["AttributeValue"]
 };
-	/** Creates/updates translations for an attribute value. */
+	/** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["AttributeValueTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -9574,7 +10243,7 @@ error isn't associated with a particular field. */
 	richText?:ModelTypes["JSONString"]
 };
 	["AttributeValueTranslationInput"]: GraphQLTypes["AttributeValueTranslationInput"];
-	/** Updates value of an attribute. */
+	/** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueUpdate"]: {
 		/** The updated attribute. */
 	attribute?:ModelTypes["Attribute"],
@@ -9624,10 +10293,39 @@ error isn't associated with a particular field. */
 in a tree-hierarchies which can be used for navigation in the storefront. */
 ["Category"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	seoTitle?:string,
 	seoDescription?:string,
 	name:string,
@@ -9639,7 +10337,9 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	descriptionJson?:ModelTypes["JSONString"],
 	/** List of ancestors of the category. */
 	ancestors?:ModelTypes["CategoryCountableConnection"],
-	/** List of products in the category. */
+	/** List of products in the category. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	products?:ModelTypes["ProductCountableConnection"],
 	/** List of children of the category. */
 	children?:ModelTypes["CategoryCountableConnection"],
@@ -9647,7 +10347,7 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	/** Returns translated category fields for the given language code. */
 	translation?:ModelTypes["CategoryTranslation"]
 };
-	/** Deletes categories. */
+	/** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -9667,16 +10367,26 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new category. */
+	/** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryCreate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	category?:ModelTypes["Category"]
 };
-	/** Deletes a category. */
+	["CategoryCreated"]: {
+		/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ModelTypes["Category"]
+};
+	/** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryDelete"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
+	category?:ModelTypes["Category"]
+};
+	["CategoryDeleted"]: {
+		/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	category?:ModelTypes["Category"]
 };
 	["CategoryFilterInput"]: GraphQLTypes["CategoryFilterInput"];
@@ -9696,7 +10406,7 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	/** Represents a single category of products. */
 	category?:ModelTypes["Category"]
 };
-	/** Creates/updates translations for a category. */
+	/** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["CategoryTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -9713,10 +10423,15 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	/** Translated description of the product (JSON). */
 	descriptionJson?:ModelTypes["JSONString"]
 };
-	/** Updates a category. */
+	/** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryUpdate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
+	category?:ModelTypes["Category"]
+};
+	["CategoryUpdated"]: {
+		/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	category?:ModelTypes["Category"]
 };
 	/** Represents channel. */
@@ -9726,28 +10441,33 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	isActive:boolean,
 	currencyCode:string,
 	slug:string,
-	/** Whether a channel has associated orders. */
+	/** Whether a channel has associated orders. Requires one of the following permissions: MANAGE_CHANNELS. */
 	hasOrders:boolean,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry:ModelTypes["CountryDisplay"]
 };
-	/** Activate a channel. */
+	/** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelActivate"]: {
 		/** Activated channel. */
 	channel?:ModelTypes["Channel"],
 	channelErrors:ModelTypes["ChannelError"][],
 	errors:ModelTypes["ChannelError"][]
 };
-	/** Creates new channel. */
+	/** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelCreate"]: {
 		channelErrors:ModelTypes["ChannelError"][],
 	errors:ModelTypes["ChannelError"][],
 	channel?:ModelTypes["Channel"]
 };
+	["ChannelCreated"]: {
+		/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	channel?:ModelTypes["Channel"]
+};
 	["ChannelCreateInput"]: GraphQLTypes["ChannelCreateInput"];
-	/** Deactivate a channel. */
+	/** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelDeactivate"]: {
 		/** Deactivated channel. */
 	channel?:ModelTypes["Channel"],
@@ -9755,10 +10475,16 @@ country was not explicitly provided. */
 	errors:ModelTypes["ChannelError"][]
 };
 	/** Delete a channel. Orders associated with the deleted channel will be moved to
-the target channel. Checkouts, product availability, and pricing will be removed. */
+the target channel. Checkouts, product availability, and pricing will be
+removed. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelDelete"]: {
 		channelErrors:ModelTypes["ChannelError"][],
 	errors:ModelTypes["ChannelError"][],
+	channel?:ModelTypes["Channel"]
+};
+	["ChannelDeleted"]: {
+		/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?:ModelTypes["Channel"]
 };
 	["ChannelDeleteInput"]: GraphQLTypes["ChannelDeleteInput"];
@@ -9775,20 +10501,59 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["ChannelErrorCode"]: GraphQLTypes["ChannelErrorCode"];
-	/** Update a channel. */
+	["ChannelStatusChanged"]: {
+		/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	channel?:ModelTypes["Channel"]
+};
+	/** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelUpdate"]: {
 		channelErrors:ModelTypes["ChannelError"][],
 	errors:ModelTypes["ChannelError"][],
+	channel?:ModelTypes["Channel"]
+};
+	["ChannelUpdated"]: {
+		/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?:ModelTypes["Channel"]
 };
 	["ChannelUpdateInput"]: GraphQLTypes["ChannelUpdateInput"];
 	/** Checkout object. */
 ["Checkout"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	created:ModelTypes["DateTime"],
 	lastChange:ModelTypes["DateTime"],
 	user?:ModelTypes["User"],
@@ -9801,10 +10566,10 @@ error isn't associated with a particular field. */
 	translatedDiscountName?:string,
 	voucherCode?:string,
 	/** Shipping methods that can be used with this checkout. */
-	availableShippingMethods?:ModelTypes["ShippingMethod"][],
+	availableShippingMethods:ModelTypes["ShippingMethod"][],
 	/** Shipping methods that can be used with this checkout. */
-	shippingMethods?:ModelTypes["ShippingMethod"][],
-	/** New in Saleor 3.1. Collection points that can be used for this order. Note:
+	shippingMethods:ModelTypes["ShippingMethod"][],
+	/** Added in Saleor 3.1. Collection points that can be used for this order. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	availableCollectionPoints:ModelTypes["Warehouse"][],
 	/** List of available payment gateways. */
@@ -9812,28 +10577,28 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** Email of a customer. */
 	email?:string,
 	/** List of gift cards associated with this checkout. */
-	giftCards?:(ModelTypes["GiftCard"] | undefined)[],
+	giftCards:ModelTypes["GiftCard"][],
 	/** Returns True, if checkout requires shipping. */
 	isShippingRequired:boolean,
 	/** The number of items purchased. */
 	quantity:number,
-	/** New in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
+	/** Added in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
 	stockReservationExpires?:ModelTypes["DateTime"],
 	/** A list of checkout lines, each containing information about an item in the checkout. */
-	lines?:(ModelTypes["CheckoutLine"] | undefined)[],
+	lines:ModelTypes["CheckoutLine"][],
 	/** The price of the shipping, with all the taxes included. */
-	shippingPrice?:ModelTypes["TaxedMoney"],
+	shippingPrice:ModelTypes["TaxedMoney"],
 	/** The shipping method related with checkout. */
 	shippingMethod?:ModelTypes["ShippingMethod"],
-	/** New in Saleor 3.1. The delivery method selected for this checkout. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The delivery method selected for this checkout. Note:
+this feature is in a preview state and can be subject to changes at later point. */
 	deliveryMethod?:ModelTypes["DeliveryMethod"],
 	/** The price of the checkout before shipping, with taxes included. */
-	subtotalPrice?:ModelTypes["TaxedMoney"],
+	subtotalPrice:ModelTypes["TaxedMoney"],
 	/** The checkout's token. */
 	token:ModelTypes["UUID"],
 	/** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
-	totalPrice?:ModelTypes["TaxedMoney"],
+	totalPrice:ModelTypes["TaxedMoney"],
 	/** Checkout language code. */
 	languageCode:ModelTypes["LanguageCodeEnum"]
 };
@@ -9888,22 +10653,29 @@ to checkoutLinesAdd and checkoutLinesUpdate to merge a cart with an active check
 	errors:ModelTypes["CheckoutError"][],
 	checkout?:ModelTypes["Checkout"]
 };
+	["CheckoutCreated"]: {
+		/** Added in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	checkout?:ModelTypes["Checkout"]
+};
 	["CheckoutCreateInput"]: GraphQLTypes["CheckoutCreateInput"];
-	/** Sets the customer as the owner of the checkout. */
+	/** Sets the customer as the owner of the checkout. Requires one of the following
+permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 ["CheckoutCustomerAttach"]: {
 		/** An updated checkout. */
 	checkout?:ModelTypes["Checkout"],
 	checkoutErrors:ModelTypes["CheckoutError"][],
 	errors:ModelTypes["CheckoutError"][]
 };
-	/** Removes the user assigned as the owner of the checkout. */
+	/** Removes the user assigned as the owner of the checkout. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 ["CheckoutCustomerDetach"]: {
 		/** An updated checkout. */
 	checkout?:ModelTypes["Checkout"],
 	checkoutErrors:ModelTypes["CheckoutError"][],
 	errors:ModelTypes["CheckoutError"][]
 };
-	/** New in Saleor 3.1. Updates the delivery method (shipping method or pick up
+	/** Added in Saleor 3.1. Updates the delivery method (shipping method or pick up
 point) of the checkout. Note: this feature is in a preview state and can be
 subject to changes at later point. */
 ["CheckoutDeliveryMethodUpdate"]: {
@@ -9949,9 +10721,9 @@ error isn't associated with a particular field. */
 	variant:ModelTypes["ProductVariant"],
 	quantity:number,
 	/** The sum of the checkout line price, taxes and discounts. */
-	totalPrice?:ModelTypes["TaxedMoney"],
+	totalPrice:ModelTypes["TaxedMoney"],
 	/** Indicates whether the item need to be delivered. */
-	requiresShipping?:boolean
+	requiresShipping:boolean
 };
 	["CheckoutLineCountableConnection"]: {
 		/** Pagination data for this connection. */
@@ -9994,6 +10766,7 @@ error isn't associated with a particular field. */
 	checkoutErrors:ModelTypes["CheckoutError"][],
 	errors:ModelTypes["CheckoutError"][]
 };
+	["CheckoutLineUpdateInput"]: GraphQLTypes["CheckoutLineUpdateInput"];
 	/** Create a new payment for given checkout. */
 ["CheckoutPaymentCreate"]: {
 		/** Related checkout object. */
@@ -10026,6 +10799,11 @@ error isn't associated with a particular field. */
 };
 	["CheckoutSortField"]: GraphQLTypes["CheckoutSortField"];
 	["CheckoutSortingInput"]: GraphQLTypes["CheckoutSortingInput"];
+	["CheckoutUpdated"]: {
+		/** Added in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	checkout?:ModelTypes["Checkout"]
+};
 	["ChoiceValue"]: {
 		raw?:string,
 	verbose?:string
@@ -10033,10 +10811,39 @@ error isn't associated with a particular field. */
 	/** Represents a collection of products. */
 ["Collection"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	seoTitle?:string,
 	seoDescription?:string,
 	name:string,
@@ -10051,17 +10858,17 @@ error isn't associated with a particular field. */
 	backgroundImage?:ModelTypes["Image"],
 	/** Returns translated collection fields for the given language code. */
 	translation?:ModelTypes["CollectionTranslation"],
-	/** List of channels in which the collection is available. */
+	/** List of channels in which the collection is available. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	channelListings?:ModelTypes["CollectionChannelListing"][]
 };
-	/** Adds products to a collection. */
+	/** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionAddProducts"]: {
 		/** Collection to which products will be added. */
 	collection?:ModelTypes["Collection"],
 	collectionErrors:ModelTypes["CollectionError"][],
 	errors:ModelTypes["CollectionError"][]
 };
-	/** Deletes collections. */
+	/** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -10072,6 +10879,8 @@ error isn't associated with a particular field. */
 ["CollectionChannelListing"]: {
 		id:string,
 	publicationDate?:ModelTypes["Date"],
+	/** Added in Saleor 3.3. The collection publication date. */
+	publishedAt?:ModelTypes["DateTime"],
 	isPublished:boolean,
 	channel:ModelTypes["Channel"]
 };
@@ -10090,7 +10899,7 @@ error isn't associated with a particular field. */
 	/** List of channels IDs which causes the error. */
 	channels?:string[]
 };
-	/** Manage collection's availability in channels. */
+	/** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionChannelListingUpdate"]: {
 		/** An updated collection instance. */
 	collection?:ModelTypes["Collection"],
@@ -10111,17 +10920,27 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new collection. */
+	/** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionCreate"]: {
 		collectionErrors:ModelTypes["CollectionError"][],
 	errors:ModelTypes["CollectionError"][],
 	collection?:ModelTypes["Collection"]
 };
+	["CollectionCreated"]: {
+		/** Added in Saleor 3.2. Look up a collection. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	collection?:ModelTypes["Collection"]
+};
 	["CollectionCreateInput"]: GraphQLTypes["CollectionCreateInput"];
-	/** Deletes a collection. */
+	/** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionDelete"]: {
 		collectionErrors:ModelTypes["CollectionError"][],
 	errors:ModelTypes["CollectionError"][],
+	collection?:ModelTypes["Collection"]
+};
+	["CollectionDeleted"]: {
+		/** Added in Saleor 3.2. Look up a collection. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	collection?:ModelTypes["Collection"]
 };
 	["CollectionError"]: {
@@ -10140,14 +10959,14 @@ error isn't associated with a particular field. */
 	["CollectionFilterInput"]: GraphQLTypes["CollectionFilterInput"];
 	["CollectionInput"]: GraphQLTypes["CollectionInput"];
 	["CollectionPublished"]: GraphQLTypes["CollectionPublished"];
-	/** Remove products from a collection. */
+	/** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionRemoveProducts"]: {
 		/** Collection from which products will be removed. */
 	collection?:ModelTypes["Collection"],
 	collectionErrors:ModelTypes["CollectionError"][],
 	errors:ModelTypes["CollectionError"][]
 };
-	/** Reorder the products of a collection. */
+	/** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionReorderProducts"]: {
 		/** Collection from which products are reordered. */
 	collection?:ModelTypes["Collection"],
@@ -10169,7 +10988,7 @@ error isn't associated with a particular field. */
 	/** Represents a collection of products. */
 	collection?:ModelTypes["Collection"]
 };
-	/** Creates/updates translations for a collection. */
+	/** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["CollectionTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -10186,10 +11005,15 @@ error isn't associated with a particular field. */
 	/** Translated description of the product (JSON). */
 	descriptionJson?:ModelTypes["JSONString"]
 };
-	/** Updates a collection. */
+	/** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionUpdate"]: {
 		collectionErrors:ModelTypes["CollectionError"][],
 	errors:ModelTypes["CollectionError"][],
+	collection?:ModelTypes["Collection"]
+};
+	["CollectionUpdated"]: {
+		/** Added in Saleor 3.2. Look up a collection. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	collection?:ModelTypes["Collection"]
 };
 	/** Stores information about a single configuration field. */
@@ -10215,7 +11039,7 @@ error isn't associated with a particular field. */
 	accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][]
 };
-	/** Confirm the email change of the logged-in user. */
+	/** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["ConfirmEmailChange"]: {
 		/** A user instance with a new email. */
 	user?:ModelTypes["User"],
@@ -10258,20 +11082,25 @@ error isn't associated with a particular field. */
 	/** Four-digit number representing the card’s expiration year. */
 	expYear?:number
 };
-	/** Deletes customers. */
+	/** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][]
 };
-	/** Creates a new customer. */
+	/** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerCreate"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][],
 	user?:ModelTypes["User"]
 };
-	/** Deletes a customer. */
+	["CustomerCreated"]: {
+		/** Added in Saleor 3.2. Look up a user. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	user?:ModelTypes["User"]
+};
+	/** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerDelete"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][],
@@ -10301,10 +11130,15 @@ error isn't associated with a particular field. */
 ["CustomerEventsEnum"]: GraphQLTypes["CustomerEventsEnum"];
 	["CustomerFilterInput"]: GraphQLTypes["CustomerFilterInput"];
 	["CustomerInput"]: GraphQLTypes["CustomerInput"];
-	/** Updates an existing customer. */
+	/** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerUpdate"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][],
+	user?:ModelTypes["User"]
+};
+	["CustomerUpdated"]: {
+		/** Added in Saleor 3.2. Look up a user. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	user?:ModelTypes["User"]
 };
 	/** The `Date` scalar type represents a Date
@@ -10317,41 +11151,72 @@ value as specified by
 [iso8601](https://en.wikipedia.org/wiki/ISO_8601). */
 ["DateTime"]:any;
 	["DateTimeRangeInput"]: GraphQLTypes["DateTimeRangeInput"];
-	/** Deactivate all JWT tokens of the currently authenticated user. */
+	/** Deactivate all JWT tokens of the currently authenticated user. Requires one of
+the following permissions: AUTHENTICATED_USER. */
 ["DeactivateAllUserTokens"]: {
 		accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][]
 };
-	/** Delete metadata of an object. */
+	/** Delete metadata of an object. To use it, you need to have access to the modified object. */
 ["DeleteMetadata"]: {
 		metadataErrors:ModelTypes["MetadataError"][],
 	errors:ModelTypes["MetadataError"][],
 	item?:ModelTypes["ObjectWithMetadata"]
 };
-	/** Delete object's private metadata. */
+	/** Delete object's private metadata. To use it, you need to be an authenticated
+staff user or an app and have access to the modified object. */
 ["DeletePrivateMetadata"]: {
 		metadataErrors:ModelTypes["MetadataError"][],
 	errors:ModelTypes["MetadataError"][],
 	item?:ModelTypes["ObjectWithMetadata"]
 };
-	/** New in Saleor 3.1. Represents a delivery method chosen for the checkout.
+	/** Added in Saleor 3.1. Represents a delivery method chosen for the checkout.
 `Warehouse` type is used when checkout is marked as "click and collect" and
 `ShippingMethod` otherwise. Note: this feature is in a preview state and can be
 subject to changes at later point. */
 ["DeliveryMethod"]:ModelTypes["Warehouse"] | ModelTypes["ShippingMethod"];
 	["DigitalContent"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	useDefaultSettings:boolean,
 	automaticFulfillment:boolean,
 	contentFile:string,
 	maxDownloads?:number,
 	urlValidDays?:number,
 	/** List of URLs for the digital variant. */
-	urls?:(ModelTypes["DigitalContentUrl"] | undefined)[],
+	urls?:ModelTypes["DigitalContentUrl"][],
 	/** Product variant assigned to digital content. */
 	productVariant:ModelTypes["ProductVariant"]
 };
@@ -10370,21 +11235,22 @@ subject to changes at later point. */
 };
 	/** Create new digital content. This mutation must be sent as a `multipart` request.
 More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentCreate"]: {
 		variant?:ModelTypes["ProductVariant"],
 	content?:ModelTypes["DigitalContent"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Remove digital content assigned to given variant. */
+	/** Remove digital content assigned to given variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentDelete"]: {
 		variant?:ModelTypes["ProductVariant"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
 	["DigitalContentInput"]: GraphQLTypes["DigitalContentInput"];
-	/** Update digital content. */
+	/** Update digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentUpdate"]: {
 		variant?:ModelTypes["ProductVariant"],
 	content?:ModelTypes["DigitalContent"],
@@ -10402,7 +11268,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** UUID of digital content. */
 	token:ModelTypes["UUID"]
 };
-	/** Generate new URL to digital content. */
+	/** Generate new URL to digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentUrlCreate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
@@ -10437,47 +11303,63 @@ error isn't associated with a particular field. */
 	/** Shop's absolute URL. */
 	url:string
 };
-	/** Deletes draft orders. */
+	/** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Completes creating an order. */
+	/** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderComplete"]: {
 		/** Completed order. */
 	order?:ModelTypes["Order"],
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Creates a new draft order. */
+	/** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderCreate"]: {
 		orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][],
 	order?:ModelTypes["Order"]
 };
+	["DraftOrderCreated"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
 	["DraftOrderCreateInput"]: GraphQLTypes["DraftOrderCreateInput"];
-	/** Deletes a draft order. */
+	/** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderDelete"]: {
 		orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][],
 	order?:ModelTypes["Order"]
 };
+	["DraftOrderDeleted"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
 	["DraftOrderInput"]: GraphQLTypes["DraftOrderInput"];
-	/** Deletes order lines. */
+	/** Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderLinesBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Updates a draft order. */
+	/** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderUpdate"]: {
 		orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][],
 	order?:ModelTypes["Order"]
 };
+	["DraftOrderUpdated"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
+	["Event"]:ModelTypes["CategoryCreated"] | ModelTypes["CategoryUpdated"] | ModelTypes["CategoryDeleted"] | ModelTypes["ChannelCreated"] | ModelTypes["ChannelUpdated"] | ModelTypes["ChannelDeleted"] | ModelTypes["ChannelStatusChanged"] | ModelTypes["GiftCardCreated"] | ModelTypes["GiftCardUpdated"] | ModelTypes["GiftCardDeleted"] | ModelTypes["GiftCardStatusChanged"] | ModelTypes["OrderCreated"] | ModelTypes["OrderUpdated"] | ModelTypes["OrderConfirmed"] | ModelTypes["OrderFullyPaid"] | ModelTypes["OrderCancelled"] | ModelTypes["OrderFulfilled"] | ModelTypes["DraftOrderCreated"] | ModelTypes["DraftOrderUpdated"] | ModelTypes["DraftOrderDeleted"] | ModelTypes["ProductCreated"] | ModelTypes["ProductUpdated"] | ModelTypes["ProductDeleted"] | ModelTypes["ProductVariantCreated"] | ModelTypes["ProductVariantUpdated"] | ModelTypes["ProductVariantOutOfStock"] | ModelTypes["ProductVariantBackInStock"] | ModelTypes["ProductVariantDeleted"] | ModelTypes["SaleCreated"] | ModelTypes["SaleUpdated"] | ModelTypes["SaleDeleted"] | ModelTypes["InvoiceRequested"] | ModelTypes["InvoiceDeleted"] | ModelTypes["InvoiceSent"] | ModelTypes["FulfillmentCreated"] | ModelTypes["FulfillmentCanceled"] | ModelTypes["CustomerCreated"] | ModelTypes["CustomerUpdated"] | ModelTypes["CollectionCreated"] | ModelTypes["CollectionUpdated"] | ModelTypes["CollectionDeleted"] | ModelTypes["CheckoutCreated"] | ModelTypes["CheckoutUpdated"] | ModelTypes["PageCreated"] | ModelTypes["PageUpdated"] | ModelTypes["PageDeleted"] | ModelTypes["ShippingPriceCreated"] | ModelTypes["ShippingPriceUpdated"] | ModelTypes["ShippingPriceDeleted"] | ModelTypes["ShippingZoneCreated"] | ModelTypes["ShippingZoneUpdated"] | ModelTypes["ShippingZoneDeleted"] | ModelTypes["TranslationCreated"] | ModelTypes["TranslationUpdated"];
 	/** Event delivery. */
 ["EventDelivery"]: {
 		id:string,
@@ -10496,10 +11378,17 @@ error isn't associated with a particular field. */
 		id:string,
 	/** Event delivery creation date and time. */
 	createdAt:ModelTypes["DateTime"],
+	/** Task id for delivery attempt. */
 	taskId?:string,
+	/** Delivery attempt duration. */
 	duration?:number,
+	/** Delivery attempt response content. */
 	response?:string,
+	/** Response headers for delivery attempt. */
 	responseHeaders?:string,
+	/** Delivery attempt response status code. */
+	responseStatusCode?:number,
+	/** Request headers for delivery attempt. */
 	requestHeaders?:string,
 	/** Event delivery status. */
 	status:ModelTypes["EventDeliveryStatusEnum"]
@@ -10533,7 +11422,7 @@ error isn't associated with a particular field. */
 	cursor:string
 };
 	["EventDeliveryFilterInput"]: GraphQLTypes["EventDeliveryFilterInput"];
-	/** Retries event delivery. */
+	/** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
 ["EventDeliveryRetry"]: {
 		/** Event delivery. */
 	delivery?:ModelTypes["EventDelivery"],
@@ -10561,9 +11450,11 @@ error isn't associated with a particular field. */
 	date:ModelTypes["DateTime"],
 	/** Export event type. */
 	type:ModelTypes["ExportEventsEnum"],
-	/** User who performed the action. */
+	/** User who performed the action. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AccountPermissions.MANAGE_STAFF. */
 	user?:ModelTypes["User"],
-	/** App which performed the action. */
+	/** App which performed the action. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AppPermission.MANAGE_APPS. */
 	app?:ModelTypes["App"],
 	/** Content of the event. */
 	message:string
@@ -10604,8 +11495,9 @@ error isn't associated with a particular field. */
 	["ExportFileFilterInput"]: GraphQLTypes["ExportFileFilterInput"];
 	["ExportFileSortField"]: GraphQLTypes["ExportFileSortField"];
 	["ExportFileSortingInput"]: GraphQLTypes["ExportFileSortingInput"];
-	/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["ExportGiftCards"]: {
 		/** The newly created export file job which is responsible for export data. */
 	exportFile?:ModelTypes["ExportFile"],
@@ -10613,7 +11505,7 @@ preview state and can be subject to changes at later point. */
 };
 	["ExportGiftCardsInput"]: GraphQLTypes["ExportGiftCardsInput"];
 	["ExportInfoInput"]: GraphQLTypes["ExportInfoInput"];
-	/** Export products to csv file. */
+	/** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ExportProducts"]: {
 		/** The newly created export file job which is responsible for export data. */
 	exportFile?:ModelTypes["ExportFile"],
@@ -10653,8 +11545,8 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["ExternalNotificationErrorCodes"]: GraphQLTypes["ExternalNotificationErrorCodes"];
-	/** New in Saleor 3.1. Trigger sending a notification with the notify plugin method.
-Serializes nodes provided as ids parameter and includes this data in the
+	/** Added in Saleor 3.1. Trigger sending a notification with the notify plugin
+method. Serializes nodes provided as ids parameter and includes this data in the
 notification payload. */
 ["ExternalNotificationTrigger"]: {
 		errors:ModelTypes["ExternalNotificationError"][]
@@ -10707,7 +11599,8 @@ notification payload. */
 ["FileTypesEnum"]: GraphQLTypes["FileTypesEnum"];
 	/** Upload a file. This mutation must be sent as a `multipart` request. More
 detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 ["FileUpload"]: {
 		uploadedFile?:ModelTypes["File"],
 	uploadErrors:ModelTypes["UploadError"][],
@@ -10716,22 +11609,51 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Represents order fulfillment. */
 ["Fulfillment"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	fulfillmentOrder:number,
 	status:ModelTypes["FulfillmentStatus"],
 	trackingNumber:string,
 	created:ModelTypes["DateTime"],
 	/** List of lines for the fulfillment. */
-	lines?:(ModelTypes["FulfillmentLine"] | undefined)[],
+	lines?:ModelTypes["FulfillmentLine"][],
 	/** User-friendly fulfillment status. */
 	statusDisplay?:string,
 	/** Warehouse from fulfillment was fulfilled. */
 	warehouse?:ModelTypes["Warehouse"]
 };
-	/** New in Saleor 3.1. Approve existing fulfillment. */
+	/** Added in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentApprove"]: {
 		/** An approved fulfillment. */
 	fulfillment?:ModelTypes["Fulfillment"],
@@ -10740,7 +11662,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Cancels existing fulfillment and optionally restocks items. */
+	/** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentCancel"]: {
 		/** A canceled fulfillment. */
 	fulfillment?:ModelTypes["Fulfillment"],
@@ -10749,14 +11671,24 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
+	["FulfillmentCanceled"]: {
+		/** Added in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	fulfillment?:ModelTypes["Fulfillment"]
+};
 	["FulfillmentCancelInput"]: GraphQLTypes["FulfillmentCancelInput"];
+	["FulfillmentCreated"]: {
+		/** Added in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	fulfillment?:ModelTypes["Fulfillment"]
+};
 	/** Represents line of the fulfillment. */
 ["FulfillmentLine"]: {
 		id:string,
 	quantity:number,
 	orderLine?:ModelTypes["OrderLine"]
 };
-	/** Refund products. */
+	/** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentRefundProducts"]: {
 		/** A refunded fulfillment. */
 	fulfillment?:ModelTypes["Fulfillment"],
@@ -10765,7 +11697,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Return products. */
+	/** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentReturnProducts"]: {
 		/** A return fulfillment. */
 	returnFulfillment?:ModelTypes["Fulfillment"],
@@ -10780,7 +11712,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 };
 	/** An enumeration. */
 ["FulfillmentStatus"]: GraphQLTypes["FulfillmentStatus"];
-	/** Updates a fulfillment for an order. */
+	/** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentUpdateTracking"]: {
 		/** A fulfillment with updated tracking. */
 	fulfillment?:ModelTypes["Fulfillment"],
@@ -10805,45 +11737,80 @@ String, Boolean, Int, Float, List or Object. */
 used during checkout by providing a valid gift card codes. */
 ["GiftCard"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	/** Code in format which allows displaying in a user interface. */
 	displayCode:string,
 	/** Last 4 characters of gift card code. */
 	last4CodeChars:string,
-	/** Gift card code. Can be fetched by staff member with manage gift card
-permission when gift card wasn't used yet and by the gift card owner. */
+	/** Gift card code. Can be fetched by a staff member with
+GiftcardPermissions.MANAGE_GIFT_CARD when gift card wasn't yet used and by the
+gift card owner. */
 	code:string,
 	created:ModelTypes["DateTime"],
-	/** New in Saleor 3.1. The user who bought or issued a gift card. Note: this
+	/** Added in Saleor 3.1. The user who bought or issued a gift card. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	createdBy?:ModelTypes["User"],
-	/** New in Saleor 3.1. The customer who used a gift card. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The customer who used a gift card. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	usedBy?:ModelTypes["User"],
-	/** New in Saleor 3.1. Email address of the user who bought or issued gift card.
-Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Email address of the user who bought or issued gift card.
+Requires one of the following permissions: AccountPermissions.MANAGE_USERS,
+AuthorizationFilters.OWNER. Note: this feature is in a preview state and can
+be subject to changes at later point. */
 	createdByEmail?:string,
-	/** New in Saleor 3.1. Email address of the customer who used a gift card. Note:
+	/** Added in Saleor 3.1. Email address of the customer who used a gift card. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	usedByEmail?:string,
 	lastUsedOn?:ModelTypes["DateTime"],
 	expiryDate?:ModelTypes["Date"],
-	/** New in Saleor 3.1. App which created the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. App which created the gift card. Requires one of the
+following permissions: AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER.
+Note: this feature is in a preview state and can be subject to changes at later point. */
 	app?:ModelTypes["App"],
-	/** New in Saleor 3.1. Related gift card product. Note: this feature is in a
+	/** Added in Saleor 3.1. Related gift card product. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	product?:ModelTypes["Product"],
-	/** New in Saleor 3.1. List of events associated with the gift card. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of events associated with the gift card. Note: this
+feature is in a preview state and can be subject to changes at later point.
+Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	events:ModelTypes["GiftCardEvent"][],
-	/** New in Saleor 3.1. The gift card tag. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The gift card tag. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	tags:ModelTypes["GiftCardTag"][],
-	/** New in Saleor 3.1. Slug of the channel where the gift card was bought. Note:
+	/** Added in Saleor 3.1. Slug of the channel where the gift card was bought. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	boughtInChannel?:string,
 	isActive:boolean,
@@ -10856,15 +11823,16 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** Start date of gift card. */
 	startDate?:ModelTypes["DateTime"]
 };
-	/** Activate a gift card. */
+	/** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardActivate"]: {
 		/** Activated gift card. */
 	giftCard?:ModelTypes["GiftCard"],
 	giftCardErrors:ModelTypes["GiftCardError"][],
 	errors:ModelTypes["GiftCardError"][]
 };
-	/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardAddNote"]: {
 		/** Gift card with the note added. */
 	giftCard?:ModelTypes["GiftCard"],
@@ -10873,14 +11841,17 @@ preview state and can be subject to changes at later point. */
 	errors:ModelTypes["GiftCardError"][]
 };
 	["GiftCardAddNoteInput"]: GraphQLTypes["GiftCardAddNoteInput"];
-	/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkActivate"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	errors:ModelTypes["GiftCardError"][]
 };
-	/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Create gift cards. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkCreate"]: {
 		/** Returns how many objects were created. */
 	count:number,
@@ -10889,14 +11860,17 @@ and can be subject to changes at later point. */
 	errors:ModelTypes["GiftCardError"][]
 };
 	["GiftCardBulkCreateInput"]: GraphQLTypes["GiftCardBulkCreateInput"];
-	/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkDeactivate"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	errors:ModelTypes["GiftCardError"][]
 };
-	/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -10915,24 +11889,36 @@ state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new gift card. */
+	/** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardCreate"]: {
 		giftCardErrors:ModelTypes["GiftCardError"][],
 	errors:ModelTypes["GiftCardError"][],
 	giftCard?:ModelTypes["GiftCard"]
 };
+	["GiftCardCreated"]: {
+		/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?:ModelTypes["GiftCard"]
+};
 	["GiftCardCreateInput"]: GraphQLTypes["GiftCardCreateInput"];
-	/** Deactivate a gift card. */
+	/** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardDeactivate"]: {
 		/** Deactivated gift card. */
 	giftCard?:ModelTypes["GiftCard"],
 	giftCardErrors:ModelTypes["GiftCardError"][],
 	errors:ModelTypes["GiftCardError"][]
 };
-	/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift card. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardDelete"]: {
 		giftCardErrors:ModelTypes["GiftCardError"][],
 	errors:ModelTypes["GiftCardError"][],
+	giftCard?:ModelTypes["GiftCard"]
+};
+	["GiftCardDeleted"]: {
+		/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	giftCard?:ModelTypes["GiftCard"]
 };
 	["GiftCardError"]: {
@@ -10948,7 +11934,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["GiftCardErrorCode"]: GraphQLTypes["GiftCardErrorCode"];
-	/** New in Saleor 3.1. History log of the gift card. Note: this feature is in a
+	/** Added in Saleor 3.1. History log of the gift card. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 ["GiftCardEvent"]: {
 		id:string,
@@ -10956,9 +11942,12 @@ preview state and can be subject to changes at later point. */
 	date?:ModelTypes["DateTime"],
 	/** Gift card event type. */
 	type?:ModelTypes["GiftCardEventsEnum"],
-	/** User who performed the action. */
+	/** User who performed the action. Requires one of the following permissions:
+AccountPermissions.MANAGE_USERS, AccountPermissions.MANAGE_STAFF,
+AuthorizationFilters.OWNER. */
 	user?:ModelTypes["User"],
-	/** App that performed the action. */
+	/** App that performed the action. Requires one of the following permissions:
+AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER. */
 	app?:ModelTypes["App"],
 	/** Content of the event. */
 	message?:string,
@@ -10993,8 +11982,9 @@ preview state and can be subject to changes at later point. */
 	/** An enumeration. */
 ["GiftCardEventsEnum"]: GraphQLTypes["GiftCardEventsEnum"];
 	["GiftCardFilterInput"]: GraphQLTypes["GiftCardFilterInput"];
-	/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardResend"]: {
 		/** Gift card which has been sent. */
 	giftCard?:ModelTypes["GiftCard"],
@@ -11021,7 +12011,7 @@ error isn't associated with a particular field. */
 ["GiftCardSettingsErrorCode"]: GraphQLTypes["GiftCardSettingsErrorCode"];
 	/** An enumeration. */
 ["GiftCardSettingsExpiryTypeEnum"]: GraphQLTypes["GiftCardSettingsExpiryTypeEnum"];
-	/** Update gift card settings. */
+	/** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardSettingsUpdate"]: {
 		/** Gift card settings. */
 	giftCardSettings?:ModelTypes["GiftCardSettings"],
@@ -11030,7 +12020,13 @@ error isn't associated with a particular field. */
 	["GiftCardSettingsUpdateInput"]: GraphQLTypes["GiftCardSettingsUpdateInput"];
 	["GiftCardSortField"]: GraphQLTypes["GiftCardSortField"];
 	["GiftCardSortingInput"]: GraphQLTypes["GiftCardSortingInput"];
-	/** New in Saleor 3.1. The gift card tag. Note: this feature is in a preview state and can be subject to changes at later point. */
+	["GiftCardStatusChanged"]: {
+		/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?:ModelTypes["GiftCard"]
+};
+	/** Added in Saleor 3.1. The gift card tag. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 ["GiftCardTag"]: {
 		id:string,
 	name:string
@@ -11049,10 +12045,15 @@ error isn't associated with a particular field. */
 	cursor:string
 };
 	["GiftCardTagFilterInput"]: GraphQLTypes["GiftCardTagFilterInput"];
-	/** Update a gift card. */
+	/** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardUpdate"]: {
 		giftCardErrors:ModelTypes["GiftCardError"][],
 	errors:ModelTypes["GiftCardError"][],
+	giftCard?:ModelTypes["GiftCard"]
+};
+	["GiftCardUpdated"]: {
+		/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	giftCard?:ModelTypes["GiftCard"]
 };
 	["GiftCardUpdateInput"]: GraphQLTypes["GiftCardUpdateInput"];
@@ -11060,10 +12061,10 @@ error isn't associated with a particular field. */
 ["Group"]: {
 		id:string,
 	name:string,
-	/** List of group users */
-	users?:(ModelTypes["User"] | undefined)[],
+	/** List of group users Requires one of the following permissions: MANAGE_STAFF. */
+	users?:ModelTypes["User"][],
 	/** List of group permissions */
-	permissions?:(ModelTypes["Permission"] | undefined)[],
+	permissions?:ModelTypes["Permission"][],
 	/** True, if the currently authenticated user has rights to manage a group. */
 	userCanManage:boolean
 };
@@ -11090,10 +12091,39 @@ error isn't associated with a particular field. */
 	["IntRangeInput"]: GraphQLTypes["IntRangeInput"];
 	/** Represents an Invoice. */
 ["Invoice"]: {
-		/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+		/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	/** Job status. */
 	status:ModelTypes["JobStatusEnum"],
 	createdAt:ModelTypes["DateTime"],
@@ -11106,17 +12136,22 @@ error isn't associated with a particular field. */
 	/** URL to download an invoice. */
 	url?:string
 };
-	/** Creates a ready to send invoice. */
+	/** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceCreate"]: {
 		invoiceErrors:ModelTypes["InvoiceError"][],
 	errors:ModelTypes["InvoiceError"][],
 	invoice?:ModelTypes["Invoice"]
 };
 	["InvoiceCreateInput"]: GraphQLTypes["InvoiceCreateInput"];
-	/** Deletes an invoice. */
+	/** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceDelete"]: {
 		invoiceErrors:ModelTypes["InvoiceError"][],
 	errors:ModelTypes["InvoiceError"][],
+	invoice?:ModelTypes["Invoice"]
+};
+	["InvoiceDeleted"]: {
+		/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	invoice?:ModelTypes["Invoice"]
 };
 	["InvoiceError"]: {
@@ -11130,7 +12165,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["InvoiceErrorCode"]: GraphQLTypes["InvoiceErrorCode"];
-	/** Request an invoice for the order using plugin. */
+	/** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceRequest"]: {
 		/** Order related to an invoice. */
 	order?:ModelTypes["Order"],
@@ -11138,19 +12173,29 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["InvoiceError"][],
 	invoice?:ModelTypes["Invoice"]
 };
-	/** Requests deletion of an invoice. */
+	/** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceRequestDelete"]: {
 		invoiceErrors:ModelTypes["InvoiceError"][],
 	errors:ModelTypes["InvoiceError"][],
 	invoice?:ModelTypes["Invoice"]
 };
-	/** Send an invoice notification to the customer. */
+	["InvoiceRequested"]: {
+		/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	invoice?:ModelTypes["Invoice"]
+};
+	/** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceSendNotification"]: {
 		invoiceErrors:ModelTypes["InvoiceError"][],
 	errors:ModelTypes["InvoiceError"][],
 	invoice?:ModelTypes["Invoice"]
 };
-	/** Updates an invoice. */
+	["InvoiceSent"]: {
+		/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	invoice?:ModelTypes["Invoice"]
+};
+	/** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceUpdate"]: {
 		invoiceErrors:ModelTypes["InvoiceError"][],
 	errors:ModelTypes["InvoiceError"][],
@@ -11187,7 +12232,7 @@ error isn't associated with a particular field. */
 	version:string,
 	name:string,
 	about?:string,
-	permissions?:(ModelTypes["Permission"] | undefined)[],
+	permissions?:ModelTypes["Permission"][],
 	appUrl?:string,
 	configurationUrl?:string,
 	tokenTargetUrl?:string,
@@ -11206,15 +12251,44 @@ error isn't associated with a particular field. */
 	/** Represents a single menu - an object that is used to help navigate through the store. */
 ["Menu"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	slug:string,
-	items?:(ModelTypes["MenuItem"] | undefined)[]
+	items?:ModelTypes["MenuItem"][]
 };
-	/** Deletes menus. */
+	/** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -11234,14 +12308,14 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new Menu. */
+	/** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuCreate"]: {
 		menuErrors:ModelTypes["MenuError"][],
 	errors:ModelTypes["MenuError"][],
 	menu?:ModelTypes["Menu"]
 };
 	["MenuCreateInput"]: GraphQLTypes["MenuCreateInput"];
-	/** Deletes a menu. */
+	/** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuDelete"]: {
 		menuErrors:ModelTypes["MenuError"][],
 	errors:ModelTypes["MenuError"][],
@@ -11263,24 +12337,58 @@ error isn't associated with a particular field. */
 	/** Represents a single item of the related menu. Can store categories, collection or pages. */
 ["MenuItem"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	menu:ModelTypes["Menu"],
 	parent?:ModelTypes["MenuItem"],
 	category?:ModelTypes["Category"],
+	/** A collection associated with this menu item. Requires one of the following
+permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collection?:ModelTypes["Collection"],
+	/** A page associated with this menu item. Requires one of the following
+permissions to include unpublished items: PagePermissions.MANAGE_PAGES. */
 	page?:ModelTypes["Page"],
 	level:number,
-	children?:(ModelTypes["MenuItem"] | undefined)[],
+	children?:ModelTypes["MenuItem"][],
 	/** URL to the menu item. */
 	url?:string,
 	/** Returns translated menu item fields for the given language code. */
 	translation?:ModelTypes["MenuItemTranslation"]
 };
-	/** Deletes menu items. */
+	/** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -11300,14 +12408,14 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new menu item. */
+	/** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemCreate"]: {
 		menuErrors:ModelTypes["MenuError"][],
 	errors:ModelTypes["MenuError"][],
 	menuItem?:ModelTypes["MenuItem"]
 };
 	["MenuItemCreateInput"]: GraphQLTypes["MenuItemCreateInput"];
-	/** Deletes a menu item. */
+	/** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemDelete"]: {
 		menuErrors:ModelTypes["MenuError"][],
 	errors:ModelTypes["MenuError"][],
@@ -11315,7 +12423,7 @@ error isn't associated with a particular field. */
 };
 	["MenuItemFilterInput"]: GraphQLTypes["MenuItemFilterInput"];
 	["MenuItemInput"]: GraphQLTypes["MenuItemInput"];
-	/** Moves items of menus. */
+	/** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemMove"]: {
 		/** Assigned menu to move within. */
 	menu?:ModelTypes["Menu"],
@@ -11333,7 +12441,7 @@ error isn't associated with a particular field. */
 	/** Represents a single item of the related menu. Can store categories, collection or pages. */
 	menuItem?:ModelTypes["MenuItem"]
 };
-	/** Creates/updates translations for a menu item. */
+	/** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["MenuItemTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -11345,7 +12453,7 @@ error isn't associated with a particular field. */
 	language:ModelTypes["LanguageDisplay"],
 	name:string
 };
-	/** Updates a menu item. */
+	/** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemUpdate"]: {
 		menuErrors:ModelTypes["MenuError"][],
 	errors:ModelTypes["MenuError"][],
@@ -11353,12 +12461,22 @@ error isn't associated with a particular field. */
 };
 	["MenuSortField"]: GraphQLTypes["MenuSortField"];
 	["MenuSortingInput"]: GraphQLTypes["MenuSortingInput"];
-	/** Updates a menu. */
+	/** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuUpdate"]: {
 		menuErrors:ModelTypes["MenuError"][],
 	errors:ModelTypes["MenuError"][],
 	menu?:ModelTypes["Menu"]
 };
+	/** Metadata is a map of key-value pairs, both keys and values are `String`.
+
+Example:
+```
+{
+    "key1": "value1",
+    "key2": "value2"
+}
+``` */
+["Metadata"]:any;
 	["MetadataError"]: {
 		/** Name of a field that caused the error. A value of `null` indicates that the
 error isn't associated with a particular field. */
@@ -11395,403 +12513,422 @@ error isn't associated with a particular field. */
 };
 	["MoveProductInput"]: GraphQLTypes["MoveProductInput"];
 	["Mutation"]: {
-		/** Creates a new webhook subscription. */
+		/** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 	webhookCreate?:ModelTypes["WebhookCreate"],
-	/** Deletes a webhook subscription. */
+	/** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 	webhookDelete?:ModelTypes["WebhookDelete"],
-	/** Updates a webhook subscription. */
+	/** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
 	webhookUpdate?:ModelTypes["WebhookUpdate"],
-	/** Retries event delivery. */
+	/** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
 	eventDeliveryRetry?:ModelTypes["EventDeliveryRetry"],
-	/** Creates new warehouse. */
+	/** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	createWarehouse?:ModelTypes["WarehouseCreate"],
-	/** Updates given warehouse. */
+	/** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	updateWarehouse?:ModelTypes["WarehouseUpdate"],
-	/** Deletes selected warehouse. */
+	/** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	deleteWarehouse?:ModelTypes["WarehouseDelete"],
-	/** Add shipping zone to given warehouse. */
+	/** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	assignWarehouseShippingZone?:ModelTypes["WarehouseShippingZoneAssign"],
-	/** Remove shipping zone from given warehouse. */
+	/** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	unassignWarehouseShippingZone?:ModelTypes["WarehouseShippingZoneUnassign"],
-	/** Creates a new staff notification recipient. */
+	/** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipientCreate?:ModelTypes["StaffNotificationRecipientCreate"],
-	/** Updates a staff notification recipient. */
+	/** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipientUpdate?:ModelTypes["StaffNotificationRecipientUpdate"],
-	/** Delete staff notification recipient. */
+	/** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipientDelete?:ModelTypes["StaffNotificationRecipientDelete"],
-	/** Updates site domain of the shop. */
+	/** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopDomainUpdate?:ModelTypes["ShopDomainUpdate"],
-	/** Updates shop settings. */
+	/** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopSettingsUpdate?:ModelTypes["ShopSettingsUpdate"],
-	/** Fetch tax rates. */
+	/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopFetchTaxRates?:ModelTypes["ShopFetchTaxRates"],
-	/** Creates/updates translations for shop settings. */
+	/** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	shopSettingsTranslate?:ModelTypes["ShopSettingsTranslate"],
-	/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+	/** Update the shop's address. If the `null` value is passed, the currently
+selected address will be deleted. Requires one of the following permissions:
+MANAGE_SETTINGS. */
 	shopAddressUpdate?:ModelTypes["ShopAddressUpdate"],
-	/** Update shop order settings. */
+	/** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderSettingsUpdate?:ModelTypes["OrderSettingsUpdate"],
-	/** Update gift card settings. */
+	/** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardSettingsUpdate?:ModelTypes["GiftCardSettingsUpdate"],
-	/** Manage shipping method's availability in channels. */
+	/** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingMethodChannelListingUpdate?:ModelTypes["ShippingMethodChannelListingUpdate"],
-	/** Creates a new shipping price. */
+	/** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceCreate?:ModelTypes["ShippingPriceCreate"],
-	/** Deletes a shipping price. */
+	/** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceDelete?:ModelTypes["ShippingPriceDelete"],
-	/** Deletes shipping prices. */
+	/** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceBulkDelete?:ModelTypes["ShippingPriceBulkDelete"],
-	/** Updates a new shipping price. */
+	/** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceUpdate?:ModelTypes["ShippingPriceUpdate"],
-	/** Creates/updates translations for a shipping method. */
+	/** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	shippingPriceTranslate?:ModelTypes["ShippingPriceTranslate"],
-	/** Exclude products from shipping price. */
+	/** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceExcludeProducts?:ModelTypes["ShippingPriceExcludeProducts"],
-	/** Remove product from excluded list for shipping price. */
+	/** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceRemoveProductFromExclude?:ModelTypes["ShippingPriceRemoveProductFromExclude"],
-	/** Creates a new shipping zone. */
+	/** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneCreate?:ModelTypes["ShippingZoneCreate"],
-	/** Deletes a shipping zone. */
+	/** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneDelete?:ModelTypes["ShippingZoneDelete"],
-	/** Deletes shipping zones. */
+	/** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneBulkDelete?:ModelTypes["ShippingZoneBulkDelete"],
-	/** Updates a new shipping zone. */
+	/** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneUpdate?:ModelTypes["ShippingZoneUpdate"],
-	/** Assign attributes to a given product type. */
+	/** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productAttributeAssign?:ModelTypes["ProductAttributeAssign"],
-	/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+	/** Added in Saleor 3.1. Update attributes assigned to product variant for given
+product type. Requires one of the following permissions:
+MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productAttributeAssignmentUpdate?:ModelTypes["ProductAttributeAssignmentUpdate"],
-	/** Un-assign attributes from a given product type. */
+	/** Un-assign attributes from a given product type. Requires one of the following
+permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productAttributeUnassign?:ModelTypes["ProductAttributeUnassign"],
-	/** Creates a new category. */
+	/** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryCreate?:ModelTypes["CategoryCreate"],
-	/** Deletes a category. */
+	/** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryDelete?:ModelTypes["CategoryDelete"],
-	/** Deletes categories. */
+	/** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryBulkDelete?:ModelTypes["CategoryBulkDelete"],
-	/** Updates a category. */
+	/** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryUpdate?:ModelTypes["CategoryUpdate"],
-	/** Creates/updates translations for a category. */
+	/** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	categoryTranslate?:ModelTypes["CategoryTranslate"],
-	/** Adds products to a collection. */
+	/** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionAddProducts?:ModelTypes["CollectionAddProducts"],
-	/** Creates a new collection. */
+	/** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionCreate?:ModelTypes["CollectionCreate"],
-	/** Deletes a collection. */
+	/** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionDelete?:ModelTypes["CollectionDelete"],
-	/** Reorder the products of a collection. */
+	/** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionReorderProducts?:ModelTypes["CollectionReorderProducts"],
-	/** Deletes collections. */
+	/** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionBulkDelete?:ModelTypes["CollectionBulkDelete"],
-	/** Remove products from a collection. */
+	/** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionRemoveProducts?:ModelTypes["CollectionRemoveProducts"],
-	/** Updates a collection. */
+	/** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionUpdate?:ModelTypes["CollectionUpdate"],
-	/** Creates/updates translations for a collection. */
+	/** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	collectionTranslate?:ModelTypes["CollectionTranslate"],
-	/** Manage collection's availability in channels. */
+	/** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionChannelListingUpdate?:ModelTypes["CollectionChannelListingUpdate"],
-	/** Creates a new product. */
+	/** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productCreate?:ModelTypes["ProductCreate"],
-	/** Deletes a product. */
+	/** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productDelete?:ModelTypes["ProductDelete"],
-	/** Deletes products. */
+	/** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productBulkDelete?:ModelTypes["ProductBulkDelete"],
-	/** Updates an existing product. */
+	/** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productUpdate?:ModelTypes["ProductUpdate"],
-	/** Creates/updates translations for a product. */
+	/** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	productTranslate?:ModelTypes["ProductTranslate"],
-	/** Manage product's availability in channels. */
+	/** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productChannelListingUpdate?:ModelTypes["ProductChannelListingUpdate"],
 	/** Create a media object (image or video URL) associated with product. For image,
 this mutation must be sent as a `multipart` request. More detailed specs of
 the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 	productMediaCreate?:ModelTypes["ProductMediaCreate"],
-	/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+	/** Reorder the variants of a product. Mutation updates updated_at on product and
+triggers PRODUCT_UPDATED webhook. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 	productVariantReorder?:ModelTypes["ProductVariantReorder"],
-	/** Deletes a product media. */
+	/** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaDelete?:ModelTypes["ProductMediaDelete"],
-	/** Deletes product media. */
+	/** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaBulkDelete?:ModelTypes["ProductMediaBulkDelete"],
-	/** Changes ordering of the product media. */
+	/** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaReorder?:ModelTypes["ProductMediaReorder"],
-	/** Updates a product media. */
+	/** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaUpdate?:ModelTypes["ProductMediaUpdate"],
-	/** Creates a new product type. */
+	/** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeCreate?:ModelTypes["ProductTypeCreate"],
-	/** Deletes a product type. */
+	/** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeDelete?:ModelTypes["ProductTypeDelete"],
-	/** Deletes product types. */
+	/** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeBulkDelete?:ModelTypes["ProductTypeBulkDelete"],
-	/** Updates an existing product type. */
+	/** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeUpdate?:ModelTypes["ProductTypeUpdate"],
-	/** Reorder the attributes of a product type. */
+	/** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeReorderAttributes?:ModelTypes["ProductTypeReorderAttributes"],
-	/** Reorder product attribute values. */
+	/** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productReorderAttributeValues?:ModelTypes["ProductReorderAttributeValues"],
 	/** Create new digital content. This mutation must be sent as a `multipart`
 request. More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 	digitalContentCreate?:ModelTypes["DigitalContentCreate"],
-	/** Remove digital content assigned to given variant. */
+	/** Remove digital content assigned to given variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContentDelete?:ModelTypes["DigitalContentDelete"],
-	/** Update digital content. */
+	/** Update digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContentUpdate?:ModelTypes["DigitalContentUpdate"],
-	/** Generate new URL to digital content. */
+	/** Generate new URL to digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContentUrlCreate?:ModelTypes["DigitalContentUrlCreate"],
-	/** Creates a new variant for a product. */
+	/** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantCreate?:ModelTypes["ProductVariantCreate"],
-	/** Deletes a product variant. */
+	/** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantDelete?:ModelTypes["ProductVariantDelete"],
-	/** Creates product variants for a given product. */
+	/** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantBulkCreate?:ModelTypes["ProductVariantBulkCreate"],
-	/** Deletes product variants. */
+	/** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantBulkDelete?:ModelTypes["ProductVariantBulkDelete"],
-	/** Creates stocks for product variant. */
+	/** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantStocksCreate?:ModelTypes["ProductVariantStocksCreate"],
-	/** Delete stocks from product variant. */
+	/** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantStocksDelete?:ModelTypes["ProductVariantStocksDelete"],
-	/** Update stocks for product variant. */
+	/** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantStocksUpdate?:ModelTypes["ProductVariantStocksUpdate"],
-	/** Updates an existing variant for product. */
+	/** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantUpdate?:ModelTypes["ProductVariantUpdate"],
-	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook.
+Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantSetDefault?:ModelTypes["ProductVariantSetDefault"],
-	/** Creates/updates translations for a product variant. */
+	/** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	productVariantTranslate?:ModelTypes["ProductVariantTranslate"],
-	/** Manage product variant prices in channels. */
+	/** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantChannelListingUpdate?:ModelTypes["ProductVariantChannelListingUpdate"],
-	/** Reorder product variant attribute values. */
+	/** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantReorderAttributeValues?:ModelTypes["ProductVariantReorderAttributeValues"],
-	/** New in Saleor 3.1. Deactivates product variant preorder. It changes all
+	/** Added in Saleor 3.1. Deactivates product variant preorder. It changes all
 preorder allocation into regular allocation. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 	productVariantPreorderDeactivate?:ModelTypes["ProductVariantPreorderDeactivate"],
-	/** Assign an media to a product variant. */
+	/** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	variantMediaAssign?:ModelTypes["VariantMediaAssign"],
-	/** Unassign an media from a product variant. */
+	/** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	variantMediaUnassign?:ModelTypes["VariantMediaUnassign"],
-	/** Captures the authorized payment amount. */
+	/** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 	paymentCapture?:ModelTypes["PaymentCapture"],
-	/** Refunds the captured payment amount. */
+	/** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 	paymentRefund?:ModelTypes["PaymentRefund"],
-	/** Voids the authorized payment. */
+	/** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
 	paymentVoid?:ModelTypes["PaymentVoid"],
 	/** Initializes payment process when it is required by gateway. */
 	paymentInitialize?:ModelTypes["PaymentInitialize"],
 	/** Check payment balance. */
 	paymentCheckBalance?:ModelTypes["PaymentCheckBalance"],
-	/** Create payment for checkout or order. */
-	paymentCreate?:ModelTypes["PaymentCreate"],
-	/** Create payment for checkout or order. */
-	paymentUpdate?:ModelTypes["PaymentUpdate"],
-	/** Creates a new page. */
+	/** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
 	pageCreate?:ModelTypes["PageCreate"],
-	/** Deletes a page. */
+	/** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
 	pageDelete?:ModelTypes["PageDelete"],
-	/** Deletes pages. */
+	/** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
 	pageBulkDelete?:ModelTypes["PageBulkDelete"],
-	/** Publish pages. */
+	/** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
 	pageBulkPublish?:ModelTypes["PageBulkPublish"],
-	/** Updates an existing page. */
+	/** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
 	pageUpdate?:ModelTypes["PageUpdate"],
-	/** Creates/updates translations for a page. */
+	/** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	pageTranslate?:ModelTypes["PageTranslate"],
-	/** Create a new page type. */
+	/** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeCreate?:ModelTypes["PageTypeCreate"],
-	/** Update page type. */
+	/** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeUpdate?:ModelTypes["PageTypeUpdate"],
-	/** Delete a page type. */
+	/** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeDelete?:ModelTypes["PageTypeDelete"],
-	/** Delete page types. */
+	/** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeBulkDelete?:ModelTypes["PageTypeBulkDelete"],
-	/** Assign attributes to a given page type. */
+	/** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageAttributeAssign?:ModelTypes["PageAttributeAssign"],
-	/** Unassign attributes from a given page type. */
+	/** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageAttributeUnassign?:ModelTypes["PageAttributeUnassign"],
-	/** Reorder the attributes of a page type. */
+	/** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeReorderAttributes?:ModelTypes["PageTypeReorderAttributes"],
-	/** Reorder page attribute values. */
+	/** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
 	pageReorderAttributeValues?:ModelTypes["PageReorderAttributeValues"],
-	/** Completes creating an order. */
+	/** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderComplete?:ModelTypes["DraftOrderComplete"],
-	/** Creates a new draft order. */
+	/** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderCreate?:ModelTypes["DraftOrderCreate"],
-	/** Deletes a draft order. */
+	/** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderDelete?:ModelTypes["DraftOrderDelete"],
-	/** Deletes draft orders. */
+	/** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderBulkDelete?:ModelTypes["DraftOrderBulkDelete"],
-	/** Deletes order lines. */
+	/** Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderLinesBulkDelete?:ModelTypes["DraftOrderLinesBulkDelete"],
-	/** Updates a draft order. */
+	/** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderUpdate?:ModelTypes["DraftOrderUpdate"],
-	/** Adds note to the order. */
+	/** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderAddNote?:ModelTypes["OrderAddNote"],
-	/** Cancel an order. */
+	/** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderCancel?:ModelTypes["OrderCancel"],
-	/** Capture an order. */
+	/** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderCapture?:ModelTypes["OrderCapture"],
-	/** Confirms an unconfirmed order by changing status to unfulfilled. */
+	/** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderConfirm?:ModelTypes["OrderConfirm"],
-	/** Creates new fulfillments for an order. */
+	/** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfill?:ModelTypes["OrderFulfill"],
-	/** Cancels existing fulfillment and optionally restocks items. */
+	/** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentCancel?:ModelTypes["FulfillmentCancel"],
-	/** New in Saleor 3.1. Approve existing fulfillment. */
+	/** Added in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentApprove?:ModelTypes["FulfillmentApprove"],
-	/** Updates a fulfillment for an order. */
+	/** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentUpdateTracking?:ModelTypes["FulfillmentUpdateTracking"],
-	/** Refund products. */
+	/** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentRefundProducts?:ModelTypes["FulfillmentRefundProducts"],
-	/** Return products. */
+	/** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentReturnProducts?:ModelTypes["FulfillmentReturnProducts"],
-	/** Create order lines for an order. */
+	/** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLinesCreate?:ModelTypes["OrderLinesCreate"],
-	/** Deletes an order line from an order. */
+	/** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineDelete?:ModelTypes["OrderLineDelete"],
-	/** Updates an order line of an order. */
+	/** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineUpdate?:ModelTypes["OrderLineUpdate"],
-	/** Adds discount to the order. */
+	/** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderDiscountAdd?:ModelTypes["OrderDiscountAdd"],
-	/** Update discount for the order. */
+	/** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderDiscountUpdate?:ModelTypes["OrderDiscountUpdate"],
-	/** Remove discount from the order. */
+	/** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderDiscountDelete?:ModelTypes["OrderDiscountDelete"],
-	/** Update discount for the order line. */
+	/** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineDiscountUpdate?:ModelTypes["OrderLineDiscountUpdate"],
-	/** Remove discount applied to the order line. */
+	/** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineDiscountRemove?:ModelTypes["OrderLineDiscountRemove"],
-	/** Mark order as manually paid. */
+	/** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderMarkAsPaid?:ModelTypes["OrderMarkAsPaid"],
-	/** Refund an order. */
+	/** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderRefund?:ModelTypes["OrderRefund"],
-	/** Updates an order. */
+	/** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderUpdate?:ModelTypes["OrderUpdate"],
 	/** Updates a shipping method of the order. Requires shipping method ID to update,
-when null is passed then currently assigned shipping method is removed. */
+when null is passed then currently assigned shipping method is removed.
+Requires one of the following permissions: MANAGE_ORDERS. */
 	orderUpdateShipping?:ModelTypes["OrderUpdateShipping"],
-	/** Void an order. */
+	/** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderVoid?:ModelTypes["OrderVoid"],
-	/** Cancels orders. */
+	/** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderBulkCancel?:ModelTypes["OrderBulkCancel"],
-	/** Delete metadata of an object. */
+	/** Delete metadata of an object. To use it, you need to have access to the modified object. */
 	deleteMetadata?:ModelTypes["DeleteMetadata"],
-	/** Delete object's private metadata. */
+	/** Delete object's private metadata. To use it, you need to be an authenticated
+staff user or an app and have access to the modified object. */
 	deletePrivateMetadata?:ModelTypes["DeletePrivateMetadata"],
-	/** Updates metadata of an object. */
+	/** Updates metadata of an object. To use it, you need to have access to the modified object. */
 	updateMetadata?:ModelTypes["UpdateMetadata"],
-	/** Updates private metadata of an object. */
+	/** Updates private metadata of an object. To use it, you need to be an
+authenticated staff user or an app and have access to the modified object. */
 	updatePrivateMetadata?:ModelTypes["UpdatePrivateMetadata"],
-	/** Assigns storefront's navigation menus. */
+	/** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
 	assignNavigation?:ModelTypes["AssignNavigation"],
-	/** Creates a new Menu. */
+	/** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
 	menuCreate?:ModelTypes["MenuCreate"],
-	/** Deletes a menu. */
+	/** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
 	menuDelete?:ModelTypes["MenuDelete"],
-	/** Deletes menus. */
+	/** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
 	menuBulkDelete?:ModelTypes["MenuBulkDelete"],
-	/** Updates a menu. */
+	/** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
 	menuUpdate?:ModelTypes["MenuUpdate"],
-	/** Creates a new menu item. */
+	/** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemCreate?:ModelTypes["MenuItemCreate"],
-	/** Deletes a menu item. */
+	/** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemDelete?:ModelTypes["MenuItemDelete"],
-	/** Deletes menu items. */
+	/** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemBulkDelete?:ModelTypes["MenuItemBulkDelete"],
-	/** Updates a menu item. */
+	/** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemUpdate?:ModelTypes["MenuItemUpdate"],
-	/** Creates/updates translations for a menu item. */
+	/** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	menuItemTranslate?:ModelTypes["MenuItemTranslate"],
-	/** Moves items of menus. */
+	/** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemMove?:ModelTypes["MenuItemMove"],
-	/** Request an invoice for the order using plugin. */
+	/** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceRequest?:ModelTypes["InvoiceRequest"],
-	/** Requests deletion of an invoice. */
+	/** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceRequestDelete?:ModelTypes["InvoiceRequestDelete"],
-	/** Creates a ready to send invoice. */
+	/** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceCreate?:ModelTypes["InvoiceCreate"],
-	/** Deletes an invoice. */
+	/** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceDelete?:ModelTypes["InvoiceDelete"],
-	/** Updates an invoice. */
+	/** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceUpdate?:ModelTypes["InvoiceUpdate"],
-	/** Send an invoice notification to the customer. */
+	/** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceSendNotification?:ModelTypes["InvoiceSendNotification"],
-	/** Activate a gift card. */
+	/** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardActivate?:ModelTypes["GiftCardActivate"],
-	/** Creates a new gift card. */
+	/** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardCreate?:ModelTypes["GiftCardCreate"],
-	/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardDelete?:ModelTypes["GiftCardDelete"],
-	/** Deactivate a gift card. */
+	/** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardDeactivate?:ModelTypes["GiftCardDeactivate"],
-	/** Update a gift card. */
+	/** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardUpdate?:ModelTypes["GiftCardUpdate"],
-	/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardResend?:ModelTypes["GiftCardResend"],
-	/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardAddNote?:ModelTypes["GiftCardAddNote"],
-	/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Create gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkCreate?:ModelTypes["GiftCardBulkCreate"],
-	/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkDelete?:ModelTypes["GiftCardBulkDelete"],
-	/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkActivate?:ModelTypes["GiftCardBulkActivate"],
-	/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkDeactivate?:ModelTypes["GiftCardBulkDeactivate"],
-	/** Update plugin configuration. */
+	/** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
 	pluginUpdate?:ModelTypes["PluginUpdate"],
-	/** New in Saleor 3.1. Trigger sending a notification with the notify plugin
+	/** Added in Saleor 3.1. Trigger sending a notification with the notify plugin
 method. Serializes nodes provided as ids parameter and includes this data in
 the notification payload. */
 	externalNotificationTrigger?:ModelTypes["ExternalNotificationTrigger"],
-	/** Creates a new sale. */
+	/** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleCreate?:ModelTypes["SaleCreate"],
-	/** Deletes a sale. */
+	/** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleDelete?:ModelTypes["SaleDelete"],
-	/** Deletes sales. */
+	/** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleBulkDelete?:ModelTypes["SaleBulkDelete"],
-	/** Updates a sale. */
+	/** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleUpdate?:ModelTypes["SaleUpdate"],
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleCataloguesAdd?:ModelTypes["SaleAddCatalogues"],
-	/** Removes products, categories, collections from a sale. */
+	/** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleCataloguesRemove?:ModelTypes["SaleRemoveCatalogues"],
-	/** Creates/updates translations for a sale. */
+	/** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	saleTranslate?:ModelTypes["SaleTranslate"],
-	/** Manage sale's availability in channels. */
+	/** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleChannelListingUpdate?:ModelTypes["SaleChannelListingUpdate"],
-	/** Creates a new voucher. */
+	/** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherCreate?:ModelTypes["VoucherCreate"],
-	/** Deletes a voucher. */
+	/** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherDelete?:ModelTypes["VoucherDelete"],
-	/** Deletes vouchers. */
+	/** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherBulkDelete?:ModelTypes["VoucherBulkDelete"],
-	/** Updates a voucher. */
+	/** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherUpdate?:ModelTypes["VoucherUpdate"],
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherCataloguesAdd?:ModelTypes["VoucherAddCatalogues"],
-	/** Removes products, categories, collections from a voucher. */
+	/** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherCataloguesRemove?:ModelTypes["VoucherRemoveCatalogues"],
-	/** Creates/updates translations for a voucher. */
+	/** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	voucherTranslate?:ModelTypes["VoucherTranslate"],
-	/** Manage voucher's availability in channels. */
+	/** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherChannelListingUpdate?:ModelTypes["VoucherChannelListingUpdate"],
-	/** Export products to csv file. */
+	/** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	exportProducts?:ModelTypes["ExportProducts"],
-	/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	exportGiftCards?:ModelTypes["ExportGiftCards"],
 	/** Upload a file. This mutation must be sent as a `multipart` request. More
 detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	fileUpload?:ModelTypes["FileUpload"],
 	/** Adds a gift card or a voucher to a checkout. */
 	checkoutAddPromoCode?:ModelTypes["CheckoutAddPromoCode"],
@@ -11805,9 +12942,11 @@ is confirmed with second call of this mutation. */
 	checkoutComplete?:ModelTypes["CheckoutComplete"],
 	/** Create a new checkout. */
 	checkoutCreate?:ModelTypes["CheckoutCreate"],
-	/** Sets the customer as the owner of the checkout. */
+	/** Sets the customer as the owner of the checkout. Requires one of the following
+permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 	checkoutCustomerAttach?:ModelTypes["CheckoutCustomerAttach"],
-	/** Removes the user assigned as the owner of the checkout. */
+	/** Removes the user assigned as the owner of the checkout. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 	checkoutCustomerDetach?:ModelTypes["CheckoutCustomerDetach"],
 	/** Updates email address in the existing checkout object. */
 	checkoutEmailUpdate?:ModelTypes["CheckoutEmailUpdate"],
@@ -11827,70 +12966,73 @@ is confirmed with second call of this mutation. */
 	checkoutShippingAddressUpdate?:ModelTypes["CheckoutShippingAddressUpdate"],
 	/** Updates the shipping method of the checkout. */
 	checkoutShippingMethodUpdate?:ModelTypes["CheckoutShippingMethodUpdate"],
-	/** New in Saleor 3.1. Updates the delivery method (shipping method or pick up
+	/** Added in Saleor 3.1. Updates the delivery method (shipping method or pick up
 point) of the checkout. Note: this feature is in a preview state and can be
 subject to changes at later point. */
 	checkoutDeliveryMethodUpdate?:ModelTypes["CheckoutDeliveryMethodUpdate"],
 	/** Update language code in the existing checkout. */
 	checkoutLanguageCodeUpdate?:ModelTypes["CheckoutLanguageCodeUpdate"],
-	/** Create new order from existing checkout. */
-	orderFromCheckoutCreate?:ModelTypes["OrderFromCheckoutCreate"],
-	/** Creates new channel. */
+	/** Added in Saleor 3.2. Create new order from existing checkout. Note: this
+feature is in a preview state and can be subject to changes at later point.
+Requires one of the following permissions: HANDLE_CHECKOUTS. */
+	orderCreateFromCheckout?:ModelTypes["OrderCreateFromCheckout"],
+	/** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelCreate?:ModelTypes["ChannelCreate"],
-	/** Update a channel. */
+	/** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelUpdate?:ModelTypes["ChannelUpdate"],
 	/** Delete a channel. Orders associated with the deleted channel will be moved to
-the target channel. Checkouts, product availability, and pricing will be removed. */
+the target channel. Checkouts, product availability, and pricing will be
+removed. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelDelete?:ModelTypes["ChannelDelete"],
-	/** Activate a channel. */
+	/** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelActivate?:ModelTypes["ChannelActivate"],
-	/** Deactivate a channel. */
+	/** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelDeactivate?:ModelTypes["ChannelDeactivate"],
 	/** Creates an attribute. */
 	attributeCreate?:ModelTypes["AttributeCreate"],
-	/** Deletes an attribute. */
+	/** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeDelete?:ModelTypes["AttributeDelete"],
-	/** Updates attribute. */
+	/** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeUpdate?:ModelTypes["AttributeUpdate"],
-	/** Creates/updates translations for an attribute. */
+	/** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	attributeTranslate?:ModelTypes["AttributeTranslate"],
-	/** Deletes attributes. */
+	/** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	attributeBulkDelete?:ModelTypes["AttributeBulkDelete"],
-	/** Deletes values of attributes. */
+	/** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	attributeValueBulkDelete?:ModelTypes["AttributeValueBulkDelete"],
-	/** Creates a value for an attribute. */
+	/** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	attributeValueCreate?:ModelTypes["AttributeValueCreate"],
-	/** Deletes a value of an attribute. */
+	/** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeValueDelete?:ModelTypes["AttributeValueDelete"],
-	/** Updates value of an attribute. */
+	/** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeValueUpdate?:ModelTypes["AttributeValueUpdate"],
-	/** Creates/updates translations for an attribute value. */
+	/** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	attributeValueTranslate?:ModelTypes["AttributeValueTranslate"],
-	/** Reorder the values of an attribute. */
+	/** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeReorderValues?:ModelTypes["AttributeReorderValues"],
-	/** Creates a new app. */
+	/** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 	appCreate?:ModelTypes["AppCreate"],
-	/** Updates an existing app. */
+	/** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
 	appUpdate?:ModelTypes["AppUpdate"],
-	/** Deletes an app. */
+	/** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
 	appDelete?:ModelTypes["AppDelete"],
-	/** Creates a new token. */
+	/** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
 	appTokenCreate?:ModelTypes["AppTokenCreate"],
-	/** Deletes an authentication token assigned to app. */
+	/** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
 	appTokenDelete?:ModelTypes["AppTokenDelete"],
 	/** Verify provided app token. */
 	appTokenVerify?:ModelTypes["AppTokenVerify"],
-	/** Install new app by using app manifest. */
+	/** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 	appInstall?:ModelTypes["AppInstall"],
-	/** Retry failed installation of new app. */
+	/** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
 	appRetryInstall?:ModelTypes["AppRetryInstall"],
-	/** Delete failed installation. */
+	/** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
 	appDeleteFailedInstallation?:ModelTypes["AppDeleteFailedInstallation"],
-	/** Fetch and validate manifest. */
+	/** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
 	appFetchManifest?:ModelTypes["AppFetchManifest"],
-	/** Activate the app. */
+	/** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
 	appActivate?:ModelTypes["AppActivate"],
-	/** Deactivate the app. */
+	/** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
 	appDeactivate?:ModelTypes["AppDeactivate"],
 	/** Create JWT token. */
 	tokenCreate?:ModelTypes["CreateToken"],
@@ -11900,7 +13042,8 @@ fails it will try to take refreshToken from the http-only cookie
 	tokenRefresh?:ModelTypes["RefreshToken"],
 	/** Verify JWT token. */
 	tokenVerify?:ModelTypes["VerifyToken"],
-	/** Deactivate all JWT tokens of the currently authenticated user. */
+	/** Deactivate all JWT tokens of the currently authenticated user. Requires one of
+the following permissions: AUTHENTICATED_USER. */
 	tokensDeactivateAll?:ModelTypes["DeactivateAllUserTokens"],
 	/** Prepare external authentication url for user by custom plugin. */
 	externalAuthenticationUrl?:ModelTypes["ExternalAuthenticationUrl"],
@@ -11918,106 +13061,146 @@ fails it will try to take refreshToken from the http-only cookie
 	confirmAccount?:ModelTypes["ConfirmAccount"],
 	/** Sets the user's password from the token sent by email using the RequestPasswordReset mutation. */
 	setPassword?:ModelTypes["SetPassword"],
-	/** Change the password of the logged in user. */
+	/** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	passwordChange?:ModelTypes["PasswordChange"],
-	/** Request email change of the logged in user. */
+	/** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	requestEmailChange?:ModelTypes["RequestEmailChange"],
-	/** Confirm the email change of the logged-in user. */
+	/** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	confirmEmailChange?:ModelTypes["ConfirmEmailChange"],
-	/** Create a new address for the customer. */
+	/** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountAddressCreate?:ModelTypes["AccountAddressCreate"],
-	/** Updates an address of the logged-in user. */
+	/** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 	accountAddressUpdate?:ModelTypes["AccountAddressUpdate"],
-	/** Delete an address of the logged-in user. */
+	/** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 	accountAddressDelete?:ModelTypes["AccountAddressDelete"],
-	/** Sets a default address for the authenticated user. */
+	/** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountSetDefaultAddress?:ModelTypes["AccountSetDefaultAddress"],
 	/** Register a new user. */
 	accountRegister?:ModelTypes["AccountRegister"],
-	/** Updates the account of the logged-in user. */
+	/** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountUpdate?:ModelTypes["AccountUpdate"],
-	/** Sends an email with the account removal link for the logged-in user. */
+	/** Sends an email with the account removal link for the logged-in user. Requires
+one of the following permissions: AUTHENTICATED_USER. */
 	accountRequestDeletion?:ModelTypes["AccountRequestDeletion"],
-	/** Remove user account. */
+	/** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountDelete?:ModelTypes["AccountDelete"],
-	/** Creates user address. */
+	/** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
 	addressCreate?:ModelTypes["AddressCreate"],
-	/** Updates an address. */
+	/** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
 	addressUpdate?:ModelTypes["AddressUpdate"],
-	/** Deletes an address. */
+	/** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
 	addressDelete?:ModelTypes["AddressDelete"],
-	/** Sets a default address for the given user. */
+	/** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
 	addressSetDefault?:ModelTypes["AddressSetDefault"],
-	/** Creates a new customer. */
+	/** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
 	customerCreate?:ModelTypes["CustomerCreate"],
-	/** Updates an existing customer. */
+	/** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
 	customerUpdate?:ModelTypes["CustomerUpdate"],
-	/** Deletes a customer. */
+	/** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
 	customerDelete?:ModelTypes["CustomerDelete"],
-	/** Deletes customers. */
+	/** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
 	customerBulkDelete?:ModelTypes["CustomerBulkDelete"],
-	/** Creates a new staff user. */
+	/** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
 	staffCreate?:ModelTypes["StaffCreate"],
-	/** Updates an existing staff user. */
+	/** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
 	staffUpdate?:ModelTypes["StaffUpdate"],
-	/** Deletes a staff user. */
+	/** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
 	staffDelete?:ModelTypes["StaffDelete"],
-	/** Deletes staff users. */
+	/** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
 	staffBulkDelete?:ModelTypes["StaffBulkDelete"],
 	/** Create a user avatar. Only for staff members. This mutation must be sent as a
 `multipart` request. More detailed specs of the upload format can be found
-here: https://github.com/jaydenseric/graphql-multipart-request-spec */
+here: https://github.com/jaydenseric/graphql-multipart-request-spec Requires
+one of the following permissions: AUTHENTICATED_STAFF_USER. */
 	userAvatarUpdate?:ModelTypes["UserAvatarUpdate"],
-	/** Deletes a user avatar. Only for staff members. */
+	/** Deletes a user avatar. Only for staff members. Requires one of the following permissions: AUTHENTICATED_STAFF_USER. */
 	userAvatarDelete?:ModelTypes["UserAvatarDelete"],
-	/** Activate or deactivate users. */
+	/** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
 	userBulkSetActive?:ModelTypes["UserBulkSetActive"],
-	/** Create new permission group. */
+	/** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroupCreate?:ModelTypes["PermissionGroupCreate"],
-	/** Update permission group. */
+	/** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroupUpdate?:ModelTypes["PermissionGroupUpdate"],
-	/** Delete permission group. */
+	/** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroupDelete?:ModelTypes["PermissionGroupDelete"]
 };
 	["NameTranslationInput"]: GraphQLTypes["NameTranslationInput"];
 	["NavigationType"]: GraphQLTypes["NavigationType"];
 	/** An object with an ID */
-["Node"]: ModelTypes["Address"] | ModelTypes["Allocation"] | ModelTypes["App"] | ModelTypes["AppExtension"] | ModelTypes["AppInstallation"] | ModelTypes["AppToken"] | ModelTypes["Attribute"] | ModelTypes["AttributeTranslatableContent"] | ModelTypes["AttributeTranslation"] | ModelTypes["AttributeValue"] | ModelTypes["AttributeValueTranslatableContent"] | ModelTypes["AttributeValueTranslation"] | ModelTypes["Category"] | ModelTypes["CategoryTranslatableContent"] | ModelTypes["CategoryTranslation"] | ModelTypes["Channel"] | ModelTypes["Checkout"] | ModelTypes["CheckoutLine"] | ModelTypes["Collection"] | ModelTypes["CollectionChannelListing"] | ModelTypes["CollectionTranslatableContent"] | ModelTypes["CollectionTranslation"] | ModelTypes["CustomerEvent"] | ModelTypes["DigitalContent"] | ModelTypes["DigitalContentUrl"] | ModelTypes["EventDelivery"] | ModelTypes["EventDeliveryAttempt"] | ModelTypes["ExportEvent"] | ModelTypes["ExportFile"] | ModelTypes["Fulfillment"] | ModelTypes["FulfillmentLine"] | ModelTypes["GiftCard"] | ModelTypes["GiftCardEvent"] | ModelTypes["GiftCardTag"] | ModelTypes["Group"] | ModelTypes["Invoice"] | ModelTypes["Menu"] | ModelTypes["MenuItem"] | ModelTypes["MenuItemTranslatableContent"] | ModelTypes["MenuItemTranslation"] | ModelTypes["Order"] | ModelTypes["OrderDiscount"] | ModelTypes["OrderEvent"] | ModelTypes["OrderLine"] | ModelTypes["Page"] | ModelTypes["PageTranslatableContent"] | ModelTypes["PageTranslation"] | ModelTypes["PageType"] | ModelTypes["Payment"] | ModelTypes["PaymentPOC"] | ModelTypes["Product"] | ModelTypes["ProductChannelListing"] | ModelTypes["ProductMedia"] | ModelTypes["ProductTranslatableContent"] | ModelTypes["ProductTranslation"] | ModelTypes["ProductType"] | ModelTypes["ProductVariant"] | ModelTypes["ProductVariantChannelListing"] | ModelTypes["ProductVariantTranslatableContent"] | ModelTypes["ProductVariantTranslation"] | ModelTypes["Sale"] | ModelTypes["SaleChannelListing"] | ModelTypes["SaleTranslatableContent"] | ModelTypes["SaleTranslation"] | ModelTypes["ShippingMethod"] | ModelTypes["ShippingMethodChannelListing"] | ModelTypes["ShippingMethodPostalCodeRule"] | ModelTypes["ShippingMethodTranslatableContent"] | ModelTypes["ShippingMethodTranslation"] | ModelTypes["ShippingMethodType"] | ModelTypes["ShippingZone"] | ModelTypes["ShopTranslation"] | ModelTypes["StaffNotificationRecipient"] | ModelTypes["Stock"] | ModelTypes["Transaction"] | ModelTypes["User"] | ModelTypes["Voucher"] | ModelTypes["VoucherChannelListing"] | ModelTypes["VoucherTranslatableContent"] | ModelTypes["VoucherTranslation"] | ModelTypes["Warehouse"] | ModelTypes["Webhook"];
-	["ObjectWithMetadata"]: ModelTypes["App"] | ModelTypes["Attribute"] | ModelTypes["Category"] | ModelTypes["Checkout"] | ModelTypes["Collection"] | ModelTypes["DigitalContent"] | ModelTypes["Fulfillment"] | ModelTypes["GiftCard"] | ModelTypes["Invoice"] | ModelTypes["Menu"] | ModelTypes["MenuItem"] | ModelTypes["Order"] | ModelTypes["Page"] | ModelTypes["PageType"] | ModelTypes["Payment"] | ModelTypes["PaymentPOC"] | ModelTypes["Product"] | ModelTypes["ProductType"] | ModelTypes["ProductVariant"] | ModelTypes["Sale"] | ModelTypes["ShippingMethod"] | ModelTypes["ShippingMethodType"] | ModelTypes["ShippingZone"] | ModelTypes["User"] | ModelTypes["Voucher"] | ModelTypes["Warehouse"];
+["Node"]: ModelTypes["Address"] | ModelTypes["Allocation"] | ModelTypes["App"] | ModelTypes["AppExtension"] | ModelTypes["AppInstallation"] | ModelTypes["AppToken"] | ModelTypes["Attribute"] | ModelTypes["AttributeTranslatableContent"] | ModelTypes["AttributeTranslation"] | ModelTypes["AttributeValue"] | ModelTypes["AttributeValueTranslatableContent"] | ModelTypes["AttributeValueTranslation"] | ModelTypes["Category"] | ModelTypes["CategoryTranslatableContent"] | ModelTypes["CategoryTranslation"] | ModelTypes["Channel"] | ModelTypes["Checkout"] | ModelTypes["CheckoutLine"] | ModelTypes["Collection"] | ModelTypes["CollectionChannelListing"] | ModelTypes["CollectionTranslatableContent"] | ModelTypes["CollectionTranslation"] | ModelTypes["CustomerEvent"] | ModelTypes["DigitalContent"] | ModelTypes["DigitalContentUrl"] | ModelTypes["EventDelivery"] | ModelTypes["EventDeliveryAttempt"] | ModelTypes["ExportEvent"] | ModelTypes["ExportFile"] | ModelTypes["Fulfillment"] | ModelTypes["FulfillmentLine"] | ModelTypes["GiftCard"] | ModelTypes["GiftCardEvent"] | ModelTypes["GiftCardTag"] | ModelTypes["Group"] | ModelTypes["Invoice"] | ModelTypes["Menu"] | ModelTypes["MenuItem"] | ModelTypes["MenuItemTranslatableContent"] | ModelTypes["MenuItemTranslation"] | ModelTypes["Order"] | ModelTypes["OrderDiscount"] | ModelTypes["OrderEvent"] | ModelTypes["OrderLine"] | ModelTypes["Page"] | ModelTypes["PageTranslatableContent"] | ModelTypes["PageTranslation"] | ModelTypes["PageType"] | ModelTypes["Payment"] | ModelTypes["Product"] | ModelTypes["ProductChannelListing"] | ModelTypes["ProductMedia"] | ModelTypes["ProductTranslatableContent"] | ModelTypes["ProductTranslation"] | ModelTypes["ProductType"] | ModelTypes["ProductVariant"] | ModelTypes["ProductVariantChannelListing"] | ModelTypes["ProductVariantTranslatableContent"] | ModelTypes["ProductVariantTranslation"] | ModelTypes["Sale"] | ModelTypes["SaleChannelListing"] | ModelTypes["SaleTranslatableContent"] | ModelTypes["SaleTranslation"] | ModelTypes["ShippingMethod"] | ModelTypes["ShippingMethodChannelListing"] | ModelTypes["ShippingMethodPostalCodeRule"] | ModelTypes["ShippingMethodTranslatableContent"] | ModelTypes["ShippingMethodTranslation"] | ModelTypes["ShippingMethodType"] | ModelTypes["ShippingZone"] | ModelTypes["ShopTranslation"] | ModelTypes["StaffNotificationRecipient"] | ModelTypes["Stock"] | ModelTypes["Transaction"] | ModelTypes["User"] | ModelTypes["Voucher"] | ModelTypes["VoucherChannelListing"] | ModelTypes["VoucherTranslatableContent"] | ModelTypes["VoucherTranslation"] | ModelTypes["Warehouse"] | ModelTypes["Webhook"];
+	["ObjectWithMetadata"]: ModelTypes["App"] | ModelTypes["Attribute"] | ModelTypes["Category"] | ModelTypes["Checkout"] | ModelTypes["Collection"] | ModelTypes["DigitalContent"] | ModelTypes["Fulfillment"] | ModelTypes["GiftCard"] | ModelTypes["Invoice"] | ModelTypes["Menu"] | ModelTypes["MenuItem"] | ModelTypes["Order"] | ModelTypes["Page"] | ModelTypes["PageType"] | ModelTypes["Payment"] | ModelTypes["Product"] | ModelTypes["ProductType"] | ModelTypes["ProductVariant"] | ModelTypes["Sale"] | ModelTypes["ShippingMethod"] | ModelTypes["ShippingMethodType"] | ModelTypes["ShippingZone"] | ModelTypes["User"] | ModelTypes["Voucher"] | ModelTypes["Warehouse"];
 	/** Represents an order in the shop. */
 ["Order"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	created:ModelTypes["DateTime"],
 	updatedAt:ModelTypes["DateTime"],
 	status:ModelTypes["OrderStatus"],
+	/** User who placed the order. This field is set only for orders placed by
+authenticated users. Requires one of the following permissions:
+AccountPermissions.MANAGE_USERS, OrderPermissions.MANAGE_ORDERS,
+AuthorizationFilters.OWNER. */
 	user?:ModelTypes["User"],
 	trackingClientId:string,
+	/** Billing address. Requires one of the following permissions to view the full
+data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	billingAddress?:ModelTypes["Address"],
+	/** Shipping address. Requires one of the following permissions to view the full
+data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	shippingAddress?:ModelTypes["Address"],
 	shippingMethodName?:string,
 	collectionPointName?:string,
 	channel:ModelTypes["Channel"],
 	/** List of shipments for the order. */
-	fulfillments?:ModelTypes["Fulfillment"][],
+	fulfillments:ModelTypes["Fulfillment"][],
 	/** List of order lines. */
-	lines?:ModelTypes["OrderLine"][],
+	lines:ModelTypes["OrderLine"][],
 	/** List of actions that can be performed in the current state of an order. */
-	actions?:ModelTypes["OrderAction"][],
+	actions:ModelTypes["OrderAction"][],
 	/** Shipping methods that can be used with this order. */
-	availableShippingMethods?:(ModelTypes["ShippingMethod"] | undefined)[],
+	availableShippingMethods?:ModelTypes["ShippingMethod"][],
 	/** Shipping methods related to this order. */
-	shippingMethods?:(ModelTypes["ShippingMethod"] | undefined)[],
-	/** New in Saleor 3.1. Collection points that can be used for this order. Note:
+	shippingMethods:ModelTypes["ShippingMethod"][],
+	/** Added in Saleor 3.1. Collection points that can be used for this order. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	availableCollectionPoints:ModelTypes["Warehouse"][],
-	/** List of order invoices. */
-	invoices?:(ModelTypes["Invoice"] | undefined)[],
+	/** List of order invoices. Requires one of the following permissions:
+OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
+	invoices:ModelTypes["Invoice"][],
 	/** User-friendly number of an order. */
-	number?:string,
+	number:string,
 	/** The ID of the order that was the base for this order. */
 	original?:string,
 	/** The order origin. */
@@ -12029,9 +13212,7 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** User-friendly payment status. */
 	paymentStatusDisplay:string,
 	/** List of payments for the order. */
-	payments?:(ModelTypes["Payment"] | undefined)[],
-	/** List of payments for the order */
-	pocPayments:ModelTypes["PaymentPOC"][],
+	payments:ModelTypes["Payment"][],
 	/** Total amount of the order. */
 	total:ModelTypes["TaxedMoney"],
 	/** Undiscounted total amount of the order. */
@@ -12044,31 +13225,32 @@ this feature is in a preview state and can be subject to changes at later point.
 	token:string,
 	voucher?:ModelTypes["Voucher"],
 	/** List of user gift cards. */
-	giftCards?:(ModelTypes["GiftCard"] | undefined)[],
+	giftCards:ModelTypes["GiftCard"][],
 	displayGrossPrices:boolean,
 	customerNote:string,
-	weight?:ModelTypes["Weight"],
+	weight:ModelTypes["Weight"],
 	redirectUrl?:string,
 	/** The sum of line prices not including shipping. */
 	subtotal:ModelTypes["TaxedMoney"],
 	/** User-friendly order status. */
-	statusDisplay?:string,
+	statusDisplay:string,
 	/** Informs whether a draft order can be finalized(turned into a regular order). */
 	canFinalize:boolean,
 	/** Amount authorized for the order. */
 	totalAuthorized:ModelTypes["Money"],
 	/** Amount captured by payment. */
 	totalCaptured:ModelTypes["Money"],
-	/** List of events associated with the order. */
-	events?:(ModelTypes["OrderEvent"] | undefined)[],
+	/** List of events associated with the order. Requires one of the following permissions: MANAGE_ORDERS. */
+	events:ModelTypes["OrderEvent"][],
 	/** The difference between the paid and the order total amount. */
 	totalBalance:ModelTypes["Money"],
-	/** Email address of the customer. */
+	/** Email address of the customer. Requires the following permissions to access
+the full data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER */
 	userEmail?:string,
 	/** Returns True, if order requires shipping. */
 	isShippingRequired:boolean,
-	/** New in Saleor 3.1. The delivery method selected for this checkout. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The delivery method selected for this checkout. Note:
+this feature is in a preview state and can be subject to changes at later point. */
 	deliveryMethod?:ModelTypes["DeliveryMethod"],
 	languageCode:string,
 	/** Order language code. */
@@ -12080,12 +13262,12 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** Translated discount name. */
 	translatedDiscountName?:string,
 	/** List of all discounts assigned to the order. */
-	discounts?:ModelTypes["OrderDiscount"][],
+	discounts:ModelTypes["OrderDiscount"][],
 	/** List of errors that occurred during order validation. */
 	errors:ModelTypes["OrderError"][]
 };
 	["OrderAction"]: GraphQLTypes["OrderAction"];
-	/** Adds note to the order. */
+	/** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderAddNote"]: {
 		/** Order with the note added. */
 	order?:ModelTypes["Order"],
@@ -12095,32 +13277,42 @@ feature is in a preview state and can be subject to changes at later point. */
 	errors:ModelTypes["OrderError"][]
 };
 	["OrderAddNoteInput"]: GraphQLTypes["OrderAddNoteInput"];
-	/** Cancels orders. */
+	/** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderBulkCancel"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Cancel an order. */
+	/** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderCancel"]: {
 		/** Canceled order. */
 	order?:ModelTypes["Order"],
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Capture an order. */
+	["OrderCancelled"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
+	/** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderCapture"]: {
 		/** Captured order. */
 	order?:ModelTypes["Order"],
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Confirms an unconfirmed order by changing status to unfulfilled. */
+	/** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderConfirm"]: {
 		order?:ModelTypes["Order"],
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
+};
+	["OrderConfirmed"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
 };
 	["OrderCountableConnection"]: {
 		/** Pagination data for this connection. */
@@ -12135,6 +13327,34 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
+	["OrderCreated"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
+	/** Added in Saleor 3.2. Create new order from existing checkout. Note: this feature
+is in a preview state and can be subject to changes at later point. Requires one
+of the following permissions: HANDLE_CHECKOUTS. */
+["OrderCreateFromCheckout"]: {
+		/** Placed order. */
+	order?:ModelTypes["Order"],
+	errors:ModelTypes["OrderCreateFromCheckoutError"][]
+};
+	["OrderCreateFromCheckoutError"]: {
+		/** Name of a field that caused the error. A value of `null` indicates that the
+error isn't associated with a particular field. */
+	field?:string,
+	/** The error message. */
+	message?:string,
+	/** The error code. */
+	code:ModelTypes["OrderCreateFromCheckoutErrorCode"],
+	/** List of variant IDs which causes the error. */
+	variants?:string[],
+	/** List of line Ids which cause the error. */
+	lines?:string[]
+};
+	/** An enumeration. */
+["OrderCreateFromCheckoutErrorCode"]: GraphQLTypes["OrderCreateFromCheckoutErrorCode"];
 	["OrderDirection"]: GraphQLTypes["OrderDirection"];
 	/** Contains all details related to the applied discount to the order. */
 ["OrderDiscount"]: {
@@ -12146,12 +13366,12 @@ feature is in a preview state and can be subject to changes at later point. */
 	valueType:ModelTypes["DiscountValueTypeEnum"],
 	/** Value of the discount. Can store fixed value or percent value */
 	value:ModelTypes["PositiveDecimal"],
-	/** Explanation for the applied discount. */
+	/** Explanation for the applied discount. Requires one of the following permissions: MANAGE_ORDERS. */
 	reason?:string,
 	/** Returns amount of discount. */
 	amount:ModelTypes["Money"]
 };
-	/** Adds discount to the order. */
+	/** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountAdd"]: {
 		/** Order which has been discounted. */
 	order?:ModelTypes["Order"],
@@ -12159,7 +13379,7 @@ feature is in a preview state and can be subject to changes at later point. */
 	errors:ModelTypes["OrderError"][]
 };
 	["OrderDiscountCommonInput"]: GraphQLTypes["OrderDiscountCommonInput"];
-	/** Remove discount from the order. */
+	/** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountDelete"]: {
 		/** Order which has removed discount. */
 	order?:ModelTypes["Order"],
@@ -12168,7 +13388,7 @@ feature is in a preview state and can be subject to changes at later point. */
 };
 	/** An enumeration. */
 ["OrderDiscountType"]: GraphQLTypes["OrderDiscountType"];
-	/** Update discount for the order. */
+	/** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountUpdate"]: {
 		/** Order which has been discounted. */
 	order?:ModelTypes["Order"],
@@ -12204,7 +13424,9 @@ error isn't associated with a particular field. */
 	type?:ModelTypes["OrderEventsEnum"],
 	/** User who performed the action. */
 	user?:ModelTypes["User"],
-	/** App that performed the action. */
+	/** App that performed the action. Requires of of the following permissions:
+AppPermission.MANAGE_APPS, OrderPermissions.MANAGE_ORDERS,
+AuthorizationFilters.OWNER. */
 	app?:ModelTypes["App"],
 	/** Content of the event. */
 	message?:string,
@@ -12227,11 +13449,11 @@ error isn't associated with a particular field. */
 	/** Number of an invoice related to the order. */
 	invoiceNumber?:string,
 	/** List of oversold lines names. */
-	oversoldItems?:(string | undefined)[],
+	oversoldItems?:string[],
 	/** The concerned lines. */
-	lines?:(ModelTypes["OrderEventOrderLineObject"] | undefined)[],
+	lines?:ModelTypes["OrderEventOrderLineObject"][],
 	/** The lines fulfilled. */
-	fulfilledItems?:(ModelTypes["FulfillmentLine"] | undefined)[],
+	fulfilledItems?:ModelTypes["FulfillmentLine"][],
 	/** The warehouse were items were restocked. */
 	warehouse?:ModelTypes["Warehouse"],
 	/** The transaction reference of captured payment. */
@@ -12241,11 +13463,7 @@ error isn't associated with a particular field. */
 	/** The order which is related to this order. */
 	relatedOrder?:ModelTypes["Order"],
 	/** The discount applied to the order. */
-	discount?:ModelTypes["OrderEventDiscountObject"],
-	/** The status of payment's transaction. */
-	status?:ModelTypes["TransactionStatus"],
-	/** The reference of payment's transaction. */
-	reference?:string
+	discount?:ModelTypes["OrderEventDiscountObject"]
 };
 	["OrderEventCountableConnection"]: {
 		/** Pagination data for this connection. */
@@ -12291,40 +13509,28 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["OrderEventsEnum"]: GraphQLTypes["OrderEventsEnum"];
 	["OrderFilterInput"]: GraphQLTypes["OrderFilterInput"];
-	/** Create new order from existing checkout. */
-["OrderFromCheckoutCreate"]: {
-		/** Placed order. */
-	order?:ModelTypes["Order"],
-	checkoutErrors:ModelTypes["OrderFromCheckoutCreateError"][],
-	errors:ModelTypes["OrderFromCheckoutCreateError"][]
-};
-	["OrderFromCheckoutCreateError"]: {
-		/** Name of a field that caused the error. A value of `null` indicates that the
-error isn't associated with a particular field. */
-	field?:string,
-	/** The error message. */
-	message?:string,
-	/** The error code. */
-	code:ModelTypes["OrderFromCheckoutCreateErrorCode"],
-	/** List of varint IDs which causes the error. */
-	variants?:string[],
-	/** List of line Ids which cause the error. */
-	lines?:string[]
-};
-	/** An enumeration. */
-["OrderFromCheckoutCreateErrorCode"]: GraphQLTypes["OrderFromCheckoutCreateErrorCode"];
-	/** Creates new fulfillments for an order. */
+	/** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderFulfill"]: {
 		/** List of created fulfillments. */
-	fulfillments?:(ModelTypes["Fulfillment"] | undefined)[],
+	fulfillments?:ModelTypes["Fulfillment"][],
 	/** Fulfilled order. */
 	order?:ModelTypes["Order"],
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
+	["OrderFulfilled"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
 	["OrderFulfillInput"]: GraphQLTypes["OrderFulfillInput"];
 	["OrderFulfillLineInput"]: GraphQLTypes["OrderFulfillLineInput"];
 	["OrderFulfillStockInput"]: GraphQLTypes["OrderFulfillStockInput"];
+	["OrderFullyPaid"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
 	/** Represents order line of particular order. */
 ["OrderLine"]: {
 		id:string,
@@ -12350,21 +13556,24 @@ error isn't associated with a particular field. */
 	unitDiscountValue:ModelTypes["PositiveDecimal"],
 	/** Price of the order line. */
 	totalPrice:ModelTypes["TaxedMoney"],
-	/** A purchased product variant. Note: this field may be null if the variant has been removed from stock at all. */
+	/** A purchased product variant. Note: this field may be null if the variant has
+been removed from stock at all. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	variant?:ModelTypes["ProductVariant"],
 	/** Product name in the customer's language */
 	translatedProductName:string,
 	/** Variant name in the customer's language */
 	translatedVariantName:string,
-	/** List of allocations across warehouses. */
+	/** List of allocations across warehouses. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	allocations?:ModelTypes["Allocation"][],
-	/** New in Saleor 3.1. A quantity of items remaining to be fulfilled. */
+	/** Added in Saleor 3.1. A quantity of items remaining to be fulfilled. */
 	quantityToFulfill:number,
 	/** Type of the discount: fixed or percent */
 	unitDiscountType?:ModelTypes["DiscountValueTypeEnum"]
 };
 	["OrderLineCreateInput"]: GraphQLTypes["OrderLineCreateInput"];
-	/** Deletes an order line from an order. */
+	/** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDelete"]: {
 		/** A related order. */
 	order?:ModelTypes["Order"],
@@ -12373,7 +13582,7 @@ error isn't associated with a particular field. */
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Remove discount applied to the order line. */
+	/** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDiscountRemove"]: {
 		/** Order line which has removed discount. */
 	orderLine?:ModelTypes["OrderLine"],
@@ -12382,7 +13591,7 @@ error isn't associated with a particular field. */
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Update discount for the order line. */
+	/** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDiscountUpdate"]: {
 		/** Order line which has been discounted. */
 	orderLine?:ModelTypes["OrderLine"],
@@ -12392,7 +13601,7 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["OrderError"][]
 };
 	["OrderLineInput"]: GraphQLTypes["OrderLineInput"];
-	/** Create order lines for an order. */
+	/** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLinesCreate"]: {
 		/** Related order. */
 	order?:ModelTypes["Order"],
@@ -12401,7 +13610,7 @@ error isn't associated with a particular field. */
 	orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][]
 };
-	/** Updates an order line of an order. */
+	/** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineUpdate"]: {
 		/** Related order. */
 	order?:ModelTypes["Order"],
@@ -12409,7 +13618,7 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["OrderError"][],
 	orderLine?:ModelTypes["OrderLine"]
 };
-	/** Mark order as manually paid. */
+	/** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderMarkAsPaid"]: {
 		/** Order marked as paid. */
 	order?:ModelTypes["Order"],
@@ -12418,7 +13627,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["OrderOriginEnum"]: GraphQLTypes["OrderOriginEnum"];
-	/** Refund an order. */
+	/** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderRefund"]: {
 		/** A refunded order. */
 	order?:ModelTypes["Order"],
@@ -12447,7 +13656,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["OrderSettingsErrorCode"]: GraphQLTypes["OrderSettingsErrorCode"];
-	/** Update shop order settings. */
+	/** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderSettingsUpdate"]: {
 		/** Order settings. */
 	orderSettings?:ModelTypes["OrderSettings"],
@@ -12460,15 +13669,21 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["OrderStatus"]: GraphQLTypes["OrderStatus"];
 	["OrderStatusFilter"]: GraphQLTypes["OrderStatusFilter"];
-	/** Updates an order. */
+	/** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderUpdate"]: {
 		orderErrors:ModelTypes["OrderError"][],
 	errors:ModelTypes["OrderError"][],
 	order?:ModelTypes["Order"]
 };
+	["OrderUpdated"]: {
+		/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?:ModelTypes["Order"]
+};
 	["OrderUpdateInput"]: GraphQLTypes["OrderUpdateInput"];
 	/** Updates a shipping method of the order. Requires shipping method ID to update,
-when null is passed then currently assigned shipping method is removed. */
+when null is passed then currently assigned shipping method is removed. Requires
+one of the following permissions: MANAGE_ORDERS. */
 ["OrderUpdateShipping"]: {
 		/** Order with updated shipping method. */
 	order?:ModelTypes["Order"],
@@ -12476,7 +13691,7 @@ when null is passed then currently assigned shipping method is removed. */
 	errors:ModelTypes["OrderError"][]
 };
 	["OrderUpdateShippingInput"]: GraphQLTypes["OrderUpdateShippingInput"];
-	/** Void an order. */
+	/** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderVoid"]: {
 		/** A voided order. */
 	order?:ModelTypes["Order"],
@@ -12486,16 +13701,47 @@ when null is passed then currently assigned shipping method is removed. */
 	/** A static page that can be manually added by a shop operator through the dashboard. */
 ["Page"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	seoTitle?:string,
 	seoDescription?:string,
 	title:string,
 	/** Content of the page (JSON). */
 	content?:ModelTypes["JSONString"],
 	publicationDate?:ModelTypes["Date"],
+	/** Added in Saleor 3.3. The page publication date. */
+	publishedAt?:ModelTypes["DateTime"],
 	isPublished:boolean,
 	slug:string,
 	pageType:ModelTypes["PageType"],
@@ -12507,28 +13753,28 @@ when null is passed then currently assigned shipping method is removed. */
 	/** List of attributes assigned to this product. */
 	attributes:ModelTypes["SelectedAttribute"][]
 };
-	/** Assign attributes to a given page type. */
+	/** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageAttributeAssign"]: {
 		/** The updated page type. */
 	pageType?:ModelTypes["PageType"],
 	pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][]
 };
-	/** Unassign attributes from a given page type. */
+	/** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageAttributeUnassign"]: {
 		/** The updated page type. */
 	pageType?:ModelTypes["PageType"],
 	pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][]
 };
-	/** Deletes pages. */
+	/** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][]
 };
-	/** Publish pages. */
+	/** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageBulkPublish"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -12548,17 +13794,27 @@ when null is passed then currently assigned shipping method is removed. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new page. */
+	/** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageCreate"]: {
 		pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][],
 	page?:ModelTypes["Page"]
 };
+	["PageCreated"]: {
+		/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	page?:ModelTypes["Page"]
+};
 	["PageCreateInput"]: GraphQLTypes["PageCreateInput"];
-	/** Deletes a page. */
+	/** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageDelete"]: {
 		pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][],
+	page?:ModelTypes["Page"]
+};
+	["PageDeleted"]: {
+		/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	page?:ModelTypes["Page"]
 };
 	["PageError"]: {
@@ -12589,7 +13845,7 @@ error isn't associated with a particular field. */
 	endCursor?:string
 };
 	["PageInput"]: GraphQLTypes["PageInput"];
-	/** Reorder page attribute values. */
+	/** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageReorderAttributeValues"]: {
 		/** Page from which attribute values are reordered. */
 	page?:ModelTypes["Page"],
@@ -12608,12 +13864,12 @@ error isn't associated with a particular field. */
 	contentJson?:ModelTypes["JSONString"],
 	/** Returns translated page fields for the given language code. */
 	translation?:ModelTypes["PageTranslation"],
-	/** ('A static page that can be manually added by a shop operator ', 'through the dashboard.') */
+	/** A static page that can be manually added by a shop operator through the dashboard. */
 	page?:ModelTypes["Page"],
 	/** List of page content attribute values that can be translated. */
 	attributeValues:ModelTypes["AttributeValueTranslatableContent"][]
 };
-	/** Creates/updates translations for a page. */
+	/** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["PageTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -12634,20 +13890,49 @@ error isn't associated with a particular field. */
 	/** Represents a type of page. It defines what attributes are available to pages of this type. */
 ["PageType"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	slug:string,
 	/** Page attributes of that page type. */
-	attributes?:(ModelTypes["Attribute"] | undefined)[],
-	/** Attributes that can be assigned to the page type. */
+	attributes?:ModelTypes["Attribute"][],
+	/** Attributes that can be assigned to the page type. Requires one of the following permissions: MANAGE_PAGES. */
 	availableAttributes?:ModelTypes["AttributeCountableConnection"],
-	/** Whether page type has pages assigned. */
+	/** Whether page type has pages assigned. Requires one of the following permissions: MANAGE_PAGES. */
 	hasPages?:boolean
 };
-	/** Delete page types. */
+	/** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -12667,21 +13952,21 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Create a new page type. */
+	/** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeCreate"]: {
 		pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][],
 	pageType?:ModelTypes["PageType"]
 };
 	["PageTypeCreateInput"]: GraphQLTypes["PageTypeCreateInput"];
-	/** Delete a page type. */
+	/** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeDelete"]: {
 		pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][],
 	pageType?:ModelTypes["PageType"]
 };
 	["PageTypeFilterInput"]: GraphQLTypes["PageTypeFilterInput"];
-	/** Reorder the attributes of a page type. */
+	/** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeReorderAttributes"]: {
 		/** Page type from which attributes are reordered. */
 	pageType?:ModelTypes["PageType"],
@@ -12690,20 +13975,25 @@ error isn't associated with a particular field. */
 };
 	["PageTypeSortField"]: GraphQLTypes["PageTypeSortField"];
 	["PageTypeSortingInput"]: GraphQLTypes["PageTypeSortingInput"];
-	/** Update page type. */
+	/** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeUpdate"]: {
 		pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][],
 	pageType?:ModelTypes["PageType"]
 };
 	["PageTypeUpdateInput"]: GraphQLTypes["PageTypeUpdateInput"];
-	/** Updates an existing page. */
+	/** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageUpdate"]: {
 		pageErrors:ModelTypes["PageError"][],
 	errors:ModelTypes["PageError"][],
 	page?:ModelTypes["Page"]
 };
-	/** Change the password of the logged in user. */
+	["PageUpdated"]: {
+		/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	page?:ModelTypes["Page"]
+};
+	/** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["PasswordChange"]: {
 		/** A user instance with a new password. */
 	user?:ModelTypes["User"],
@@ -12713,10 +14003,39 @@ error isn't associated with a particular field. */
 	/** Represents a payment of a given type. */
 ["Payment"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	gateway:string,
 	isActive:boolean,
 	created:ModelTypes["DateTime"],
@@ -12725,27 +14044,27 @@ error isn't associated with a particular field. */
 	checkout?:ModelTypes["Checkout"],
 	order?:ModelTypes["Order"],
 	paymentMethodType:string,
+	/** IP address of the user who created the payment. Requires one of the following permissions: MANAGE_ORDERS. */
 	customerIpAddress?:string,
 	/** Internal payment status. */
 	chargeStatus:ModelTypes["PaymentChargeStatusEnum"],
-	/** List of actions that can be performed in the current state of a payment. */
-	actions?:ModelTypes["OrderAction"][],
+	/** List of actions that can be performed in the current state of a payment.
+Requires one of the following permissions: MANAGE_ORDERS. */
+	actions:ModelTypes["OrderAction"][],
 	/** Total amount of the payment. */
 	total?:ModelTypes["Money"],
 	/** Total amount captured for this payment. */
 	capturedAmount?:ModelTypes["Money"],
-	/** List of all transactions within this payment. */
-	transactions?:(ModelTypes["Transaction"] | undefined)[],
-	/** Maximum amount of money that can be captured. */
+	/** List of all transactions within this payment. Requires one of the following permissions: MANAGE_ORDERS. */
+	transactions?:ModelTypes["Transaction"][],
+	/** Maximum amount of money that can be captured. Requires one of the following permissions: MANAGE_ORDERS. */
 	availableCaptureAmount?:ModelTypes["Money"],
-	/** Maximum amount of money that can be refunded. */
+	/** Maximum amount of money that can be refunded. Requires one of the following permissions: MANAGE_ORDERS. */
 	availableRefundAmount?:ModelTypes["Money"],
 	/** The details of the card used for this payment. */
 	creditCard?:ModelTypes["CreditCard"]
 };
-	/** An enumeration. */
-["PaymentActionEnum"]: GraphQLTypes["PaymentActionEnum"];
-	/** Captures the authorized payment amount. */
+	/** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentCapture"]: {
 		/** Updated payment. */
 	payment?:ModelTypes["Payment"],
@@ -12775,22 +14094,6 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Create payment for checkout or order. */
-["PaymentCreate"]: {
-		payment:ModelTypes["PaymentPOC"],
-	errors:ModelTypes["PaymentCreateError"][]
-};
-	["PaymentCreateError"]: {
-		/** Name of a field that caused the error. A value of `null` indicates that the
-error isn't associated with a particular field. */
-	field?:string,
-	/** The error message. */
-	message?:string,
-	/** The error code. */
-	code:ModelTypes["PaymentCreateErrorCode"]
-};
-	/** An enumeration. */
-["PaymentCreateErrorCode"]: GraphQLTypes["PaymentCreateErrorCode"];
 	["PaymentError"]: {
 		/** Name of a field that caused the error. A value of `null` indicates that the
 error isn't associated with a particular field. */
@@ -12814,7 +14117,7 @@ error isn't associated with a particular field. */
 	/** Payment gateway client configuration. */
 	config:ModelTypes["GatewayConfigLine"][],
 	/** Payment gateway supported currencies. */
-	currencies?:string[]
+	currencies:string[]
 };
 	/** Initializes payment process when it is required by gateway. */
 ["PaymentInitialize"]: {
@@ -12833,31 +14136,7 @@ provider requires an additional action to initialize payment session. */
 	data?:ModelTypes["JSONString"]
 };
 	["PaymentInput"]: GraphQLTypes["PaymentInput"];
-	/** Represents a payment of a given type. */
-["PaymentPOC"]: {
-		/** The ID of the object. */
-	id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
-	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
-	status:string,
-	type:string,
-	reference:string,
-	/** List of all possible actions for the payment */
-	availableActions:ModelTypes["PaymentActionEnum"][],
-	/** Amount authorized by this payment. */
-	amountAuthorized:ModelTypes["Money"],
-	/** Amount captured by this payment. */
-	amountCaptured:ModelTypes["Money"],
-	/** Amount refunded by this payment. */
-	amountRefunded:ModelTypes["Money"],
-	/** Amount voided by this payment. */
-	amountVoided:ModelTypes["Money"]
-};
-	["PaymentPOCCreateInput"]: GraphQLTypes["PaymentPOCCreateInput"];
-	["PaymentPOCUpdateInput"]: GraphQLTypes["PaymentPOCUpdateInput"];
-	/** Refunds the captured payment amount. */
+	/** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentRefund"]: {
 		/** Updated payment. */
 	payment?:ModelTypes["Payment"],
@@ -12872,15 +14151,10 @@ provider requires an additional action to initialize payment session. */
 	paymentMethodId?:string,
 	/** Stored credit card details if available. */
 	creditCardInfo?:ModelTypes["CreditCard"],
-	/** New in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][]
+	/** Added in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
+	metadata:ModelTypes["MetadataItem"][]
 };
-	/** Create payment for checkout or order. */
-["PaymentUpdate"]: {
-		payment:ModelTypes["PaymentPOC"],
-	errors:ModelTypes["PaymentCreateError"][]
-};
-	/** Voids the authorized payment. */
+	/** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentVoid"]: {
 		/** Updated payment. */
 	payment?:ModelTypes["Payment"],
@@ -12896,14 +14170,14 @@ provider requires an additional action to initialize payment session. */
 };
 	/** An enumeration. */
 ["PermissionEnum"]: GraphQLTypes["PermissionEnum"];
-	/** Create new permission group. */
+	/** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupCreate"]: {
 		permissionGroupErrors:ModelTypes["PermissionGroupError"][],
 	errors:ModelTypes["PermissionGroupError"][],
 	group?:ModelTypes["Group"]
 };
 	["PermissionGroupCreateInput"]: GraphQLTypes["PermissionGroupCreateInput"];
-	/** Delete permission group. */
+	/** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupDelete"]: {
 		permissionGroupErrors:ModelTypes["PermissionGroupError"][],
 	errors:ModelTypes["PermissionGroupError"][],
@@ -12927,7 +14201,7 @@ error isn't associated with a particular field. */
 	["PermissionGroupFilterInput"]: GraphQLTypes["PermissionGroupFilterInput"];
 	["PermissionGroupSortField"]: GraphQLTypes["PermissionGroupSortField"];
 	["PermissionGroupSortingInput"]: GraphQLTypes["PermissionGroupSortingInput"];
-	/** Update permission group. */
+	/** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupUpdate"]: {
 		permissionGroupErrors:ModelTypes["PermissionGroupError"][],
 	errors:ModelTypes["PermissionGroupError"][],
@@ -12954,7 +14228,7 @@ error isn't associated with a particular field. */
 	/** The channel to which the plugin configuration is assigned to. */
 	channel?:ModelTypes["Channel"],
 	/** Configuration of the plugin. */
-	configuration?:(ModelTypes["ConfigurationItem"] | undefined)[]
+	configuration?:ModelTypes["ConfigurationItem"][]
 };
 	["PluginConfigurationType"]: GraphQLTypes["PluginConfigurationType"];
 	["PluginCountableConnection"]: {
@@ -12985,7 +14259,7 @@ error isn't associated with a particular field. */
 	["PluginSortField"]: GraphQLTypes["PluginSortField"];
 	["PluginSortingInput"]: GraphQLTypes["PluginSortingInput"];
 	["PluginStatusInChannelsInput"]: GraphQLTypes["PluginStatusInChannelsInput"];
-	/** Update plugin configuration. */
+	/** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
 ["PluginUpdate"]: {
 		plugin?:ModelTypes["Plugin"],
 	pluginsErrors:ModelTypes["PluginError"][],
@@ -13000,9 +14274,9 @@ Should be used in places where value must be positive. */
 ["PostalCodeRuleInclusionTypeEnum"]: GraphQLTypes["PostalCodeRuleInclusionTypeEnum"];
 	/** Represents preorder settings for product variant. */
 ["PreorderData"]: {
-		/** The global preorder threshold for product variant. */
+		/** The global preorder threshold for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	globalThreshold?:number,
-	/** Total number of sold product variant during preorder. */
+	/** Total number of sold product variant during preorder. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	globalSoldUnits:number,
 	/** Preorder end date. */
 	endDate?:ModelTypes["DateTime"]
@@ -13020,10 +14294,39 @@ Should be used in places where value must be positive. */
 	/** Represents an individual item for sale in the storefront. */
 ["Product"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	seoTitle?:string,
 	seoDescription?:string,
 	name:string,
@@ -13051,28 +14354,34 @@ Should be used in places where value must be positive. */
 	taxType?:ModelTypes["TaxType"],
 	/** List of attributes assigned to this product. */
 	attributes:ModelTypes["SelectedAttribute"][],
-	/** List of availability in channels for the product. */
+	/** List of availability in channels for the product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	channelListings?:ModelTypes["ProductChannelListing"][],
 	/** Get a single product media by ID. */
 	mediaById?:ModelTypes["ProductMedia"],
 	/** Get a single product image by ID. */
 	imageById?:ModelTypes["ProductImage"],
-	/** List of variants for the product. */
-	variants?:(ModelTypes["ProductVariant"] | undefined)[],
+	/** List of variants for the product. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
+	variants?:ModelTypes["ProductVariant"][],
 	/** List of media for the product. */
 	media?:ModelTypes["ProductMedia"][],
 	/** List of images for the product. */
-	images?:(ModelTypes["ProductImage"] | undefined)[],
-	/** List of collections for the product. */
-	collections?:(ModelTypes["Collection"] | undefined)[],
+	images?:ModelTypes["ProductImage"][],
+	/** List of collections for the product. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
+	collections?:ModelTypes["Collection"][],
 	/** Returns translated product fields for the given language code. */
 	translation?:ModelTypes["ProductTranslation"],
-	/** Date when product is available for purchase.  */
+	/** Date when product is available for purchase. */
 	availableForPurchase?:ModelTypes["Date"],
+	/** Date when product is available for purchase. */
+	availableForPurchaseAt?:ModelTypes["DateTime"],
 	/** Whether the product is available for purchase. */
 	isAvailableForPurchase?:boolean
 };
-	/** Assign attributes to a given product type. */
+	/** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeAssign"]: {
 		/** The updated product type. */
 	productType?:ModelTypes["ProductType"],
@@ -13080,7 +14389,9 @@ Should be used in places where value must be positive. */
 	errors:ModelTypes["ProductError"][]
 };
 	["ProductAttributeAssignInput"]: GraphQLTypes["ProductAttributeAssignInput"];
-	/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+	/** Added in Saleor 3.1. Update attributes assigned to product variant for given
+product type. Requires one of the following permissions:
+MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeAssignmentUpdate"]: {
 		/** The updated product type. */
 	productType?:ModelTypes["ProductType"],
@@ -13089,14 +14400,15 @@ Should be used in places where value must be positive. */
 };
 	["ProductAttributeAssignmentUpdateInput"]: GraphQLTypes["ProductAttributeAssignmentUpdateInput"];
 	["ProductAttributeType"]: GraphQLTypes["ProductAttributeType"];
-	/** Un-assign attributes from a given product type. */
+	/** Un-assign attributes from a given product type. Requires one of the following
+permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeUnassign"]: {
 		/** The updated product type. */
 	productType?:ModelTypes["ProductType"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Deletes products. */
+	/** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -13107,15 +14419,19 @@ Should be used in places where value must be positive. */
 ["ProductChannelListing"]: {
 		id:string,
 	publicationDate?:ModelTypes["Date"],
+	/** Added in Saleor 3.3. The product publication date time. */
+	publishedAt?:ModelTypes["DateTime"],
 	isPublished:boolean,
 	channel:ModelTypes["Channel"],
 	visibleInListings:boolean,
 	availableForPurchase?:ModelTypes["Date"],
+	/** Added in Saleor 3.3. The product available for purchase date time. */
+	availableForPurchaseAt?:ModelTypes["DateTime"],
 	/** The price of the cheapest variant (including discounts). */
 	discountedPrice?:ModelTypes["Money"],
-	/** Purchase cost of product. */
+	/** Purchase cost of product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	purchaseCost?:ModelTypes["MoneyRange"],
-	/** Range of margin percentage value. */
+	/** Range of margin percentage value. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	margin?:ModelTypes["Margin"],
 	/** Whether the product is available for purchase. */
 	isAvailableForPurchase?:boolean,
@@ -13140,7 +14456,7 @@ error isn't associated with a particular field. */
 	/** List of variants IDs which causes the error. */
 	variants?:string[]
 };
-	/** Manage product's availability in channels. */
+	/** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductChannelListingUpdate"]: {
 		/** An updated product instance. */
 	product?:ModelTypes["Product"],
@@ -13161,18 +14477,34 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new product. */
+	/** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductCreate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	product?:ModelTypes["Product"]
 };
+	["ProductCreated"]: {
+		/** Added in Saleor 3.2. Look up a product. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	product?:ModelTypes["Product"],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ModelTypes["Category"]
+};
 	["ProductCreateInput"]: GraphQLTypes["ProductCreateInput"];
-	/** Deletes a product. */
+	/** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductDelete"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	product?:ModelTypes["Product"]
+};
+	["ProductDeleted"]: {
+		/** Added in Saleor 3.2. Look up a product. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	product?:ModelTypes["Product"],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ModelTypes["Category"]
 };
 	["ProductError"]: {
 		/** Name of a field that caused the error. A value of `null` indicates that the
@@ -13215,7 +14547,7 @@ the item unchanged. */
 	/** The URL of the media. */
 	url:string
 };
-	/** Deletes product media. */
+	/** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -13225,7 +14557,8 @@ the item unchanged. */
 	/** Create a media object (image or video URL) associated with product. For image,
 this mutation must be sent as a `multipart` request. More detailed specs of the
 upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaCreate"]: {
 		product?:ModelTypes["Product"],
 	media?:ModelTypes["ProductMedia"],
@@ -13233,14 +14566,14 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	errors:ModelTypes["ProductError"][]
 };
 	["ProductMediaCreateInput"]: GraphQLTypes["ProductMediaCreateInput"];
-	/** Deletes a product media. */
+	/** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaDelete"]: {
 		product?:ModelTypes["Product"],
 	media?:ModelTypes["ProductMedia"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Changes ordering of the product media. */
+	/** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaReorder"]: {
 		product?:ModelTypes["Product"],
 	media?:ModelTypes["ProductMedia"][],
@@ -13249,7 +14582,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 };
 	/** An enumeration. */
 ["ProductMediaType"]: GraphQLTypes["ProductMediaType"];
-	/** Updates a product media. */
+	/** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaUpdate"]: {
 		product?:ModelTypes["Product"],
 	media?:ModelTypes["ProductMedia"],
@@ -13274,7 +14607,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** The discounted price range of the product variants in the local currency. */
 	priceRangeLocalCurrency?:ModelTypes["TaxedMoneyRange"]
 };
-	/** Reorder product attribute values. */
+	/** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductReorderAttributeValues"]: {
 		/** Product from which attribute values are reordered. */
 	product?:ModelTypes["Product"],
@@ -13297,7 +14630,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** List of product attribute values that can be translated. */
 	attributeValues:ModelTypes["AttributeValueTranslatableContent"][]
 };
-	/** Creates/updates translations for a product. */
+	/** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ProductTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -13317,10 +14650,39 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Represents a type of product. It defines what attributes are available to products of this type. */
 ["ProductType"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	slug:string,
 	hasVariants:boolean,
@@ -13334,14 +14696,15 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** A type of tax. Assigned by enabled tax gateway */
 	taxType?:ModelTypes["TaxType"],
 	/** Variant attributes of that product type. */
-	variantAttributes?:(ModelTypes["Attribute"] | undefined)[],
-	/** New in Saleor 3.1. Variant attributes of that product type with attached variant selection. */
-	assignedVariantAttributes?:(ModelTypes["AssignedVariantAttribute"] | undefined)[],
+	variantAttributes?:ModelTypes["Attribute"][],
+	/** Added in Saleor 3.1. Variant attributes of that product type with attached variant selection. */
+	assignedVariantAttributes?:ModelTypes["AssignedVariantAttribute"][],
 	/** Product attributes of that product type. */
-	productAttributes?:(ModelTypes["Attribute"] | undefined)[],
+	productAttributes?:ModelTypes["Attribute"][],
+	/** List of attributes which can be assigned to this product type. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	availableAttributes?:ModelTypes["AttributeCountableConnection"]
 };
-	/** Deletes product types. */
+	/** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -13362,13 +14725,13 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new product type. */
+	/** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeCreate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	productType?:ModelTypes["ProductType"]
 };
-	/** Deletes a product type. */
+	/** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeDelete"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
@@ -13379,7 +14742,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	["ProductTypeInput"]: GraphQLTypes["ProductTypeInput"];
 	/** An enumeration. */
 ["ProductTypeKindEnum"]: GraphQLTypes["ProductTypeKindEnum"];
-	/** Reorder the attributes of a product type. */
+	/** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeReorderAttributes"]: {
 		/** Product type from which attributes are reordered. */
 	productType?:ModelTypes["ProductType"],
@@ -13388,25 +14751,62 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 };
 	["ProductTypeSortField"]: GraphQLTypes["ProductTypeSortField"];
 	["ProductTypeSortingInput"]: GraphQLTypes["ProductTypeSortingInput"];
-	/** Updates an existing product type. */
+	/** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeUpdate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	productType?:ModelTypes["ProductType"]
 };
-	/** Updates an existing product. */
+	/** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductUpdate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	product?:ModelTypes["Product"]
 };
+	["ProductUpdated"]: {
+		/** Added in Saleor 3.2. Look up a product. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	product?:ModelTypes["Product"],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?:ModelTypes["Category"]
+};
 	/** Represents a version of a product such as different size or color. */
 ["ProductVariant"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	sku?:string,
 	product:ModelTypes["Product"],
@@ -13416,7 +14816,8 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Channel given to retrieve this product variant. Also used by federation
 gateway to resolve this object in a federated query. */
 	channel?:string,
-	/** List of price information in channels for the product. */
+	/** List of price information in channels for the product. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channelListings?:ModelTypes["ProductVariantChannelListing"][],
 	/** Lists the storefront variant's pricing, the current price and discounts, only meant for displaying. */
 	pricing?:ModelTypes["VariantPricingInfo"],
@@ -13424,33 +14825,42 @@ gateway to resolve this object in a federated query. */
 	attributes:ModelTypes["SelectedAttribute"][],
 	/** Gross margin percentage value. */
 	margin?:number,
-	/** Total quantity ordered. */
+	/** Total quantity ordered. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	quantityOrdered?:number,
 	/** Total revenue generated by a variant in given period of time. Note: this field
 should be queried using `reportProductSales` query as it uses optimizations
-suitable for such calculations. */
+suitable for such calculations. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 	revenue?:ModelTypes["TaxedMoney"],
 	/** List of images for the product variant. */
-	images?:(ModelTypes["ProductImage"] | undefined)[],
+	images?:ModelTypes["ProductImage"][],
 	/** List of media for the product variant. */
 	media?:ModelTypes["ProductMedia"][],
 	/** Returns translated product variant fields for the given language code. */
 	translation?:ModelTypes["ProductVariantTranslation"],
-	/** Digital content for the product variant. */
+	/** Digital content for the product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContent?:ModelTypes["DigitalContent"],
-	/** Stocks for the product variant. */
-	stocks?:(ModelTypes["Stock"] | undefined)[],
+	/** Stocks for the product variant. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
+	stocks?:ModelTypes["Stock"][],
 	/** Quantity of a product available for sale in one checkout. Field value will be
 `null` when no `limitQuantityPerCheckout` in global settings has been set, and
 `productVariant` stocks are not tracked. */
 	quantityAvailable?:number,
-	/** New in Saleor 3.1. Preorder data for product variant. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Preorder data for product variant. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	preorder?:ModelTypes["PreorderData"],
 	created:ModelTypes["DateTime"],
 	updatedAt:ModelTypes["DateTime"]
 };
-	/** Creates product variants for a given product. */
+	["ProductVariantBackInStock"]: {
+		/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?:ModelTypes["ProductVariant"],
+	/** Added in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	warehouse?:ModelTypes["Warehouse"]
+};
+	/** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantBulkCreate"]: {
 		/** Returns how many objects were created. */
 	count:number,
@@ -13460,7 +14870,7 @@ a preview state and can be subject to changes at later point. */
 	errors:ModelTypes["BulkProductError"][]
 };
 	["ProductVariantBulkCreateInput"]: GraphQLTypes["ProductVariantBulkCreateInput"];
-	/** Deletes product variants. */
+	/** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -13474,14 +14884,14 @@ a preview state and can be subject to changes at later point. */
 	price?:ModelTypes["Money"],
 	/** Cost price of the variant. */
 	costPrice?:ModelTypes["Money"],
-	/** Gross margin percentage value. */
+	/** Gross margin percentage value. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	margin?:number,
-	/** New in Saleor 3.1. Preorder variant data. Note: this feature is in a preview
+	/** Added in Saleor 3.1. Preorder variant data. Note: this feature is in a preview
 state and can be subject to changes at later point. */
 	preorderThreshold?:ModelTypes["PreorderThreshold"]
 };
 	["ProductVariantChannelListingAddInput"]: GraphQLTypes["ProductVariantChannelListingAddInput"];
-	/** Manage product variant prices in channels. */
+	/** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantChannelListingUpdate"]: {
 		/** An updated product variant instance. */
 	variant?:ModelTypes["ProductVariant"],
@@ -13501,63 +14911,87 @@ state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new variant for a product. */
+	/** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantCreate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	productVariant?:ModelTypes["ProductVariant"]
 };
+	["ProductVariantCreated"]: {
+		/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?:ModelTypes["ProductVariant"]
+};
 	["ProductVariantCreateInput"]: GraphQLTypes["ProductVariantCreateInput"];
-	/** Deletes a product variant. */
+	/** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantDelete"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	productVariant?:ModelTypes["ProductVariant"]
 };
+	["ProductVariantDeleted"]: {
+		/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?:ModelTypes["ProductVariant"]
+};
 	["ProductVariantFilterInput"]: GraphQLTypes["ProductVariantFilterInput"];
 	["ProductVariantInput"]: GraphQLTypes["ProductVariantInput"];
-	/** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder
-allocation into regular allocation. Note: this feature is in a preview state and
-can be subject to changes at later point. */
+	["ProductVariantOutOfStock"]: {
+		/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?:ModelTypes["ProductVariant"],
+	/** Added in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	warehouse?:ModelTypes["Warehouse"]
+};
+	/** Added in Saleor 3.1. Deactivates product variant preorder. It changes all
+preorder allocation into regular allocation. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantPreorderDeactivate"]: {
 		/** Product variant with ended preorder. */
 	productVariant?:ModelTypes["ProductVariant"],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+	/** Reorder the variants of a product. Mutation updates updated_at on product and
+triggers PRODUCT_UPDATED webhook. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 ["ProductVariantReorder"]: {
 		product?:ModelTypes["Product"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Reorder product variant attribute values. */
+	/** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantReorderAttributeValues"]: {
 		/** Product variant from which attribute values are reordered. */
 	productVariant?:ModelTypes["ProductVariant"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook.
+Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantSetDefault"]: {
 		product?:ModelTypes["Product"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Creates stocks for product variant. */
+	["ProductVariantSortField"]: GraphQLTypes["ProductVariantSortField"];
+	["ProductVariantSortingInput"]: GraphQLTypes["ProductVariantSortingInput"];
+	/** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksCreate"]: {
 		/** Updated product variant. */
 	productVariant?:ModelTypes["ProductVariant"],
 	bulkStockErrors:ModelTypes["BulkStockError"][],
 	errors:ModelTypes["BulkStockError"][]
 };
-	/** Delete stocks from product variant. */
+	/** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksDelete"]: {
 		/** Updated product variant. */
 	productVariant?:ModelTypes["ProductVariant"],
 	stockErrors:ModelTypes["StockError"][],
 	errors:ModelTypes["StockError"][]
 };
-	/** Update stocks for product variant. */
+	/** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksUpdate"]: {
 		/** Updated product variant. */
 	productVariant?:ModelTypes["ProductVariant"],
@@ -13574,7 +15008,7 @@ can be subject to changes at later point. */
 	/** List of product variant attribute values that can be translated. */
 	attributeValues:ModelTypes["AttributeValueTranslatableContent"][]
 };
-	/** Creates/updates translations for a product variant. */
+	/** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ProductVariantTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -13586,71 +15020,87 @@ can be subject to changes at later point. */
 	language:ModelTypes["LanguageDisplay"],
 	name:string
 };
-	/** Updates an existing variant for product. */
+	/** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantUpdate"]: {
 		productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][],
 	productVariant?:ModelTypes["ProductVariant"]
 };
+	["ProductVariantUpdated"]: {
+		/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?:ModelTypes["ProductVariant"]
+};
 	["PublishableChannelListingInput"]: GraphQLTypes["PublishableChannelListingInput"];
 	["Query"]: {
-		/** Look up a webhook by ID. */
+		/** Look up a webhook by ID. Requires one of the following permissions: AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER */
 	webhook?:ModelTypes["Webhook"],
-	/** List of all available webhook events. */
-	webhookEvents?:(ModelTypes["WebhookEvent"] | undefined)[],
+	/** List of all available webhook events. Requires one of the following permissions: MANAGE_APPS. */
+	webhookEvents?:ModelTypes["WebhookEvent"][],
 	/** Retrieve a sample payload for a given webhook event based on real data. It can
 be useful for some integrations where sample payload is required. */
 	webhookSamplePayload?:ModelTypes["JSONString"],
-	/** Look up a warehouse by ID. */
+	/** Look up a warehouse by ID. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING. */
 	warehouse?:ModelTypes["Warehouse"],
-	/** List of warehouses. */
+	/** List of warehouses. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING. */
 	warehouses?:ModelTypes["WarehouseCountableConnection"],
-	/** Returns a list of all translatable items of a given kind. */
+	/** Returns a list of all translatable items of a given kind. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	translations?:ModelTypes["TranslatableItemConnection"],
+	/**  Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	translation?:ModelTypes["TranslatableItem"],
-	/** Look up a stock by ID */
+	/** Look up a stock by ID Requires one of the following permissions: MANAGE_PRODUCTS. */
 	stock?:ModelTypes["Stock"],
-	/** List of stocks. */
+	/** List of stocks. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	stocks?:ModelTypes["StockCountableConnection"],
 	/** Return information about the shop. */
 	shop:ModelTypes["Shop"],
-	/** Order related settings from site settings. */
+	/** Order related settings from site settings. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderSettings?:ModelTypes["OrderSettings"],
-	/** Gift card related settings from site settings. */
+	/** Gift card related settings from site settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardSettings:ModelTypes["GiftCardSettings"],
-	/** Look up a shipping zone by ID. */
+	/** Look up a shipping zone by ID. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZone?:ModelTypes["ShippingZone"],
-	/** List of the shop's shipping zones. */
+	/** List of the shop's shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZones?:ModelTypes["ShippingZoneCountableConnection"],
-	/** Look up digital content by ID. */
+	/** Look up digital content by ID. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContent?:ModelTypes["DigitalContent"],
-	/** List of digital content. */
+	/** List of digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContents?:ModelTypes["DigitalContentCountableConnection"],
 	/** List of the shop's categories. */
 	categories?:ModelTypes["CategoryCountableConnection"],
 	/** Look up a category by ID or slug. */
 	category?:ModelTypes["Category"],
-	/** Look up a collection by ID. */
+	/** Look up a collection by ID. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collection?:ModelTypes["Collection"],
-	/** List of the shop's collections. */
+	/** List of the shop's collections. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collections?:ModelTypes["CollectionCountableConnection"],
-	/** Look up a product by ID. */
+	/** Look up a product by ID. Requires one of the following permissions to include
+the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
 	product?:ModelTypes["Product"],
-	/** List of the shop's products. */
+	/** List of the shop's products. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	products?:ModelTypes["ProductCountableConnection"],
 	/** Look up a product type by ID. */
 	productType?:ModelTypes["ProductType"],
 	/** List of the shop's product types. */
 	productTypes?:ModelTypes["ProductTypeCountableConnection"],
-	/** Look up a product variant by ID or SKU. */
+	/** Look up a product variant by ID or SKU. Requires one of the following
+permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	productVariant?:ModelTypes["ProductVariant"],
-	/** List of product variants. */
+	/** List of product variants. Requires one of the following permissions to include
+the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
 	productVariants?:ModelTypes["ProductVariantCountableConnection"],
-	/** List of top selling products. */
+	/** List of top selling products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	reportProductSales?:ModelTypes["ProductVariantCountableConnection"],
-	/** Look up a payment by ID. */
+	/** Look up a payment by ID. Requires one of the following permissions: MANAGE_ORDERS. */
 	payment?:ModelTypes["Payment"],
-	/** List of payments. */
+	/** List of payments. Requires one of the following permissions: MANAGE_ORDERS. */
 	payments?:ModelTypes["PaymentCountableConnection"],
 	/** Look up a page by ID or slug. */
 	page?:ModelTypes["Page"],
@@ -13660,17 +15110,18 @@ be useful for some integrations where sample payload is required. */
 	pageType?:ModelTypes["PageType"],
 	/** List of the page types. */
 	pageTypes?:ModelTypes["PageTypeCountableConnection"],
-	/** List of activity events to display on homepage (at the moment it only contains order-events). */
+	/** List of activity events to display on homepage (at the moment it only contains
+order-events). Requires one of the following permissions: MANAGE_ORDERS. */
 	homepageEvents?:ModelTypes["OrderEventCountableConnection"],
-	/** Look up an order by ID. */
+	/** Look up an order by ID. Requires one of the following permissions: MANAGE_ORDERS. */
 	order?:ModelTypes["Order"],
-	/** List of orders. */
+	/** List of orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	orders?:ModelTypes["OrderCountableConnection"],
-	/** List of draft orders. */
+	/** List of draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrders?:ModelTypes["OrderCountableConnection"],
-	/** Return the total sales amount from a specific period. */
+	/** Return the total sales amount from a specific period. Requires one of the following permissions: MANAGE_ORDERS. */
 	ordersTotal?:ModelTypes["TaxedMoney"],
-	/** Look up an order by token. */
+	/** {DEPRECATED_IN_3X_FIELD} Look up an order by token. */
 	orderByToken?:ModelTypes["Order"],
 	/** Look up a navigation menu by ID or name. */
 	menu?:ModelTypes["Menu"],
@@ -13680,75 +15131,82 @@ be useful for some integrations where sample payload is required. */
 	menuItem?:ModelTypes["MenuItem"],
 	/** List of the storefronts's menu items. */
 	menuItems?:ModelTypes["MenuItemCountableConnection"],
-	/** Look up a gift card by ID. */
+	/** Look up a gift card by ID. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCard?:ModelTypes["GiftCard"],
-	/** List of gift cards. */
+	/** List of gift cards. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCards?:ModelTypes["GiftCardCountableConnection"],
-	/** New in Saleor 3.1. List of gift card currencies. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of gift card currencies. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardCurrencies:string[],
-	/** New in Saleor 3.1. List of gift card tags. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of gift card tags. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardTags?:ModelTypes["GiftCardTagCountableConnection"],
-	/** Look up a plugin by ID. */
+	/** Look up a plugin by ID. Requires one of the following permissions: MANAGE_PLUGINS. */
 	plugin?:ModelTypes["Plugin"],
-	/** List of plugins. */
+	/** List of plugins. Requires one of the following permissions: MANAGE_PLUGINS. */
 	plugins?:ModelTypes["PluginCountableConnection"],
-	/** Look up a sale by ID. */
+	/** Look up a sale by ID. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	sale?:ModelTypes["Sale"],
-	/** List of the shop's sales. */
+	/** List of the shop's sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	sales?:ModelTypes["SaleCountableConnection"],
-	/** Look up a voucher by ID. */
+	/** Look up a voucher by ID. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucher?:ModelTypes["Voucher"],
-	/** List of the shop's vouchers. */
+	/** List of the shop's vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	vouchers?:ModelTypes["VoucherCountableConnection"],
-	/** Look up a export file by ID. */
+	/** Look up a export file by ID. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	exportFile?:ModelTypes["ExportFile"],
-	/** List of export files. */
+	/** List of export files. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	exportFiles?:ModelTypes["ExportFileCountableConnection"],
 	/** List of all tax rates available from tax gateway. */
-	taxTypes?:(ModelTypes["TaxType"] | undefined)[],
+	taxTypes?:ModelTypes["TaxType"][],
 	/** Look up a checkout by token and slug of channel. */
 	checkout?:ModelTypes["Checkout"],
-	/** List of checkouts. */
+	/** List of checkouts. Requires one of the following permissions: MANAGE_CHECKOUTS. */
 	checkouts?:ModelTypes["CheckoutCountableConnection"],
-	/** List of checkout lines. */
+	/** List of checkout lines. Requires one of the following permissions: MANAGE_CHECKOUTS. */
 	checkoutLines?:ModelTypes["CheckoutLineCountableConnection"],
-	/** Look up a channel by ID. */
+	/** Look up a channel by ID. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channel?:ModelTypes["Channel"],
-	/** List of all channels. */
+	/** List of all channels. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channels?:ModelTypes["Channel"][],
 	/** List of the shop's attributes. */
 	attributes?:ModelTypes["AttributeCountableConnection"],
 	/** Look up an attribute by ID. */
 	attribute?:ModelTypes["Attribute"],
-	/** List of all apps installations */
+	/** List of all apps installations Requires one of the following permissions: MANAGE_APPS. */
 	appsInstallations:ModelTypes["AppInstallation"][],
-	/** List of the apps. */
+	/** List of the apps. Requires one of the following permissions: MANAGE_APPS. */
 	apps?:ModelTypes["AppCountableConnection"],
-	/** Look up an app by ID. If ID is not provided, return the currently authenticated app. */
+	/** Look up an app by ID. If ID is not provided, return the currently
+authenticated app. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AppPermission.MANAGE_APPS. */
 	app?:ModelTypes["App"],
-	/** New in Saleor 3.1. List of all extensions. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of all extensions. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	appExtensions?:ModelTypes["AppExtensionCountableConnection"],
-	/** New in Saleor 3.1. Look up an app extension by ID. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Look up an app extension by ID. Note: this feature is in
+a preview state and can be subject to changes at later point. Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	appExtension?:ModelTypes["AppExtension"],
 	/** Returns address validation rules. */
 	addressValidationRules?:ModelTypes["AddressValidationData"],
 	/** Look up an address by ID. */
 	address?:ModelTypes["Address"],
-	/** List of the shop's customers. */
+	/** List of the shop's customers. Requires one of the following permissions: MANAGE_ORDERS, MANAGE_USERS. */
 	customers?:ModelTypes["UserCountableConnection"],
-	/** List of permission groups. */
+	/** List of permission groups. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroups?:ModelTypes["GroupCountableConnection"],
-	/** Look up permission group by ID. */
+	/** Look up permission group by ID. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroup?:ModelTypes["Group"],
 	/** Return the currently authenticated user. */
 	me?:ModelTypes["User"],
-	/** List of the shop's staff users. */
+	/** List of the shop's staff users. Requires one of the following permissions: MANAGE_STAFF. */
 	staffUsers?:ModelTypes["UserCountableConnection"],
-	/** Look up a user by ID or email address. */
+	/** Look up a user by ID or email address. Requires one of the following
+permissions: MANAGE_STAFF, MANAGE_USERS, MANAGE_ORDERS. */
 	user?:ModelTypes["User"],
 	_entities?:(ModelTypes["_Entity"] | undefined)[],
 	_service?:ModelTypes["_Service"]
@@ -13773,7 +15231,7 @@ csrfToken is required when refreshToken is provided as a cookie. */
 };
 	["ReorderInput"]: GraphQLTypes["ReorderInput"];
 	["ReportingPeriod"]: GraphQLTypes["ReportingPeriod"];
-	/** Request email change of the logged in user. */
+	/** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["RequestEmailChange"]: {
 		/** A user instance. */
 	user?:ModelTypes["User"],
@@ -13788,10 +15246,39 @@ csrfToken is required when refreshToken is provided as a cookie. */
 	/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
 ["Sale"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	type:ModelTypes["SaleType"],
 	startDate:ModelTypes["DateTime"],
@@ -13800,29 +15287,30 @@ csrfToken is required when refreshToken is provided as a cookie. */
 	updatedAt:ModelTypes["DateTime"],
 	/** List of categories this sale applies to. */
 	categories?:ModelTypes["CategoryCountableConnection"],
-	/** List of collections this sale applies to. */
+	/** List of collections this sale applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	collections?:ModelTypes["CollectionCountableConnection"],
-	/** List of products this sale applies to. */
+	/** List of products this sale applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	products?:ModelTypes["ProductCountableConnection"],
-	/** New in Saleor 3.1. List of product variants this sale applies to. */
+	/** Added in Saleor 3.1. List of product variants this sale applies to. Requires
+one of the following permissions: MANAGE_DISCOUNTS. */
 	variants?:ModelTypes["ProductVariantCountableConnection"],
 	/** Returns translated sale fields for the given language code. */
 	translation?:ModelTypes["SaleTranslation"],
-	/** List of channels available for the sale. */
+	/** List of channels available for the sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	channelListings?:ModelTypes["SaleChannelListing"][],
 	/** Sale value. */
 	discountValue?:number,
 	/** Currency code for sale. */
 	currency?:string
 };
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleAddCatalogues"]: {
 		/** Sale of which catalogue IDs will be modified. */
 	sale?:ModelTypes["Sale"],
 	discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][]
 };
-	/** Deletes sales. */
+	/** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -13838,7 +15326,7 @@ csrfToken is required when refreshToken is provided as a cookie. */
 };
 	["SaleChannelListingAddInput"]: GraphQLTypes["SaleChannelListingAddInput"];
 	["SaleChannelListingInput"]: GraphQLTypes["SaleChannelListingInput"];
-	/** Manage sale's availability in channels. */
+	/** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleChannelListingUpdate"]: {
 		/** An updated sale instance. */
 	sale?:ModelTypes["Sale"],
@@ -13858,21 +15346,31 @@ csrfToken is required when refreshToken is provided as a cookie. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new sale. */
+	/** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleCreate"]: {
 		discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][],
 	sale?:ModelTypes["Sale"]
 };
-	/** Deletes a sale. */
+	["SaleCreated"]: {
+		/** Added in Saleor 3.2. Look up a sale. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	sale?:ModelTypes["Sale"]
+};
+	/** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleDelete"]: {
 		discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][],
 	sale?:ModelTypes["Sale"]
 };
+	["SaleDeleted"]: {
+		/** Added in Saleor 3.2. Look up a sale. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	sale?:ModelTypes["Sale"]
+};
 	["SaleFilterInput"]: GraphQLTypes["SaleFilterInput"];
 	["SaleInput"]: GraphQLTypes["SaleInput"];
-	/** Removes products, categories, collections from a sale. */
+	/** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleRemoveCatalogues"]: {
 		/** Sale of which catalogue IDs will be modified. */
 	sale?:ModelTypes["Sale"],
@@ -13886,10 +15384,12 @@ csrfToken is required when refreshToken is provided as a cookie. */
 	name:string,
 	/** Returns translated sale fields for the given language code. */
 	translation?:ModelTypes["SaleTranslation"],
-	/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+	/** Sales allow creating discounts for categories, collections or products and are
+visible to all the customers. Requires one of the following permissions:
+MANAGE_DISCOUNTS. */
 	sale?:ModelTypes["Sale"]
 };
-	/** Creates/updates translations for a sale. */
+	/** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["SaleTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -13902,10 +15402,15 @@ csrfToken is required when refreshToken is provided as a cookie. */
 	name?:string
 };
 	["SaleType"]: GraphQLTypes["SaleType"];
-	/** Updates a sale. */
+	/** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleUpdate"]: {
 		discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][],
+	sale?:ModelTypes["Sale"]
+};
+	["SaleUpdated"]: {
+		/** Added in Saleor 3.2. Look up a sale. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	sale?:ModelTypes["Sale"]
 };
 	/** Represents a custom attribute. */
@@ -13913,7 +15418,7 @@ csrfToken is required when refreshToken is provided as a cookie. */
 		/** Name of an attribute displayed in the interface. */
 	attribute:ModelTypes["Attribute"],
 	/** Values of an attribute. */
-	values?:ModelTypes["AttributeValue"][]
+	values:ModelTypes["AttributeValue"][]
 };
 	["SeoInput"]: GraphQLTypes["SeoInput"];
 	/** Sets the user's password from the token sent by email using the RequestPasswordReset mutation. */
@@ -13948,10 +15453,39 @@ error isn't associated with a particular field. */
 ["ShippingMethod"]: {
 		/** Unique ID of ShippingMethod available for Order. */
 	id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	/** Type of the shipping method. */
 	type?:ModelTypes["ShippingMethodTypeEnum"],
 	/** Shipping method name. */
@@ -13989,7 +15523,7 @@ error isn't associated with a particular field. */
 };
 	["ShippingMethodChannelListingAddInput"]: GraphQLTypes["ShippingMethodChannelListingAddInput"];
 	["ShippingMethodChannelListingInput"]: GraphQLTypes["ShippingMethodChannelListingInput"];
-	/** Manage shipping method's availability in channels. */
+	/** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingMethodChannelListingUpdate"]: {
 		/** An updated shipping method instance. */
 	shippingMethod?:ModelTypes["ShippingMethodType"],
@@ -14013,7 +15547,9 @@ error isn't associated with a particular field. */
 	description?:ModelTypes["JSONString"],
 	/** Returns translated shipping method fields for the given language code. */
 	translation?:ModelTypes["ShippingMethodTranslation"],
-	/** Shipping method are the methods you'll use to get customer's orders  to them. They are directly exposed to the customers. */
+	/** Shipping method are the methods you'll use to get customer's orders  to them.
+They are directly exposed to the customers. Requires one of the following
+permissions: MANAGE_SHIPPING. */
 	shippingMethod?:ModelTypes["ShippingMethodType"]
 };
 	["ShippingMethodTranslation"]: {
@@ -14027,10 +15563,39 @@ error isn't associated with a particular field. */
 ["ShippingMethodType"]: {
 		/** Shipping method ID. */
 	id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	/** Shipping method name. */
 	name:string,
 	/** Shipping method description. */
@@ -14039,15 +15604,15 @@ error isn't associated with a particular field. */
 	type?:ModelTypes["ShippingMethodTypeEnum"],
 	/** Returns translated shipping method fields for the given language code. */
 	translation?:ModelTypes["ShippingMethodTranslation"],
-	/** List of channels available for the method. */
+	/** List of channels available for the method. Requires one of the following permissions: MANAGE_SHIPPING. */
 	channelListings?:ModelTypes["ShippingMethodChannelListing"][],
 	/** The price of the cheapest variant (including discounts). */
 	maximumOrderPrice?:ModelTypes["Money"],
 	/** The price of the cheapest variant (including discounts). */
 	minimumOrderPrice?:ModelTypes["Money"],
 	/** Postal code ranges rule of exclusion or inclusion of the shipping method. */
-	postalCodeRules?:(ModelTypes["ShippingMethodPostalCodeRule"] | undefined)[],
-	/** List of excluded products for the shipping method. */
+	postalCodeRules?:ModelTypes["ShippingMethodPostalCodeRule"][],
+	/** List of excluded products for the shipping method. Requires one of the following permissions: MANAGE_SHIPPING. */
 	excludedProducts?:ModelTypes["ProductCountableConnection"],
 	/** Minimum order weight to use this shipping method. */
 	minimumOrderWeight?:ModelTypes["Weight"],
@@ -14061,14 +15626,14 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["ShippingMethodTypeEnum"]: GraphQLTypes["ShippingMethodTypeEnum"];
 	["ShippingPostalCodeRulesCreateInputRange"]: GraphQLTypes["ShippingPostalCodeRulesCreateInputRange"];
-	/** Deletes shipping prices. */
+	/** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][]
 };
-	/** Creates a new shipping price. */
+	/** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceCreate"]: {
 		/** A shipping zone to which the shipping method belongs. */
 	shippingZone?:ModelTypes["ShippingZone"],
@@ -14076,7 +15641,15 @@ error isn't associated with a particular field. */
 	shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][]
 };
-	/** Deletes a shipping price. */
+	["ShippingPriceCreated"]: {
+		/** Added in Saleor 3.2. Look up a shipping method. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingMethod?:ModelTypes["ShippingMethodType"],
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?:ModelTypes["ShippingZone"]
+};
+	/** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceDelete"]: {
 		/** A shipping method to delete. */
 	shippingMethod?:ModelTypes["ShippingMethodType"],
@@ -14085,7 +15658,15 @@ error isn't associated with a particular field. */
 	shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][]
 };
-	/** Exclude products from shipping price. */
+	["ShippingPriceDeleted"]: {
+		/** Added in Saleor 3.2. Look up a shipping method. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingMethod?:ModelTypes["ShippingMethodType"],
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?:ModelTypes["ShippingZone"]
+};
+	/** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceExcludeProducts"]: {
 		/** A shipping method with new list of excluded products. */
 	shippingMethod?:ModelTypes["ShippingMethodType"],
@@ -14094,21 +15675,21 @@ error isn't associated with a particular field. */
 };
 	["ShippingPriceExcludeProductsInput"]: GraphQLTypes["ShippingPriceExcludeProductsInput"];
 	["ShippingPriceInput"]: GraphQLTypes["ShippingPriceInput"];
-	/** Remove product from excluded list for shipping price. */
+	/** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceRemoveProductFromExclude"]: {
 		/** A shipping method with new list of excluded products. */
 	shippingMethod?:ModelTypes["ShippingMethodType"],
 	shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][]
 };
-	/** Creates/updates translations for a shipping method. */
+	/** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ShippingPriceTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
 	shippingMethod?:ModelTypes["ShippingMethodType"]
 };
 	["ShippingPriceTranslationInput"]: GraphQLTypes["ShippingPriceTranslationInput"];
-	/** Updates a new shipping price. */
+	/** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceUpdate"]: {
 		/** A shipping zone to which the shipping method belongs. */
 	shippingZone?:ModelTypes["ShippingZone"],
@@ -14116,23 +15697,60 @@ error isn't associated with a particular field. */
 	shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][]
 };
+	["ShippingPriceUpdated"]: {
+		/** Added in Saleor 3.2. Look up a shipping method. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingMethod?:ModelTypes["ShippingMethodType"],
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?:ModelTypes["ShippingZone"]
+};
 	/** Represents a shipping zone in the shop. Zones are the concept used only for
 grouping shipping methods in the dashboard, and are never exposed to the
 customers directly. */
 ["ShippingZone"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	default:boolean,
 	/** Lowest and highest prices for the shipping. */
 	priceRange?:ModelTypes["MoneyRange"],
 	/** List of countries available for the method. */
-	countries?:(ModelTypes["CountryDisplay"] | undefined)[],
+	countries:ModelTypes["CountryDisplay"][],
 	/** List of shipping methods available for orders shipped to countries within this shipping zone. */
-	shippingMethods?:(ModelTypes["ShippingMethodType"] | undefined)[],
+	shippingMethods?:ModelTypes["ShippingMethodType"][],
 	/** List of warehouses for shipping zone. */
 	warehouses:ModelTypes["Warehouse"][],
 	/** List of channels for shipping zone. */
@@ -14140,7 +15758,7 @@ customers directly. */
 	/** Description of a shipping zone. */
 	description?:string
 };
-	/** Deletes shipping zones. */
+	/** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -14160,24 +15778,39 @@ customers directly. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new shipping zone. */
+	/** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneCreate"]: {
 		shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][],
 	shippingZone?:ModelTypes["ShippingZone"]
 };
+	["ShippingZoneCreated"]: {
+		/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?:ModelTypes["ShippingZone"]
+};
 	["ShippingZoneCreateInput"]: GraphQLTypes["ShippingZoneCreateInput"];
-	/** Deletes a shipping zone. */
+	/** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneDelete"]: {
 		shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][],
 	shippingZone?:ModelTypes["ShippingZone"]
 };
+	["ShippingZoneDeleted"]: {
+		/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?:ModelTypes["ShippingZone"]
+};
 	["ShippingZoneFilterInput"]: GraphQLTypes["ShippingZoneFilterInput"];
-	/** Updates a new shipping zone. */
+	/** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneUpdate"]: {
 		shippingErrors:ModelTypes["ShippingError"][],
 	errors:ModelTypes["ShippingError"][],
+	shippingZone?:ModelTypes["ShippingZone"]
+};
+	["ShippingZoneUpdated"]: {
+		/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
 	shippingZone?:ModelTypes["ShippingZone"]
 };
 	["ShippingZoneUpdateInput"]: GraphQLTypes["ShippingZoneUpdateInput"];
@@ -14188,36 +15821,38 @@ customers directly. */
 	/** List of available external authentications. */
 	availableExternalAuthentications:ModelTypes["ExternalAuthentication"][],
 	/** Shipping methods that are available for the shop. */
-	availableShippingMethods?:(ModelTypes["ShippingMethod"] | undefined)[],
-	/** New in Saleor 3.1. List of all currencies supported by shop's channels. */
+	availableShippingMethods?:ModelTypes["ShippingMethod"][],
+	/** Added in Saleor 3.1. List of all currencies supported by shop's channels.
+Requires one of the following permissions: AUTHENTICATED_STAFF_USER,
+AUTHENTICATED_APP. */
 	channelCurrencies:string[],
 	/** List of countries available in the shop. */
 	countries:ModelTypes["CountryDisplay"][],
 	/** Shop's default country. */
 	defaultCountry?:ModelTypes["CountryDisplay"],
-	/** Default shop's email sender's name. */
+	/** Default shop's email sender's name. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultMailSenderName?:string,
-	/** Default shop's email sender's address. */
+	/** Default shop's email sender's address. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultMailSenderAddress?:string,
 	/** Shop's description. */
 	description?:string,
 	/** Shop's domain data. */
 	domain:ModelTypes["Domain"],
 	/** List of the shops's supported languages. */
-	languages?:ModelTypes["LanguageDisplay"][],
+	languages:ModelTypes["LanguageDisplay"][],
 	/** Shop's name. */
 	name:string,
 	/** List of available permissions. */
-	permissions?:ModelTypes["Permission"][],
+	permissions:ModelTypes["Permission"][],
 	/** List of possible phone prefixes. */
-	phonePrefixes?:string[],
+	phonePrefixes:string[],
 	/** Header text. */
 	headerText?:string,
 	/** Include taxes in prices. */
 	includeTaxesInPrices:boolean,
-	/** New in Saleor 3.1. Automatically approve all new fulfillments. */
+	/** Added in Saleor 3.1. Automatically approve all new fulfillments. */
 	fulfillmentAutoApprove:boolean,
-	/** New in Saleor 3.1. Allow to approve fulfillments which are unpaid. */
+	/** Added in Saleor 3.1. Allow to approve fulfillments which are unpaid. */
 	fulfillmentAllowUnpaid:boolean,
 	/** Display prices with tax in store. */
 	displayGrossPrices:boolean,
@@ -14229,41 +15864,48 @@ customers directly. */
 	defaultWeightUnit?:ModelTypes["WeightUnitsEnum"],
 	/** Returns translated shop fields for the given language code. */
 	translation?:ModelTypes["ShopTranslation"],
-	/** Enable automatic fulfillment for all digital products. */
+	/** Enable automatic fulfillment for all digital products. Requires one of the following permissions: MANAGE_SETTINGS. */
 	automaticFulfillmentDigitalProducts?:boolean,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
-anonymous checkout or null when stock reservation is disabled. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
+anonymous checkout or null when stock reservation is disabled. Requires one of
+the following permissions: MANAGE_SETTINGS. */
 	reserveStockDurationAnonymousUser?:number,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
-authenticated checkout or null when stock reservation is disabled. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
+authenticated checkout or null when stock reservation is disabled. Requires
+one of the following permissions: MANAGE_SETTINGS. */
 	reserveStockDurationAuthenticatedUser?:number,
-	/** New in Saleor 3.1. Default number of maximum line quantity in single checkout
-(per single checkout line). Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Default number of maximum line quantity in single
+checkout (per single checkout line). Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_SETTINGS. */
 	limitQuantityPerCheckout?:number,
-	/** Default number of max downloads per digital content URL. */
+	/** Default number of max downloads per digital content URL. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultDigitalMaxDownloads?:number,
-	/** Default number of days which digital content URL will be valid. */
+	/** Default number of days which digital content URL will be valid. Requires one
+of the following permissions: MANAGE_SETTINGS. */
 	defaultDigitalUrlValidDays?:number,
 	/** Company address. */
 	companyAddress?:ModelTypes["Address"],
 	/** URL of a view where customers can set their password. */
 	customerSetPasswordUrl?:string,
-	/** List of staff notification recipients. */
-	staffNotificationRecipients?:(ModelTypes["StaffNotificationRecipient"] | undefined)[],
-	/** Resource limitations and current usage if any set for a shop */
+	/** List of staff notification recipients. Requires one of the following permissions: MANAGE_SETTINGS. */
+	staffNotificationRecipients?:ModelTypes["StaffNotificationRecipient"][],
+	/** Resource limitations and current usage if any set for a shop Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER. */
 	limits:ModelTypes["LimitInfo"],
-	/** Saleor API version. */
+	/** Saleor API version. Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	version:string
 };
-	/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+	/** Update the shop's address. If the `null` value is passed, the currently selected
+address will be deleted. Requires one of the following permissions:
+MANAGE_SETTINGS. */
 ["ShopAddressUpdate"]: {
 		/** Updated shop. */
 	shop?:ModelTypes["Shop"],
 	shopErrors:ModelTypes["ShopError"][],
 	errors:ModelTypes["ShopError"][]
 };
-	/** Updates site domain of the shop. */
+	/** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopDomainUpdate"]: {
 		/** Updated shop. */
 	shop?:ModelTypes["Shop"],
@@ -14281,7 +15923,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["ShopErrorCode"]: GraphQLTypes["ShopErrorCode"];
-	/** Fetch tax rates. */
+	/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopFetchTaxRates"]: {
 		/** Updated shop. */
 	shop?:ModelTypes["Shop"],
@@ -14289,7 +15931,7 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["ShopError"][]
 };
 	["ShopSettingsInput"]: GraphQLTypes["ShopSettingsInput"];
-	/** Creates/updates translations for shop settings. */
+	/** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ShopSettingsTranslate"]: {
 		/** Updated shop settings. */
 	shop?:ModelTypes["Shop"],
@@ -14297,7 +15939,7 @@ error isn't associated with a particular field. */
 	errors:ModelTypes["TranslationError"][]
 };
 	["ShopSettingsTranslationInput"]: GraphQLTypes["ShopSettingsTranslationInput"];
-	/** Updates shop settings. */
+	/** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopSettingsUpdate"]: {
 		/** Updated shop. */
 	shop?:ModelTypes["Shop"],
@@ -14312,21 +15954,21 @@ error isn't associated with a particular field. */
 	description:string
 };
 	["SiteDomainInput"]: GraphQLTypes["SiteDomainInput"];
-	/** Deletes staff users. */
+	/** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
 	staffErrors:ModelTypes["StaffError"][],
 	errors:ModelTypes["StaffError"][]
 };
-	/** Creates a new staff user. */
+	/** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffCreate"]: {
 		staffErrors:ModelTypes["StaffError"][],
 	errors:ModelTypes["StaffError"][],
 	user?:ModelTypes["User"]
 };
 	["StaffCreateInput"]: GraphQLTypes["StaffCreateInput"];
-	/** Deletes a staff user. */
+	/** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffDelete"]: {
 		staffErrors:ModelTypes["StaffError"][],
 	errors:ModelTypes["StaffError"][],
@@ -14362,26 +16004,26 @@ arbitrary email addresses. */
 	/** Determines if a notification active. */
 	active?:boolean
 };
-	/** Creates a new staff notification recipient. */
+	/** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientCreate"]: {
 		shopErrors:ModelTypes["ShopError"][],
 	errors:ModelTypes["ShopError"][],
 	staffNotificationRecipient?:ModelTypes["StaffNotificationRecipient"]
 };
-	/** Delete staff notification recipient. */
+	/** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientDelete"]: {
 		shopErrors:ModelTypes["ShopError"][],
 	errors:ModelTypes["ShopError"][],
 	staffNotificationRecipient?:ModelTypes["StaffNotificationRecipient"]
 };
 	["StaffNotificationRecipientInput"]: GraphQLTypes["StaffNotificationRecipientInput"];
-	/** Updates a staff notification recipient. */
+	/** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientUpdate"]: {
 		shopErrors:ModelTypes["ShopError"][],
 	errors:ModelTypes["ShopError"][],
 	staffNotificationRecipient?:ModelTypes["StaffNotificationRecipient"]
 };
-	/** Updates an existing staff user. */
+	/** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffUpdate"]: {
 		staffErrors:ModelTypes["StaffError"][],
 	errors:ModelTypes["StaffError"][],
@@ -14394,11 +16036,13 @@ arbitrary email addresses. */
 		id:string,
 	warehouse:ModelTypes["Warehouse"],
 	productVariant:ModelTypes["ProductVariant"],
-	/** Quantity of a product in the warehouse's possession, including the allocated stock that is waiting for shipment. */
+	/** Quantity of a product in the warehouse's possession, including the allocated
+stock that is waiting for shipment. Requires one of the following permissions:
+MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantity:number,
-	/** Quantity allocated for orders */
+	/** Quantity allocated for orders. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantityAllocated:number,
-	/** Quantity reserved for checkouts */
+	/** Quantity reserved for checkouts. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantityReserved:number
 };
 	["StockAvailability"]: GraphQLTypes["StockAvailability"];
@@ -14430,6 +16074,11 @@ error isn't associated with a particular field. */
 	["StockInput"]: GraphQLTypes["StockInput"];
 	/** Enum representing the type of a payment storage in a gateway. */
 ["StorePaymentMethodEnum"]: GraphQLTypes["StorePaymentMethodEnum"];
+	["Subscription"]: {
+		/** Added in Saleor 3.2. Look up subscription event. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	event?:ModelTypes["Event"]
+};
 	/** Represents a monetary value with taxes. In cases where taxes were not applied, net and gross values will be equal. */
 ["TaxedMoney"]: {
 		/** Currency code. */
@@ -14477,11 +16126,8 @@ error isn't associated with a particular field. */
 	/** Total amount of the transaction. */
 	amount?:ModelTypes["Money"]
 };
-	["TransactionInput"]: GraphQLTypes["TransactionInput"];
 	/** An enumeration. */
 ["TransactionKind"]: GraphQLTypes["TransactionKind"];
-	/** An enumeration. */
-["TransactionStatus"]: GraphQLTypes["TransactionStatus"];
 	["TranslatableItem"]:ModelTypes["ProductTranslatableContent"] | ModelTypes["CollectionTranslatableContent"] | ModelTypes["CategoryTranslatableContent"] | ModelTypes["AttributeTranslatableContent"] | ModelTypes["AttributeValueTranslatableContent"] | ModelTypes["ProductVariantTranslatableContent"] | ModelTypes["PageTranslatableContent"] | ModelTypes["ShippingMethodTranslatableContent"] | ModelTypes["SaleTranslatableContent"] | ModelTypes["VoucherTranslatableContent"] | ModelTypes["MenuItemTranslatableContent"];
 	["TranslatableItemConnection"]: {
 		/** Pagination data for this connection. */
@@ -14497,6 +16143,11 @@ error isn't associated with a particular field. */
 	cursor:string
 };
 	["TranslatableKinds"]: GraphQLTypes["TranslatableKinds"];
+	["TranslationCreated"]: {
+		/** Added in Saleor 3.2. Look up a translation. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	translation?:ModelTypes["TranslationTypes"]
+};
 	["TranslationError"]: {
 		/** Name of a field that caused the error. A value of `null` indicates that the
 error isn't associated with a particular field. */
@@ -14509,14 +16160,21 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["TranslationErrorCode"]: GraphQLTypes["TranslationErrorCode"];
 	["TranslationInput"]: GraphQLTypes["TranslationInput"];
+	["TranslationTypes"]:ModelTypes["ProductTranslation"] | ModelTypes["CollectionTranslation"] | ModelTypes["CategoryTranslation"] | ModelTypes["AttributeTranslation"] | ModelTypes["AttributeValueTranslation"] | ModelTypes["ProductVariantTranslation"] | ModelTypes["PageTranslation"] | ModelTypes["ShippingMethodTranslation"] | ModelTypes["SaleTranslation"] | ModelTypes["VoucherTranslation"] | ModelTypes["MenuItemTranslation"];
+	["TranslationUpdated"]: {
+		/** Added in Saleor 3.2. Look up a translation. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	translation?:ModelTypes["TranslationTypes"]
+};
 	["UpdateInvoiceInput"]: GraphQLTypes["UpdateInvoiceInput"];
-	/** Updates metadata of an object. */
+	/** Updates metadata of an object. To use it, you need to have access to the modified object. */
 ["UpdateMetadata"]: {
 		metadataErrors:ModelTypes["MetadataError"][],
 	errors:ModelTypes["MetadataError"][],
 	item?:ModelTypes["ObjectWithMetadata"]
 };
-	/** Updates private metadata of an object. */
+	/** Updates private metadata of an object. To use it, you need to be an
+authenticated staff user or an app and have access to the modified object. */
 ["UpdatePrivateMetadata"]: {
 		metadataErrors:ModelTypes["MetadataError"][],
 	errors:ModelTypes["MetadataError"][],
@@ -14540,38 +16198,68 @@ error isn't associated with a particular field. */
 	/** Represents user data. */
 ["User"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	email:string,
 	firstName:string,
 	lastName:string,
 	isStaff:boolean,
 	isActive:boolean,
 	/** List of all user's addresses. */
-	addresses?:(ModelTypes["Address"] | undefined)[],
+	addresses?:ModelTypes["Address"][],
 	/** Returns the last open checkout of this user. */
 	checkout?:ModelTypes["Checkout"],
 	/** Returns the checkout UUID's assigned to this user. */
 	checkoutTokens?:ModelTypes["UUID"][],
 	/** List of the user gift cards. */
 	giftCards?:ModelTypes["GiftCardCountableConnection"],
-	/** A note about the customer. */
+	/** A note about the customer. Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF. */
 	note?:string,
-	/** List of user's orders. */
+	/** List of user's orders. Requires one of the following permissions:
+AccountPermissions.MANAGE_STAFF, AuthorizationFilters.OWNER */
 	orders?:ModelTypes["OrderCountableConnection"],
 	/** List of user's permissions. */
-	userPermissions?:(ModelTypes["UserPermission"] | undefined)[],
+	userPermissions?:ModelTypes["UserPermission"][],
 	/** List of user's permission groups. */
-	permissionGroups?:(ModelTypes["Group"] | undefined)[],
+	permissionGroups?:ModelTypes["Group"][],
 	/** List of user's permission groups which user can manage. */
-	editableGroups?:(ModelTypes["Group"] | undefined)[],
+	editableGroups?:ModelTypes["Group"][],
 	avatar?:ModelTypes["Image"],
-	/** List of events associated with the user. */
-	events?:(ModelTypes["CustomerEvent"] | undefined)[],
+	/** List of events associated with the user. Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF. */
+	events?:ModelTypes["CustomerEvent"][],
 	/** List of stored payment sources. */
-	storedPaymentSources?:(ModelTypes["PaymentSource"] | undefined)[],
+	storedPaymentSources?:ModelTypes["PaymentSource"][],
 	/** User language code. */
 	languageCode:ModelTypes["LanguageCodeEnum"],
 	defaultShippingAddress?:ModelTypes["Address"],
@@ -14580,7 +16268,7 @@ error isn't associated with a particular field. */
 	dateJoined:ModelTypes["DateTime"],
 	updatedAt:ModelTypes["DateTime"]
 };
-	/** Deletes a user avatar. Only for staff members. */
+	/** Deletes a user avatar. Only for staff members. Requires one of the following permissions: AUTHENTICATED_STAFF_USER. */
 ["UserAvatarDelete"]: {
 		/** An updated user instance. */
 	user?:ModelTypes["User"],
@@ -14589,14 +16277,15 @@ error isn't associated with a particular field. */
 };
 	/** Create a user avatar. Only for staff members. This mutation must be sent as a
 `multipart` request. More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER. */
 ["UserAvatarUpdate"]: {
 		/** An updated user instance. */
 	user?:ModelTypes["User"],
 	accountErrors:ModelTypes["AccountError"][],
 	errors:ModelTypes["AccountError"][]
 };
-	/** Activate or deactivate users. */
+	/** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
 ["UserBulkSetActive"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -14629,14 +16318,14 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	["UserSortingInput"]: GraphQLTypes["UserSortingInput"];
 	["UUID"]:any;
 	["VariantAttributeScope"]: GraphQLTypes["VariantAttributeScope"];
-	/** Assign an media to a product variant. */
+	/** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["VariantMediaAssign"]: {
 		productVariant?:ModelTypes["ProductVariant"],
 	media?:ModelTypes["ProductMedia"],
 	productErrors:ModelTypes["ProductError"][],
 	errors:ModelTypes["ProductError"][]
 };
-	/** Unassign an media from a product variant. */
+	/** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["VariantMediaUnassign"]: {
 		productVariant?:ModelTypes["ProductVariant"],
 	media?:ModelTypes["ProductMedia"],
@@ -14665,7 +16354,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Standard VAT rate in percent. */
 	standardRate?:number,
 	/** Country's VAT rate exceptions for specific types of goods. */
-	reducedRates?:ModelTypes["ReducedRate"][]
+	reducedRates:ModelTypes["ReducedRate"][]
 };
 	/** Verify JWT token. */
 ["VerifyToken"]: {
@@ -14685,10 +16374,39 @@ collections or specific products. They can be used during checkout by providing
 valid voucher codes. */
 ["Voucher"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name?:string,
 	code:string,
 	usageLimit?:number,
@@ -14701,14 +16419,15 @@ valid voucher codes. */
 	minCheckoutItemsQuantity?:number,
 	/** List of categories this voucher applies to. */
 	categories?:ModelTypes["CategoryCountableConnection"],
-	/** List of collections this voucher applies to. */
+	/** List of collections this voucher applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	collections?:ModelTypes["CollectionCountableConnection"],
-	/** List of products this voucher applies to. */
+	/** List of products this voucher applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	products?:ModelTypes["ProductCountableConnection"],
-	/** New in Saleor 3.1. List of product variants this voucher applies to. */
+	/** Added in Saleor 3.1. List of product variants this voucher applies to.
+Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	variants?:ModelTypes["ProductVariantCountableConnection"],
 	/** List of countries available for the shipping voucher. */
-	countries?:(ModelTypes["CountryDisplay"] | undefined)[],
+	countries?:ModelTypes["CountryDisplay"][],
 	/** Returns translated voucher fields for the given language code. */
 	translation?:ModelTypes["VoucherTranslation"],
 	/** Determines a type of discount for voucher - value or percentage */
@@ -14721,17 +16440,17 @@ valid voucher codes. */
 	minSpent?:ModelTypes["Money"],
 	/** Determines a type of voucher. */
 	type:ModelTypes["VoucherTypeEnum"],
-	/** List of availability in channels for the voucher. */
+	/** List of availability in channels for the voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	channelListings?:ModelTypes["VoucherChannelListing"][]
 };
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherAddCatalogues"]: {
 		/** Voucher of which catalogue IDs will be modified. */
 	voucher?:ModelTypes["Voucher"],
 	discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][]
 };
-	/** Deletes vouchers. */
+	/** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherBulkDelete"]: {
 		/** Returns how many objects were affected. */
 	count:number,
@@ -14748,7 +16467,7 @@ valid voucher codes. */
 };
 	["VoucherChannelListingAddInput"]: GraphQLTypes["VoucherChannelListingAddInput"];
 	["VoucherChannelListingInput"]: GraphQLTypes["VoucherChannelListingInput"];
-	/** Manage voucher's availability in channels. */
+	/** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherChannelListingUpdate"]: {
 		/** An updated voucher instance. */
 	voucher?:ModelTypes["Voucher"],
@@ -14768,13 +16487,13 @@ valid voucher codes. */
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates a new voucher. */
+	/** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherCreate"]: {
 		discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][],
 	voucher?:ModelTypes["Voucher"]
 };
-	/** Deletes a voucher. */
+	/** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherDelete"]: {
 		discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][],
@@ -14783,7 +16502,7 @@ valid voucher codes. */
 	["VoucherDiscountType"]: GraphQLTypes["VoucherDiscountType"];
 	["VoucherFilterInput"]: GraphQLTypes["VoucherFilterInput"];
 	["VoucherInput"]: GraphQLTypes["VoucherInput"];
-	/** Removes products, categories, collections from a voucher. */
+	/** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherRemoveCatalogues"]: {
 		/** Voucher of which catalogue IDs will be modified. */
 	voucher?:ModelTypes["Voucher"],
@@ -14799,10 +16518,11 @@ valid voucher codes. */
 	translation?:ModelTypes["VoucherTranslation"],
 	/** Vouchers allow giving discounts to particular customers on categories,
 collections or specific products. They can be used during checkout by
-providing valid voucher codes. */
+providing valid voucher codes. Requires one of the following permissions:
+MANAGE_DISCOUNTS. */
 	voucher?:ModelTypes["Voucher"]
 };
-	/** Creates/updates translations for a voucher. */
+	/** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["VoucherTranslate"]: {
 		translationErrors:ModelTypes["TranslationError"][],
 	errors:ModelTypes["TranslationError"][],
@@ -14815,7 +16535,7 @@ providing valid voucher codes. */
 	name?:string
 };
 	["VoucherTypeEnum"]: GraphQLTypes["VoucherTypeEnum"];
-	/** Updates a voucher. */
+	/** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherUpdate"]: {
 		discountErrors:ModelTypes["DiscountError"][],
 	errors:ModelTypes["DiscountError"][],
@@ -14824,10 +16544,39 @@ providing valid voucher codes. */
 	/** Represents warehouse. */
 ["Warehouse"]: {
 		id:string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?:ModelTypes["MetadataItem"][],
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata:ModelTypes["MetadataItem"][],
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?:string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?:ModelTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?:ModelTypes["MetadataItem"][],
+	metadata:ModelTypes["MetadataItem"][],
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?:string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?:ModelTypes["Metadata"],
 	name:string,
 	slug:string,
 	email:string,
@@ -14835,7 +16584,7 @@ providing valid voucher codes. */
 	address:ModelTypes["Address"],
 	/** Warehouse company name. */
 	companyName:string,
-	/** New in Saleor 3.1. Click and collect options: local, all or disabled. Note:
+	/** Added in Saleor 3.1. Click and collect options: local, all or disabled. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	clickAndCollectOption:ModelTypes["WarehouseClickAndCollectOptionEnum"],
 	shippingZones:ModelTypes["ShippingZoneCountableConnection"]
@@ -14855,14 +16604,14 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** A cursor for use in pagination. */
 	cursor:string
 };
-	/** Creates new warehouse. */
+	/** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseCreate"]: {
 		warehouseErrors:ModelTypes["WarehouseError"][],
 	errors:ModelTypes["WarehouseError"][],
 	warehouse?:ModelTypes["Warehouse"]
 };
 	["WarehouseCreateInput"]: GraphQLTypes["WarehouseCreateInput"];
-	/** Deletes selected warehouse. */
+	/** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseDelete"]: {
 		warehouseErrors:ModelTypes["WarehouseError"][],
 	errors:ModelTypes["WarehouseError"][],
@@ -14880,13 +16629,13 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["WarehouseErrorCode"]: GraphQLTypes["WarehouseErrorCode"];
 	["WarehouseFilterInput"]: GraphQLTypes["WarehouseFilterInput"];
-	/** Add shipping zone to given warehouse. */
+	/** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseShippingZoneAssign"]: {
 		warehouseErrors:ModelTypes["WarehouseError"][],
 	errors:ModelTypes["WarehouseError"][],
 	warehouse?:ModelTypes["Warehouse"]
 };
-	/** Remove shipping zone from given warehouse. */
+	/** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseShippingZoneUnassign"]: {
 		warehouseErrors:ModelTypes["WarehouseError"][],
 	errors:ModelTypes["WarehouseError"][],
@@ -14894,7 +16643,7 @@ error isn't associated with a particular field. */
 };
 	["WarehouseSortField"]: GraphQLTypes["WarehouseSortField"];
 	["WarehouseSortingInput"]: GraphQLTypes["WarehouseSortingInput"];
-	/** Updates given warehouse. */
+	/** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseUpdate"]: {
 		warehouseErrors:ModelTypes["WarehouseError"][],
 	errors:ModelTypes["WarehouseError"][],
@@ -14914,18 +16663,23 @@ error isn't associated with a particular field. */
 	app:ModelTypes["App"],
 	/** Event deliveries. */
 	eventDeliveries?:ModelTypes["EventDeliveryCountableConnection"],
+	/** Target URL for webhook. */
 	targetUrl:string,
+	/** Informs if webhook is activated. */
 	isActive:boolean,
-	secretKey?:string
+	/** Used to create a hash signature with each payload. */
+	secretKey?:string,
+	/** Used to define payloads for specific events. */
+	subscriptionQuery?:string
 };
-	/** Creates a new webhook subscription. */
+	/** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 ["WebhookCreate"]: {
 		webhookErrors:ModelTypes["WebhookError"][],
 	errors:ModelTypes["WebhookError"][],
 	webhook?:ModelTypes["Webhook"]
 };
 	["WebhookCreateInput"]: GraphQLTypes["WebhookCreateInput"];
-	/** Deletes a webhook subscription. */
+	/** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 ["WebhookDelete"]: {
 		webhookErrors:ModelTypes["WebhookError"][],
 	errors:ModelTypes["WebhookError"][],
@@ -14971,7 +16725,7 @@ error isn't associated with a particular field. */
 ["WebhookEventTypeSyncEnum"]: GraphQLTypes["WebhookEventTypeSyncEnum"];
 	/** An enumeration. */
 ["WebhookSampleEventTypeEnum"]: GraphQLTypes["WebhookSampleEventTypeEnum"];
-	/** Updates a webhook subscription. */
+	/** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
 ["WebhookUpdate"]: {
 		webhookErrors:ModelTypes["WebhookError"][],
 	errors:ModelTypes["WebhookError"][],
@@ -15013,7 +16767,7 @@ export type GraphQLTypes = {
 	__typename: "_Service",
 	sdl?: string
 };
-	/** Create a new address for the customer. */
+	/** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountAddressCreate"]: {
 	__typename: "AccountAddressCreate",
 	/** A user instance for which the address was created. */
@@ -15022,7 +16776,7 @@ export type GraphQLTypes = {
 	errors: Array<GraphQLTypes["AccountError"]>,
 	address?: GraphQLTypes["Address"]
 };
-	/** Delete an address of the logged-in user. */
+	/** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 ["AccountAddressDelete"]: {
 	__typename: "AccountAddressDelete",
 	/** A user instance for which the address was deleted. */
@@ -15031,7 +16785,7 @@ export type GraphQLTypes = {
 	errors: Array<GraphQLTypes["AccountError"]>,
 	address?: GraphQLTypes["Address"]
 };
-	/** Updates an address of the logged-in user. */
+	/** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 ["AccountAddressUpdate"]: {
 	__typename: "AccountAddressUpdate",
 	/** A user object for which the address was edited. */
@@ -15040,7 +16794,7 @@ export type GraphQLTypes = {
 	errors: Array<GraphQLTypes["AccountError"]>,
 	address?: GraphQLTypes["Address"]
 };
-	/** Remove user account. */
+	/** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountDelete"]: {
 	__typename: "AccountDelete",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
@@ -15100,13 +16854,14 @@ error isn't associated with a particular field. */
 	/** Slug of a channel which will be used to notify users. Optional when only one channel exists. */
 	channel?: string
 };
-	/** Sends an email with the account removal link for the logged-in user. */
+	/** Sends an email with the account removal link for the logged-in user. Requires
+one of the following permissions: AUTHENTICATED_USER. */
 ["AccountRequestDeletion"]: {
 	__typename: "AccountRequestDeletion",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>
 };
-	/** Sets a default address for the authenticated user. */
+	/** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountSetDefaultAddress"]: {
 	__typename: "AccountSetDefaultAddress",
 	/** An updated user instance. */
@@ -15114,7 +16869,7 @@ error isn't associated with a particular field. */
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>
 };
-	/** Updates the account of the logged-in user. */
+	/** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["AccountUpdate"]: {
 	__typename: "AccountUpdate",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
@@ -15142,7 +16897,7 @@ error isn't associated with a particular field. */
 	/** Address is user's default billing address. */
 	isDefaultBillingAddress?: boolean
 };
-	/** Creates user address. */
+	/** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressCreate"]: {
 	__typename: "AddressCreate",
 	/** A user instance for which the address was created. */
@@ -15151,7 +16906,7 @@ error isn't associated with a particular field. */
 	errors: Array<GraphQLTypes["AccountError"]>,
 	address?: GraphQLTypes["Address"]
 };
-	/** Deletes an address. */
+	/** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressDelete"]: {
 	__typename: "AddressDelete",
 	/** A user instance for which the address was deleted. */
@@ -15184,7 +16939,7 @@ error isn't associated with a particular field. */
 	/** Phone number. */
 	phone?: string
 };
-	/** Sets a default address for the given user. */
+	/** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressSetDefault"]: {
 	__typename: "AddressSetDefault",
 	/** An updated user instance. */
@@ -15194,7 +16949,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["AddressTypeEnum"]: AddressTypeEnum;
-	/** Updates an address. */
+	/** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
 ["AddressUpdate"]: {
 	__typename: "AddressUpdate",
 	/** A user object for which the address was edited. */
@@ -15205,43 +16960,72 @@ error isn't associated with a particular field. */
 };
 	["AddressValidationData"]: {
 	__typename: "AddressValidationData",
-	countryCode?: string,
-	countryName?: string,
-	addressFormat?: string,
-	addressLatinFormat?: string,
-	allowedFields?: Array<string | undefined>,
-	requiredFields?: Array<string | undefined>,
-	upperFields?: Array<string | undefined>,
-	countryAreaType?: string,
-	countryAreaChoices?: Array<GraphQLTypes["ChoiceValue"] | undefined>,
-	cityType?: string,
-	cityChoices?: Array<GraphQLTypes["ChoiceValue"] | undefined>,
-	cityAreaType?: string,
-	cityAreaChoices?: Array<GraphQLTypes["ChoiceValue"] | undefined>,
-	postalCodeType?: string,
-	postalCodeMatchers?: Array<string | undefined>,
-	postalCodeExamples?: Array<string | undefined>,
-	postalCodePrefix?: string
+	countryCode: string,
+	countryName: string,
+	addressFormat: string,
+	addressLatinFormat: string,
+	allowedFields: Array<string>,
+	requiredFields: Array<string>,
+	upperFields: Array<string>,
+	countryAreaType: string,
+	countryAreaChoices: Array<GraphQLTypes["ChoiceValue"]>,
+	cityType: string,
+	cityChoices: Array<GraphQLTypes["ChoiceValue"]>,
+	cityAreaType: string,
+	cityAreaChoices: Array<GraphQLTypes["ChoiceValue"]>,
+	postalCodeType: string,
+	postalCodeMatchers: Array<string>,
+	postalCodeExamples: Array<string>,
+	postalCodePrefix: string
 };
 	/** Represents allocation. */
 ["Allocation"]: {
 	__typename: "Allocation",
 	id: string,
-	/** Quantity allocated for orders. */
+	/** Quantity allocated for orders. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantity: number,
-	/** The warehouse were items were allocated. */
+	/** The warehouse were items were allocated. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	warehouse: GraphQLTypes["Warehouse"]
 };
 	/** Represents app data. */
 ["App"]: {
 	__typename: "App",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	/** List of the app's permissions. */
-	permissions?: Array<GraphQLTypes["Permission"] | undefined>,
+	permissions?: Array<GraphQLTypes["Permission"]>,
 	/** The date and time when the app was created. */
 	created?: GraphQLTypes["DateTime"],
 	/** Determine if app will be set active or not. */
@@ -15251,9 +17035,9 @@ error isn't associated with a particular field. */
 	/** Type of the app. */
 	type?: GraphQLTypes["AppTypeEnum"],
 	/** Last 4 characters of the tokens. */
-	tokens?: Array<GraphQLTypes["AppToken"] | undefined>,
+	tokens?: Array<GraphQLTypes["AppToken"]>,
 	/** List of webhooks assigned to this app. */
-	webhooks?: Array<GraphQLTypes["Webhook"] | undefined>,
+	webhooks?: Array<GraphQLTypes["Webhook"]>,
 	/** Description of this app. */
 	aboutApp?: string,
 	/** Description of the data privacy defined for this app. */
@@ -15272,11 +17056,11 @@ error isn't associated with a particular field. */
 	version?: string,
 	/** JWT token used to authenticate by thridparty app. */
 	accessToken?: string,
-	/** New in Saleor 3.1. App's dashboard extensions. Note: this feature is in a
+	/** Added in Saleor 3.1. App's dashboard extensions. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	extensions: Array<GraphQLTypes["AppExtension"]>
 };
-	/** Activate the app. */
+	/** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppActivate"]: {
 	__typename: "AppActivate",
 	appErrors: Array<GraphQLTypes["AppError"]>,
@@ -15298,7 +17082,7 @@ preview state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new app. */
+	/** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 ["AppCreate"]: {
 	__typename: "AppCreate",
 	/** The newly created authentication token. */
@@ -15307,21 +17091,21 @@ preview state and can be subject to changes at later point. */
 	errors: Array<GraphQLTypes["AppError"]>,
 	app?: GraphQLTypes["App"]
 };
-	/** Deactivate the app. */
+	/** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDeactivate"]: {
 	__typename: "AppDeactivate",
 	appErrors: Array<GraphQLTypes["AppError"]>,
 	errors: Array<GraphQLTypes["AppError"]>,
 	app?: GraphQLTypes["App"]
 };
-	/** Deletes an app. */
+	/** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDelete"]: {
 	__typename: "AppDelete",
 	appErrors: Array<GraphQLTypes["AppError"]>,
 	errors: Array<GraphQLTypes["AppError"]>,
 	app?: GraphQLTypes["App"]
 };
-	/** Delete failed installation. */
+	/** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
 ["AppDeleteFailedInstallation"]: {
 	__typename: "AppDeleteFailedInstallation",
 	appErrors: Array<GraphQLTypes["AppError"]>,
@@ -15376,7 +17160,7 @@ error isn't associated with a particular field. */
 	cursor: string
 };
 	["AppExtensionFilterInput"]: {
-		mount?: Array<GraphQLTypes["AppExtensionMountEnum"] | undefined>,
+		mount?: Array<GraphQLTypes["AppExtensionMountEnum"]>,
 	target?: GraphQLTypes["AppExtensionTargetEnum"]
 };
 	/** All places where app extension can be mounted. */
@@ -15386,7 +17170,7 @@ error isn't associated with a particular field. */
     POPUP - app's extension will be mounted as a popup window
     APP_PAGE - redirect to app's page */
 ["AppExtensionTargetEnum"]: AppExtensionTargetEnum;
-	/** Fetch and validate manifest. */
+	/** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
 ["AppFetchManifest"]: {
 	__typename: "AppFetchManifest",
 	manifest?: GraphQLTypes["Manifest"],
@@ -15402,9 +17186,9 @@ error isn't associated with a particular field. */
 		/** Name of the app. */
 	name?: string,
 	/** List of permission code names to assign to this app. */
-	permissions?: Array<GraphQLTypes["PermissionEnum"] | undefined>
+	permissions?: Array<GraphQLTypes["PermissionEnum"]>
 };
-	/** Install new app by using app manifest. */
+	/** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 ["AppInstall"]: {
 	__typename: "AppInstall",
 	appErrors: Array<GraphQLTypes["AppError"]>,
@@ -15434,7 +17218,7 @@ error isn't associated with a particular field. */
 	/** Determine if app will be set active or not. */
 	activateAfterInstallation?: boolean,
 	/** List of permission code names to assign to this app. */
-	permissions?: Array<GraphQLTypes["PermissionEnum"] | undefined>
+	permissions?: Array<GraphQLTypes["PermissionEnum"]>
 };
 	["AppManifestExtension"]: {
 	__typename: "AppManifestExtension",
@@ -15449,7 +17233,7 @@ error isn't associated with a particular field. */
 	/** Type of way how app extension will be opened. */
 	target: GraphQLTypes["AppExtensionTargetEnum"]
 };
-	/** Retry failed installation of new app. */
+	/** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppRetryInstall"]: {
 	__typename: "AppRetryInstall",
 	appErrors: Array<GraphQLTypes["AppError"]>,
@@ -15472,7 +17256,7 @@ error isn't associated with a particular field. */
 	/** Last 4 characters of the token. */
 	authToken?: string
 };
-	/** Creates a new token. */
+	/** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
 ["AppTokenCreate"]: {
 	__typename: "AppTokenCreate",
 	/** The newly created authentication token. */
@@ -15481,7 +17265,7 @@ error isn't associated with a particular field. */
 	errors: Array<GraphQLTypes["AppError"]>,
 	appToken?: GraphQLTypes["AppToken"]
 };
-	/** Deletes an authentication token assigned to app. */
+	/** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppTokenDelete"]: {
 	__typename: "AppTokenDelete",
 	appErrors: Array<GraphQLTypes["AppError"]>,
@@ -15504,7 +17288,7 @@ error isn't associated with a particular field. */
 };
 	/** Enum determining type of your App. */
 ["AppTypeEnum"]: AppTypeEnum;
-	/** Updates an existing app. */
+	/** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
 ["AppUpdate"]: {
 	__typename: "AppUpdate",
 	appErrors: Array<GraphQLTypes["AppError"]>,
@@ -15513,7 +17297,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["AreaUnitsEnum"]: AreaUnitsEnum;
-	/** New in Saleor 3.1. Represents assigned attribute to variant with variant selection attached. */
+	/** Added in Saleor 3.1. Represents assigned attribute to variant with variant selection attached. */
 ["AssignedVariantAttribute"]: {
 	__typename: "AssignedVariantAttribute",
 	/** Attribute assigned to variant. */
@@ -15523,7 +17307,7 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 'swatch', 'numeric'] */
 	variantSelection: boolean
 };
-	/** Assigns storefront's navigation menus. */
+	/** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
 ["AssignNavigation"]: {
 	__typename: "AssignNavigation",
 	/** Assigned navigation menu. */
@@ -15535,10 +17319,39 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 ["Attribute"]: {
 	__typename: "Attribute",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	/** The input type to use for entering attribute values in the dashboard. */
 	inputType?: GraphQLTypes["AttributeInputTypeEnum"],
 	/** The entity type which can be used as a reference. */
@@ -15553,26 +17366,50 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	unit?: GraphQLTypes["MeasurementUnitsEnum"],
 	/** List of attribute's values. */
 	choices?: GraphQLTypes["AttributeValueCountableConnection"],
-	/** Whether the attribute requires values to be passed or not. */
+	/** Whether the attribute requires values to be passed or not. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	valueRequired: boolean,
-	/** Whether the attribute should be visible or not in storefront. */
+	/** Whether the attribute should be visible or not in storefront. Requires one of
+the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	visibleInStorefront: boolean,
-	/** Whether the attribute can be filtered in storefront. */
+	/** Whether the attribute can be filtered in storefront. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	filterableInStorefront: boolean,
-	/** Whether the attribute can be filtered in dashboard. */
+	/** Whether the attribute can be filtered in dashboard. Requires one of the
+following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	filterableInDashboard: boolean,
-	/** Whether the attribute can be displayed in the admin product list. */
+	/** Whether the attribute can be displayed in the admin product list. Requires one
+of the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	availableInGrid: boolean,
+	/** The position of the attribute in the storefront navigation (0 by default).
+Requires one of the following permissions: PagePermissions.MANAGE_PAGES,
+PageTypePermissions.MANAGE_PAGE_TYPES_AND_ATTRIBUTES,
+ProductPermissions.MANAGE_PRODUCTS,
+ProductTypePermissions.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
+	storefrontSearchPosition: number,
 	/** Returns translated attribute fields for the given language code. */
 	translation?: GraphQLTypes["AttributeTranslation"],
-	/** The position of the attribute in the storefront navigation (0 by default). */
-	storefrontSearchPosition: number,
 	/** Flag indicating that attribute has predefined choices. */
 	withChoices: boolean,
 	productTypes: GraphQLTypes["ProductTypeCountableConnection"],
 	productVariantTypes: GraphQLTypes["ProductTypeCountableConnection"]
 };
-	/** Deletes attributes. */
+	/** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["AttributeBulkDelete"]: {
 	__typename: "AttributeBulkDelete",
 	/** Returns how many objects were affected. */
@@ -15623,7 +17460,7 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	/** The unit of attribute values. */
 	unit?: GraphQLTypes["MeasurementUnitsEnum"],
 	/** List of attribute's values. */
-	values?: Array<GraphQLTypes["AttributeValueCreateInput"] | undefined>,
+	values?: Array<GraphQLTypes["AttributeValueCreateInput"]>,
 	/** Whether the attribute requires values to be passed or not. */
 	valueRequired?: boolean,
 	/** Whether the attribute is for variants only. */
@@ -15639,7 +17476,7 @@ Supported variant types for variant selection are: ['dropdown', 'boolean',
 	/** Whether the attribute can be displayed in the admin product list. */
 	availableInGrid?: boolean
 };
-	/** Deletes an attribute. */
+	/** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeDelete"]: {
 	__typename: "AttributeDelete",
 	attributeErrors: Array<GraphQLTypes["AttributeError"]>,
@@ -15667,9 +17504,9 @@ error isn't associated with a particular field. */
 	filterableInStorefront?: boolean,
 	filterableInDashboard?: boolean,
 	availableInGrid?: boolean,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
 	search?: string,
-	ids?: Array<string | undefined>,
+	ids?: Array<string>,
 	type?: GraphQLTypes["AttributeTypeEnum"],
 	inCollection?: string,
 	inCategory?: string,
@@ -15682,19 +17519,20 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 		/** Internal representation of an attribute name. */
 	slug: string,
 	/** Internal representation of a value (unique per attribute). */
-	values?: Array<string | undefined>,
+	values?: Array<string>,
 	/** The range that the returned values should be in. */
 	valuesRange?: GraphQLTypes["IntRangeInput"],
-	/** The date time range that the returned values should be in. */
+	/** The date/time range that the returned values should be in. */
 	dateTime?: GraphQLTypes["DateTimeRangeInput"],
-	/** The date range that the returned values should be in. */
+	/** The date range that the returned values should be in. In case of date/time
+attributes, the UTC midnight of the given date is used. */
 	date?: GraphQLTypes["DateRangeInput"],
 	/** The boolean value of the attribute. */
 	boolean?: boolean
 };
 	/** An enumeration. */
 ["AttributeInputTypeEnum"]: AttributeInputTypeEnum;
-	/** Reorder the values of an attribute. */
+	/** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeReorderValues"]: {
 	__typename: "AttributeReorderValues",
 	/** Attribute from which values are reordered. */
@@ -15718,7 +17556,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Custom attribute of a product. */
 	attribute?: GraphQLTypes["Attribute"]
 };
-	/** Creates/updates translations for an attribute. */
+	/** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["AttributeTranslate"]: {
 	__typename: "AttributeTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -15734,7 +17572,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 };
 	/** An enumeration. */
 ["AttributeTypeEnum"]: AttributeTypeEnum;
-	/** Updates attribute. */
+	/** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeUpdate"]: {
 	__typename: "AttributeUpdate",
 	attribute?: GraphQLTypes["Attribute"],
@@ -15749,9 +17587,9 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** The unit of attribute values. */
 	unit?: GraphQLTypes["MeasurementUnitsEnum"],
 	/** IDs of values to be removed from this attribute. */
-	removeValues?: Array<string | undefined>,
+	removeValues?: Array<string>,
 	/** New values to be created for this attribute. */
-	addValues?: Array<GraphQLTypes["AttributeValueUpdateInput"] | undefined>,
+	addValues?: Array<GraphQLTypes["AttributeValueUpdateInput"]>,
 	/** Whether the attribute requires values to be passed or not. */
 	valueRequired?: boolean,
 	/** Whether the attribute is for variants only. */
@@ -15791,10 +17629,10 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	boolean?: boolean,
 	/** Represents the date value of the attribute value. */
 	date?: GraphQLTypes["Date"],
-	/** Represents the date time value of the attribute value. */
+	/** Represents the date/time value of the attribute value. */
 	dateTime?: GraphQLTypes["DateTime"]
 };
-	/** Deletes values of attributes. */
+	/** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueBulkDelete"]: {
 	__typename: "AttributeValueBulkDelete",
 	/** Returns how many objects were affected. */
@@ -15817,7 +17655,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a value for an attribute. */
+	/** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["AttributeValueCreate"]: {
 	__typename: "AttributeValueCreate",
 	/** The updated attribute. */
@@ -15838,7 +17676,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Name of a value displayed in the interface. */
 	name: string
 };
-	/** Deletes a value of an attribute. */
+	/** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueDelete"]: {
 	__typename: "AttributeValueDelete",
 	/** The updated attribute. */
@@ -15848,7 +17686,8 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	attributeValue?: GraphQLTypes["AttributeValue"]
 };
 	["AttributeValueFilterInput"]: {
-		search?: string
+		search?: string,
+	ids?: Array<string>
 };
 	["AttributeValueInput"]: {
 		/** ID of the selected attribute. */
@@ -15867,7 +17706,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	boolean?: boolean,
 	/** Represents the date value of the attribute value. */
 	date?: GraphQLTypes["Date"],
-	/** Represents the date time value of the attribute value. */
+	/** Represents the date/time value of the attribute value. */
 	dateTime?: GraphQLTypes["DateTime"]
 };
 	["AttributeValueTranslatableContent"]: {
@@ -15880,7 +17719,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Represents a value of an attribute. */
 	attributeValue?: GraphQLTypes["AttributeValue"]
 };
-	/** Creates/updates translations for an attribute value. */
+	/** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["AttributeValueTranslate"]: {
 	__typename: "AttributeValueTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -15899,7 +17738,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 		name?: string,
 	richText?: GraphQLTypes["JSONString"]
 };
-	/** Updates value of an attribute. */
+	/** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["AttributeValueUpdate"]: {
 	__typename: "AttributeValueUpdate",
 	/** The updated attribute. */
@@ -15974,23 +17813,52 @@ error isn't associated with a particular field. */
 };
 	["CatalogueInput"]: {
 		/** Products related to the discount. */
-	products?: Array<string | undefined>,
+	products?: Array<string>,
 	/** Categories related to the discount. */
-	categories?: Array<string | undefined>,
+	categories?: Array<string>,
 	/** Collections related to the discount. */
-	collections?: Array<string | undefined>,
-	/** New in Saleor 3.1. Product variant related to the discount. */
-	variants?: Array<string | undefined>
+	collections?: Array<string>,
+	/** Added in Saleor 3.1. Product variant related to the discount. */
+	variants?: Array<string>
 };
 	/** Represents a single category of products. Categories allow to organize products
 in a tree-hierarchies which can be used for navigation in the storefront. */
 ["Category"]: {
 	__typename: "Category",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	seoTitle?: string,
 	seoDescription?: string,
 	name: string,
@@ -16002,7 +17870,9 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	descriptionJson?: GraphQLTypes["JSONString"],
 	/** List of ancestors of the category. */
 	ancestors?: GraphQLTypes["CategoryCountableConnection"],
-	/** List of products in the category. */
+	/** List of products in the category. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	products?: GraphQLTypes["ProductCountableConnection"],
 	/** List of children of the category. */
 	children?: GraphQLTypes["CategoryCountableConnection"],
@@ -16010,7 +17880,7 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	/** Returns translated category fields for the given language code. */
 	translation?: GraphQLTypes["CategoryTranslation"]
 };
-	/** Deletes categories. */
+	/** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryBulkDelete"]: {
 	__typename: "CategoryBulkDelete",
 	/** Returns how many objects were affected. */
@@ -16033,24 +17903,36 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new category. */
+	/** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryCreate"]: {
 	__typename: "CategoryCreate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	category?: GraphQLTypes["Category"]
 };
-	/** Deletes a category. */
+	["CategoryCreated"]: {
+	__typename: "CategoryCreated",
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?: GraphQLTypes["Category"]
+};
+	/** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryDelete"]: {
 	__typename: "CategoryDelete",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	category?: GraphQLTypes["Category"]
 };
+	["CategoryDeleted"]: {
+	__typename: "CategoryDeleted",
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?: GraphQLTypes["Category"]
+};
 	["CategoryFilterInput"]: {
 		search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	ids?: Array<string | undefined>
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	ids?: Array<string>
 };
 	["CategoryInput"]: {
 		/** Category description (JSON). */
@@ -16070,7 +17952,7 @@ in a tree-hierarchies which can be used for navigation in the storefront. */
 	["CategorySortingInput"]: {
 		/** Specifies the direction in which to sort products. */
 	direction: GraphQLTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?: string,
@@ -16091,7 +17973,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Represents a single category of products. */
 	category?: GraphQLTypes["Category"]
 };
-	/** Creates/updates translations for a category. */
+	/** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["CategoryTranslate"]: {
 	__typename: "CategoryTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -16110,11 +17992,17 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Translated description of the product (JSON). */
 	descriptionJson?: GraphQLTypes["JSONString"]
 };
-	/** Updates a category. */
+	/** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CategoryUpdate"]: {
 	__typename: "CategoryUpdate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
+	category?: GraphQLTypes["Category"]
+};
+	["CategoryUpdated"]: {
+	__typename: "CategoryUpdated",
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	category?: GraphQLTypes["Category"]
 };
 	/** Represents channel. */
@@ -16125,14 +18013,14 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	isActive: boolean,
 	currencyCode: string,
 	slug: string,
-	/** Whether a channel has associated orders. */
+	/** Whether a channel has associated orders. Requires one of the following permissions: MANAGE_CHANNELS. */
 	hasOrders: boolean,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry: GraphQLTypes["CountryDisplay"]
 };
-	/** Activate a channel. */
+	/** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelActivate"]: {
 	__typename: "ChannelActivate",
 	/** Activated channel. */
@@ -16140,11 +18028,17 @@ country was not explicitly provided. */
 	channelErrors: Array<GraphQLTypes["ChannelError"]>,
 	errors: Array<GraphQLTypes["ChannelError"]>
 };
-	/** Creates new channel. */
+	/** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelCreate"]: {
 	__typename: "ChannelCreate",
 	channelErrors: Array<GraphQLTypes["ChannelError"]>,
 	errors: Array<GraphQLTypes["ChannelError"]>,
+	channel?: GraphQLTypes["Channel"]
+};
+	["ChannelCreated"]: {
+	__typename: "ChannelCreated",
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?: GraphQLTypes["Channel"]
 };
 	["ChannelCreateInput"]: {
@@ -16156,14 +18050,14 @@ country was not explicitly provided. */
 	slug: string,
 	/** Currency of the channel. */
 	currencyCode: string,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry: GraphQLTypes["CountryCode"],
 	/** List of shipping zones to assign to the channel. */
 	addShippingZones?: Array<string>
 };
-	/** Deactivate a channel. */
+	/** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelDeactivate"]: {
 	__typename: "ChannelDeactivate",
 	/** Deactivated channel. */
@@ -16172,11 +18066,18 @@ country was not explicitly provided. */
 	errors: Array<GraphQLTypes["ChannelError"]>
 };
 	/** Delete a channel. Orders associated with the deleted channel will be moved to
-the target channel. Checkouts, product availability, and pricing will be removed. */
+the target channel. Checkouts, product availability, and pricing will be
+removed. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelDelete"]: {
 	__typename: "ChannelDelete",
 	channelErrors: Array<GraphQLTypes["ChannelError"]>,
 	errors: Array<GraphQLTypes["ChannelError"]>,
+	channel?: GraphQLTypes["Channel"]
+};
+	["ChannelDeleted"]: {
+	__typename: "ChannelDeleted",
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?: GraphQLTypes["Channel"]
 };
 	["ChannelDeleteInput"]: {
@@ -16197,11 +18098,23 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["ChannelErrorCode"]: ChannelErrorCode;
-	/** Update a channel. */
+	["ChannelStatusChanged"]: {
+	__typename: "ChannelStatusChanged",
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	channel?: GraphQLTypes["Channel"]
+};
+	/** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 ["ChannelUpdate"]: {
 	__typename: "ChannelUpdate",
 	channelErrors: Array<GraphQLTypes["ChannelError"]>,
 	errors: Array<GraphQLTypes["ChannelError"]>,
+	channel?: GraphQLTypes["Channel"]
+};
+	["ChannelUpdated"]: {
+	__typename: "ChannelUpdated",
+	/** Added in Saleor 3.2. Look up a channel. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	channel?: GraphQLTypes["Channel"]
 };
 	["ChannelUpdateInput"]: {
@@ -16211,7 +18124,7 @@ error isn't associated with a particular field. */
 	name?: string,
 	/** Slug of the channel. */
 	slug?: string,
-	/** New in Saleor 3.1. Default country for the channel. Default country can be
+	/** Added in Saleor 3.1. Default country for the channel. Default country can be
 used in checkout to determine the stock quantities or calculate taxes when the
 country was not explicitly provided. */
 	defaultCountry?: GraphQLTypes["CountryCode"],
@@ -16224,10 +18137,39 @@ country was not explicitly provided. */
 ["Checkout"]: {
 	__typename: "Checkout",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	created: GraphQLTypes["DateTime"],
 	lastChange: GraphQLTypes["DateTime"],
 	user?: GraphQLTypes["User"],
@@ -16240,10 +18182,10 @@ country was not explicitly provided. */
 	translatedDiscountName?: string,
 	voucherCode?: string,
 	/** Shipping methods that can be used with this checkout. */
-	availableShippingMethods?: Array<GraphQLTypes["ShippingMethod"]>,
+	availableShippingMethods: Array<GraphQLTypes["ShippingMethod"]>,
 	/** Shipping methods that can be used with this checkout. */
-	shippingMethods?: Array<GraphQLTypes["ShippingMethod"]>,
-	/** New in Saleor 3.1. Collection points that can be used for this order. Note:
+	shippingMethods: Array<GraphQLTypes["ShippingMethod"]>,
+	/** Added in Saleor 3.1. Collection points that can be used for this order. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	availableCollectionPoints: Array<GraphQLTypes["Warehouse"]>,
 	/** List of available payment gateways. */
@@ -16251,28 +18193,28 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** Email of a customer. */
 	email?: string,
 	/** List of gift cards associated with this checkout. */
-	giftCards?: Array<GraphQLTypes["GiftCard"] | undefined>,
+	giftCards: Array<GraphQLTypes["GiftCard"]>,
 	/** Returns True, if checkout requires shipping. */
 	isShippingRequired: boolean,
 	/** The number of items purchased. */
 	quantity: number,
-	/** New in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
+	/** Added in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
 	stockReservationExpires?: GraphQLTypes["DateTime"],
 	/** A list of checkout lines, each containing information about an item in the checkout. */
-	lines?: Array<GraphQLTypes["CheckoutLine"] | undefined>,
+	lines: Array<GraphQLTypes["CheckoutLine"]>,
 	/** The price of the shipping, with all the taxes included. */
-	shippingPrice?: GraphQLTypes["TaxedMoney"],
+	shippingPrice: GraphQLTypes["TaxedMoney"],
 	/** The shipping method related with checkout. */
 	shippingMethod?: GraphQLTypes["ShippingMethod"],
-	/** New in Saleor 3.1. The delivery method selected for this checkout. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The delivery method selected for this checkout. Note:
+this feature is in a preview state and can be subject to changes at later point. */
 	deliveryMethod?: GraphQLTypes["DeliveryMethod"],
 	/** The price of the checkout before shipping, with taxes included. */
-	subtotalPrice?: GraphQLTypes["TaxedMoney"],
+	subtotalPrice: GraphQLTypes["TaxedMoney"],
 	/** The checkout's token. */
 	token: GraphQLTypes["UUID"],
 	/** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
-	totalPrice?: GraphQLTypes["TaxedMoney"],
+	totalPrice: GraphQLTypes["TaxedMoney"],
 	/** Checkout language code. */
 	languageCode: GraphQLTypes["LanguageCodeEnum"]
 };
@@ -16333,11 +18275,17 @@ to checkoutLinesAdd and checkoutLinesUpdate to merge a cart with an active check
 	errors: Array<GraphQLTypes["CheckoutError"]>,
 	checkout?: GraphQLTypes["Checkout"]
 };
+	["CheckoutCreated"]: {
+	__typename: "CheckoutCreated",
+	/** Added in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	checkout?: GraphQLTypes["Checkout"]
+};
 	["CheckoutCreateInput"]: {
 		/** Slug of a channel in which to create a checkout. */
 	channel?: string,
 	/** A list of checkout lines, each containing information about an item in the checkout. */
-	lines?: Array<GraphQLTypes["CheckoutLineInput"]>,
+	lines: Array<GraphQLTypes["CheckoutLineInput"]>,
 	/** The customer's email address. */
 	email?: string,
 	/** The mailing address to where the checkout will be shipped. Note: the address
@@ -16348,7 +18296,8 @@ will be ignored if the checkout doesn't contain shippable items. */
 	/** Checkout language code. */
 	languageCode?: GraphQLTypes["LanguageCodeEnum"]
 };
-	/** Sets the customer as the owner of the checkout. */
+	/** Sets the customer as the owner of the checkout. Requires one of the following
+permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 ["CheckoutCustomerAttach"]: {
 	__typename: "CheckoutCustomerAttach",
 	/** An updated checkout. */
@@ -16356,7 +18305,8 @@ will be ignored if the checkout doesn't contain shippable items. */
 	checkoutErrors: Array<GraphQLTypes["CheckoutError"]>,
 	errors: Array<GraphQLTypes["CheckoutError"]>
 };
-	/** Removes the user assigned as the owner of the checkout. */
+	/** Removes the user assigned as the owner of the checkout. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 ["CheckoutCustomerDetach"]: {
 	__typename: "CheckoutCustomerDetach",
 	/** An updated checkout. */
@@ -16364,7 +18314,7 @@ will be ignored if the checkout doesn't contain shippable items. */
 	checkoutErrors: Array<GraphQLTypes["CheckoutError"]>,
 	errors: Array<GraphQLTypes["CheckoutError"]>
 };
-	/** New in Saleor 3.1. Updates the delivery method (shipping method or pick up
+	/** Added in Saleor 3.1. Updates the delivery method (shipping method or pick up
 point) of the checkout. Note: this feature is in a preview state and can be
 subject to changes at later point. */
 ["CheckoutDeliveryMethodUpdate"]: {
@@ -16403,8 +18353,8 @@ error isn't associated with a particular field. */
 		customer?: string,
 	created?: GraphQLTypes["DateRangeInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	channels?: Array<string | undefined>
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	channels?: Array<string>
 };
 	/** Update language code in the existing checkout. */
 ["CheckoutLanguageCodeUpdate"]: {
@@ -16421,9 +18371,9 @@ error isn't associated with a particular field. */
 	variant: GraphQLTypes["ProductVariant"],
 	quantity: number,
 	/** The sum of the checkout line price, taxes and discounts. */
-	totalPrice?: GraphQLTypes["TaxedMoney"],
+	totalPrice: GraphQLTypes["TaxedMoney"],
 	/** Indicates whether the item need to be delivered. */
-	requiresShipping?: boolean
+	requiresShipping: boolean
 };
 	["CheckoutLineCountableConnection"]: {
 	__typename: "CheckoutLineCountableConnection",
@@ -16452,7 +18402,12 @@ error isn't associated with a particular field. */
 		/** The number of items purchased. */
 	quantity: number,
 	/** ID of the product variant. */
-	variantId: string
+	variantId: string,
+	/** Added in Saleor 3.1. Custom price of the item. Can be set only by apps with
+`HANDLE_CHECKOUTS` permission. When the line with the same variant will be
+provided multiple times, the last price will be used. Note: this feature is in
+a preview state and can be subject to changes at later point. */
+	price?: GraphQLTypes["PositiveDecimal"]
 };
 	/** Adds a checkout line to the existing checkout.If line was already in checkout, its quantity will be increased. */
 ["CheckoutLinesAdd"]: {
@@ -16476,6 +18431,17 @@ error isn't associated with a particular field. */
 	checkout?: GraphQLTypes["Checkout"],
 	checkoutErrors: Array<GraphQLTypes["CheckoutError"]>,
 	errors: Array<GraphQLTypes["CheckoutError"]>
+};
+	["CheckoutLineUpdateInput"]: {
+		/** The number of items purchased. Optional for apps, required for any other users. */
+	quantity?: number,
+	/** ID of the product variant. */
+	variantId: string,
+	/** Added in Saleor 3.1. Custom price of the item. Can be set only by apps with
+`HANDLE_CHECKOUTS` permission. When the line with the same variant will be
+provided multiple times, the last price will be used. Note: this feature is in
+a preview state and can be subject to changes at later point. */
+	price?: GraphQLTypes["PositiveDecimal"]
 };
 	/** Create a new payment for given checkout. */
 ["CheckoutPaymentCreate"]: {
@@ -16518,6 +18484,12 @@ error isn't associated with a particular field. */
 	/** Sort checkouts by the selected field. */
 	field: GraphQLTypes["CheckoutSortField"]
 };
+	["CheckoutUpdated"]: {
+	__typename: "CheckoutUpdated",
+	/** Added in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	checkout?: GraphQLTypes["Checkout"]
+};
 	["ChoiceValue"]: {
 	__typename: "ChoiceValue",
 	raw?: string,
@@ -16527,10 +18499,39 @@ error isn't associated with a particular field. */
 ["Collection"]: {
 	__typename: "Collection",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	seoTitle?: string,
 	seoDescription?: string,
 	name: string,
@@ -16545,10 +18546,10 @@ error isn't associated with a particular field. */
 	backgroundImage?: GraphQLTypes["Image"],
 	/** Returns translated collection fields for the given language code. */
 	translation?: GraphQLTypes["CollectionTranslation"],
-	/** List of channels in which the collection is available. */
+	/** List of channels in which the collection is available. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	channelListings?: Array<GraphQLTypes["CollectionChannelListing"]>
 };
-	/** Adds products to a collection. */
+	/** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionAddProducts"]: {
 	__typename: "CollectionAddProducts",
 	/** Collection to which products will be added. */
@@ -16556,7 +18557,7 @@ error isn't associated with a particular field. */
 	collectionErrors: Array<GraphQLTypes["CollectionError"]>,
 	errors: Array<GraphQLTypes["CollectionError"]>
 };
-	/** Deletes collections. */
+	/** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionBulkDelete"]: {
 	__typename: "CollectionBulkDelete",
 	/** Returns how many objects were affected. */
@@ -16569,6 +18570,8 @@ error isn't associated with a particular field. */
 	__typename: "CollectionChannelListing",
 	id: string,
 	publicationDate?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. The collection publication date. */
+	publishedAt?: GraphQLTypes["DateTime"],
 	isPublished: boolean,
 	channel: GraphQLTypes["Channel"]
 };
@@ -16588,7 +18591,7 @@ error isn't associated with a particular field. */
 	/** List of channels IDs which causes the error. */
 	channels?: Array<string>
 };
-	/** Manage collection's availability in channels. */
+	/** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionChannelListingUpdate"]: {
 	__typename: "CollectionChannelListingUpdate",
 	/** An updated collection instance. */
@@ -16617,11 +18620,17 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new collection. */
+	/** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionCreate"]: {
 	__typename: "CollectionCreate",
 	collectionErrors: Array<GraphQLTypes["CollectionError"]>,
 	errors: Array<GraphQLTypes["CollectionError"]>,
+	collection?: GraphQLTypes["Collection"]
+};
+	["CollectionCreated"]: {
+	__typename: "CollectionCreated",
+	/** Added in Saleor 3.2. Look up a collection. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	collection?: GraphQLTypes["Collection"]
 };
 	["CollectionCreateInput"]: {
@@ -16639,16 +18648,24 @@ error isn't associated with a particular field. */
 	backgroundImageAlt?: string,
 	/** Search engine optimization fields. */
 	seo?: GraphQLTypes["SeoInput"],
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. */
 	publicationDate?: GraphQLTypes["Date"],
 	/** List of products to be added to the collection. */
-	products?: Array<string | undefined>
+	products?: Array<string>
 };
-	/** Deletes a collection. */
+	/** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionDelete"]: {
 	__typename: "CollectionDelete",
 	collectionErrors: Array<GraphQLTypes["CollectionError"]>,
 	errors: Array<GraphQLTypes["CollectionError"]>,
+	collection?: GraphQLTypes["Collection"]
+};
+	["CollectionDeleted"]: {
+	__typename: "CollectionDeleted",
+	/** Added in Saleor 3.2. Look up a collection. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	collection?: GraphQLTypes["Collection"]
 };
 	["CollectionError"]: {
@@ -16668,8 +18685,8 @@ error isn't associated with a particular field. */
 	["CollectionFilterInput"]: {
 		published?: GraphQLTypes["CollectionPublished"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	ids?: Array<string | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	ids?: Array<string>,
 	/** Specifies the channel by which the data should be filtered. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
@@ -16690,11 +18707,13 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	backgroundImageAlt?: string,
 	/** Search engine optimization fields. */
 	seo?: GraphQLTypes["SeoInput"],
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. */
 	publicationDate?: GraphQLTypes["Date"]
 };
 	["CollectionPublished"]: CollectionPublished;
-	/** Remove products from a collection. */
+	/** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionRemoveProducts"]: {
 	__typename: "CollectionRemoveProducts",
 	/** Collection from which products will be removed. */
@@ -16702,7 +18721,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	collectionErrors: Array<GraphQLTypes["CollectionError"]>,
 	errors: Array<GraphQLTypes["CollectionError"]>
 };
-	/** Reorder the products of a collection. */
+	/** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionReorderProducts"]: {
 	__typename: "CollectionReorderProducts",
 	/** Collection from which products are reordered. */
@@ -16714,7 +18733,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	["CollectionSortingInput"]: {
 		/** Specifies the direction in which to sort products. */
 	direction: GraphQLTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?: string,
@@ -16735,7 +18754,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Represents a collection of products. */
 	collection?: GraphQLTypes["Collection"]
 };
-	/** Creates/updates translations for a collection. */
+	/** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["CollectionTranslate"]: {
 	__typename: "CollectionTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -16754,11 +18773,17 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Translated description of the product (JSON). */
 	descriptionJson?: GraphQLTypes["JSONString"]
 };
-	/** Updates a collection. */
+	/** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["CollectionUpdate"]: {
 	__typename: "CollectionUpdate",
 	collectionErrors: Array<GraphQLTypes["CollectionError"]>,
 	errors: Array<GraphQLTypes["CollectionError"]>,
+	collection?: GraphQLTypes["Collection"]
+};
+	["CollectionUpdated"]: {
+	__typename: "CollectionUpdated",
+	/** Added in Saleor 3.2. Look up a collection. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	collection?: GraphQLTypes["Collection"]
 };
 	/** Stores information about a single configuration field. */
@@ -16791,7 +18816,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>
 };
-	/** Confirm the email change of the logged-in user. */
+	/** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["ConfirmEmailChange"]: {
 	__typename: "ConfirmEmailChange",
 	/** A user instance with a new email. */
@@ -16844,7 +18869,7 @@ return all countries. */
 	/** Four-digit number representing the card’s expiration year. */
 	expYear?: number
 };
-	/** Deletes customers. */
+	/** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerBulkDelete"]: {
 	__typename: "CustomerBulkDelete",
 	/** Returns how many objects were affected. */
@@ -16852,14 +18877,20 @@ return all countries. */
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>
 };
-	/** Creates a new customer. */
+	/** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerCreate"]: {
 	__typename: "CustomerCreate",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>,
 	user?: GraphQLTypes["User"]
 };
-	/** Deletes a customer. */
+	["CustomerCreated"]: {
+	__typename: "CustomerCreated",
+	/** Added in Saleor 3.2. Look up a user. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	user?: GraphQLTypes["User"]
+};
+	/** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerDelete"]: {
 	__typename: "CustomerDelete",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
@@ -16894,7 +18925,7 @@ return all countries. */
 	numberOfOrders?: GraphQLTypes["IntRangeInput"],
 	placedOrders?: GraphQLTypes["DateRangeInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
 	updatedAt?: GraphQLTypes["DateTimeRangeInput"]
 };
 	["CustomerInput"]: {
@@ -16915,11 +18946,17 @@ return all countries. */
 	/** User language code. */
 	languageCode?: GraphQLTypes["LanguageCodeEnum"]
 };
-	/** Updates an existing customer. */
+	/** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
 ["CustomerUpdate"]: {
 	__typename: "CustomerUpdate",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>,
+	user?: GraphQLTypes["User"]
+};
+	["CustomerUpdated"]: {
+	__typename: "CustomerUpdated",
+	/** Added in Saleor 3.2. Look up a user. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	user?: GraphQLTypes["User"]
 };
 	/** The `Date` scalar type represents a Date
@@ -16942,27 +18979,29 @@ value as specified by
 	/** End date. */
 	lte?: GraphQLTypes["DateTime"]
 };
-	/** Deactivate all JWT tokens of the currently authenticated user. */
+	/** Deactivate all JWT tokens of the currently authenticated user. Requires one of
+the following permissions: AUTHENTICATED_USER. */
 ["DeactivateAllUserTokens"]: {
 	__typename: "DeactivateAllUserTokens",
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>
 };
-	/** Delete metadata of an object. */
+	/** Delete metadata of an object. To use it, you need to have access to the modified object. */
 ["DeleteMetadata"]: {
 	__typename: "DeleteMetadata",
 	metadataErrors: Array<GraphQLTypes["MetadataError"]>,
 	errors: Array<GraphQLTypes["MetadataError"]>,
 	item?: GraphQLTypes["ObjectWithMetadata"]
 };
-	/** Delete object's private metadata. */
+	/** Delete object's private metadata. To use it, you need to be an authenticated
+staff user or an app and have access to the modified object. */
 ["DeletePrivateMetadata"]: {
 	__typename: "DeletePrivateMetadata",
 	metadataErrors: Array<GraphQLTypes["MetadataError"]>,
 	errors: Array<GraphQLTypes["MetadataError"]>,
 	item?: GraphQLTypes["ObjectWithMetadata"]
 };
-	/** New in Saleor 3.1. Represents a delivery method chosen for the checkout.
+	/** Added in Saleor 3.1. Represents a delivery method chosen for the checkout.
 `Warehouse` type is used when checkout is marked as "click and collect" and
 `ShippingMethod` otherwise. Note: this feature is in a preview state and can be
 subject to changes at later point. */
@@ -16974,17 +19013,46 @@ subject to changes at later point. */
 	["DigitalContent"]: {
 	__typename: "DigitalContent",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	useDefaultSettings: boolean,
 	automaticFulfillment: boolean,
 	contentFile: string,
 	maxDownloads?: number,
 	urlValidDays?: number,
 	/** List of URLs for the digital variant. */
-	urls?: Array<GraphQLTypes["DigitalContentUrl"] | undefined>,
+	urls?: Array<GraphQLTypes["DigitalContentUrl"]>,
 	/** Product variant assigned to digital content. */
 	productVariant: GraphQLTypes["ProductVariant"]
 };
@@ -17005,7 +19073,8 @@ subject to changes at later point. */
 };
 	/** Create new digital content. This mutation must be sent as a `multipart` request.
 More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentCreate"]: {
 	__typename: "DigitalContentCreate",
 	variant?: GraphQLTypes["ProductVariant"],
@@ -17013,7 +19082,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Remove digital content assigned to given variant. */
+	/** Remove digital content assigned to given variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentDelete"]: {
 	__typename: "DigitalContentDelete",
 	variant?: GraphQLTypes["ProductVariant"],
@@ -17030,7 +19099,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Overwrite default automatic_fulfillment setting for variant. */
 	automaticFulfillment?: boolean
 };
-	/** Update digital content. */
+	/** Update digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentUpdate"]: {
 	__typename: "DigitalContentUpdate",
 	variant?: GraphQLTypes["ProductVariant"],
@@ -17061,7 +19130,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** UUID of digital content. */
 	token: GraphQLTypes["UUID"]
 };
-	/** Generate new URL to digital content. */
+	/** Generate new URL to digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["DigitalContentUrlCreate"]: {
 	__typename: "DigitalContentUrlCreate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
@@ -17102,7 +19171,7 @@ error isn't associated with a particular field. */
 	/** Shop's absolute URL. */
 	url: string
 };
-	/** Deletes draft orders. */
+	/** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderBulkDelete"]: {
 	__typename: "DraftOrderBulkDelete",
 	/** Returns how many objects were affected. */
@@ -17110,7 +19179,7 @@ error isn't associated with a particular field. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Completes creating an order. */
+	/** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderComplete"]: {
 	__typename: "DraftOrderComplete",
 	/** Completed order. */
@@ -17118,11 +19187,17 @@ error isn't associated with a particular field. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Creates a new draft order. */
+	/** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderCreate"]: {
 	__typename: "DraftOrderCreate",
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>,
+	order?: GraphQLTypes["Order"]
+};
+	["DraftOrderCreated"]: {
+	__typename: "DraftOrderCreated",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	order?: GraphQLTypes["Order"]
 };
 	["DraftOrderCreateInput"]: {
@@ -17147,13 +19222,19 @@ error isn't associated with a particular field. */
 	/** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
 	redirectUrl?: string,
 	/** Variant line input consisting of variant ID and quantity of products. */
-	lines?: Array<GraphQLTypes["OrderLineCreateInput"] | undefined>
+	lines?: Array<GraphQLTypes["OrderLineCreateInput"]>
 };
-	/** Deletes a draft order. */
+	/** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderDelete"]: {
 	__typename: "DraftOrderDelete",
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>,
+	order?: GraphQLTypes["Order"]
+};
+	["DraftOrderDeleted"]: {
+	__typename: "DraftOrderDeleted",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	order?: GraphQLTypes["Order"]
 };
 	["DraftOrderInput"]: {
@@ -17178,7 +19259,7 @@ error isn't associated with a particular field. */
 	/** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
 	redirectUrl?: string
 };
-	/** Deletes order lines. */
+	/** Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderLinesBulkDelete"]: {
 	__typename: "DraftOrderLinesBulkDelete",
 	/** Returns how many objects were affected. */
@@ -17186,12 +19267,75 @@ error isn't associated with a particular field. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Updates a draft order. */
+	/** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["DraftOrderUpdate"]: {
 	__typename: "DraftOrderUpdate",
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>,
 	order?: GraphQLTypes["Order"]
+};
+	["DraftOrderUpdated"]: {
+	__typename: "DraftOrderUpdated",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?: GraphQLTypes["Order"]
+};
+	["Event"]:{
+	__typename:"CategoryCreated" | "CategoryUpdated" | "CategoryDeleted" | "ChannelCreated" | "ChannelUpdated" | "ChannelDeleted" | "ChannelStatusChanged" | "GiftCardCreated" | "GiftCardUpdated" | "GiftCardDeleted" | "GiftCardStatusChanged" | "OrderCreated" | "OrderUpdated" | "OrderConfirmed" | "OrderFullyPaid" | "OrderCancelled" | "OrderFulfilled" | "DraftOrderCreated" | "DraftOrderUpdated" | "DraftOrderDeleted" | "ProductCreated" | "ProductUpdated" | "ProductDeleted" | "ProductVariantCreated" | "ProductVariantUpdated" | "ProductVariantOutOfStock" | "ProductVariantBackInStock" | "ProductVariantDeleted" | "SaleCreated" | "SaleUpdated" | "SaleDeleted" | "InvoiceRequested" | "InvoiceDeleted" | "InvoiceSent" | "FulfillmentCreated" | "FulfillmentCanceled" | "CustomerCreated" | "CustomerUpdated" | "CollectionCreated" | "CollectionUpdated" | "CollectionDeleted" | "CheckoutCreated" | "CheckoutUpdated" | "PageCreated" | "PageUpdated" | "PageDeleted" | "ShippingPriceCreated" | "ShippingPriceUpdated" | "ShippingPriceDeleted" | "ShippingZoneCreated" | "ShippingZoneUpdated" | "ShippingZoneDeleted" | "TranslationCreated" | "TranslationUpdated"
+	['...on CategoryCreated']: '__union' & GraphQLTypes["CategoryCreated"];
+	['...on CategoryUpdated']: '__union' & GraphQLTypes["CategoryUpdated"];
+	['...on CategoryDeleted']: '__union' & GraphQLTypes["CategoryDeleted"];
+	['...on ChannelCreated']: '__union' & GraphQLTypes["ChannelCreated"];
+	['...on ChannelUpdated']: '__union' & GraphQLTypes["ChannelUpdated"];
+	['...on ChannelDeleted']: '__union' & GraphQLTypes["ChannelDeleted"];
+	['...on ChannelStatusChanged']: '__union' & GraphQLTypes["ChannelStatusChanged"];
+	['...on GiftCardCreated']: '__union' & GraphQLTypes["GiftCardCreated"];
+	['...on GiftCardUpdated']: '__union' & GraphQLTypes["GiftCardUpdated"];
+	['...on GiftCardDeleted']: '__union' & GraphQLTypes["GiftCardDeleted"];
+	['...on GiftCardStatusChanged']: '__union' & GraphQLTypes["GiftCardStatusChanged"];
+	['...on OrderCreated']: '__union' & GraphQLTypes["OrderCreated"];
+	['...on OrderUpdated']: '__union' & GraphQLTypes["OrderUpdated"];
+	['...on OrderConfirmed']: '__union' & GraphQLTypes["OrderConfirmed"];
+	['...on OrderFullyPaid']: '__union' & GraphQLTypes["OrderFullyPaid"];
+	['...on OrderCancelled']: '__union' & GraphQLTypes["OrderCancelled"];
+	['...on OrderFulfilled']: '__union' & GraphQLTypes["OrderFulfilled"];
+	['...on DraftOrderCreated']: '__union' & GraphQLTypes["DraftOrderCreated"];
+	['...on DraftOrderUpdated']: '__union' & GraphQLTypes["DraftOrderUpdated"];
+	['...on DraftOrderDeleted']: '__union' & GraphQLTypes["DraftOrderDeleted"];
+	['...on ProductCreated']: '__union' & GraphQLTypes["ProductCreated"];
+	['...on ProductUpdated']: '__union' & GraphQLTypes["ProductUpdated"];
+	['...on ProductDeleted']: '__union' & GraphQLTypes["ProductDeleted"];
+	['...on ProductVariantCreated']: '__union' & GraphQLTypes["ProductVariantCreated"];
+	['...on ProductVariantUpdated']: '__union' & GraphQLTypes["ProductVariantUpdated"];
+	['...on ProductVariantOutOfStock']: '__union' & GraphQLTypes["ProductVariantOutOfStock"];
+	['...on ProductVariantBackInStock']: '__union' & GraphQLTypes["ProductVariantBackInStock"];
+	['...on ProductVariantDeleted']: '__union' & GraphQLTypes["ProductVariantDeleted"];
+	['...on SaleCreated']: '__union' & GraphQLTypes["SaleCreated"];
+	['...on SaleUpdated']: '__union' & GraphQLTypes["SaleUpdated"];
+	['...on SaleDeleted']: '__union' & GraphQLTypes["SaleDeleted"];
+	['...on InvoiceRequested']: '__union' & GraphQLTypes["InvoiceRequested"];
+	['...on InvoiceDeleted']: '__union' & GraphQLTypes["InvoiceDeleted"];
+	['...on InvoiceSent']: '__union' & GraphQLTypes["InvoiceSent"];
+	['...on FulfillmentCreated']: '__union' & GraphQLTypes["FulfillmentCreated"];
+	['...on FulfillmentCanceled']: '__union' & GraphQLTypes["FulfillmentCanceled"];
+	['...on CustomerCreated']: '__union' & GraphQLTypes["CustomerCreated"];
+	['...on CustomerUpdated']: '__union' & GraphQLTypes["CustomerUpdated"];
+	['...on CollectionCreated']: '__union' & GraphQLTypes["CollectionCreated"];
+	['...on CollectionUpdated']: '__union' & GraphQLTypes["CollectionUpdated"];
+	['...on CollectionDeleted']: '__union' & GraphQLTypes["CollectionDeleted"];
+	['...on CheckoutCreated']: '__union' & GraphQLTypes["CheckoutCreated"];
+	['...on CheckoutUpdated']: '__union' & GraphQLTypes["CheckoutUpdated"];
+	['...on PageCreated']: '__union' & GraphQLTypes["PageCreated"];
+	['...on PageUpdated']: '__union' & GraphQLTypes["PageUpdated"];
+	['...on PageDeleted']: '__union' & GraphQLTypes["PageDeleted"];
+	['...on ShippingPriceCreated']: '__union' & GraphQLTypes["ShippingPriceCreated"];
+	['...on ShippingPriceUpdated']: '__union' & GraphQLTypes["ShippingPriceUpdated"];
+	['...on ShippingPriceDeleted']: '__union' & GraphQLTypes["ShippingPriceDeleted"];
+	['...on ShippingZoneCreated']: '__union' & GraphQLTypes["ShippingZoneCreated"];
+	['...on ShippingZoneUpdated']: '__union' & GraphQLTypes["ShippingZoneUpdated"];
+	['...on ShippingZoneDeleted']: '__union' & GraphQLTypes["ShippingZoneDeleted"];
+	['...on TranslationCreated']: '__union' & GraphQLTypes["TranslationCreated"];
+	['...on TranslationUpdated']: '__union' & GraphQLTypes["TranslationUpdated"];
 };
 	/** Event delivery. */
 ["EventDelivery"]: {
@@ -17213,10 +19357,17 @@ error isn't associated with a particular field. */
 	id: string,
 	/** Event delivery creation date and time. */
 	createdAt: GraphQLTypes["DateTime"],
+	/** Task id for delivery attempt. */
 	taskId?: string,
+	/** Delivery attempt duration. */
 	duration?: number,
+	/** Delivery attempt response content. */
 	response?: string,
+	/** Response headers for delivery attempt. */
 	responseHeaders?: string,
+	/** Delivery attempt response status code. */
+	responseStatusCode?: number,
+	/** Request headers for delivery attempt. */
 	requestHeaders?: string,
 	/** Event delivery status. */
 	status: GraphQLTypes["EventDeliveryStatusEnum"]
@@ -17262,7 +19413,7 @@ error isn't associated with a particular field. */
 		status?: GraphQLTypes["EventDeliveryStatusEnum"],
 	eventType?: GraphQLTypes["WebhookEventTypeEnum"]
 };
-	/** Retries event delivery. */
+	/** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
 ["EventDeliveryRetry"]: {
 	__typename: "EventDeliveryRetry",
 	/** Event delivery. */
@@ -17298,9 +19449,11 @@ error isn't associated with a particular field. */
 	date: GraphQLTypes["DateTime"],
 	/** Export event type. */
 	type: GraphQLTypes["ExportEventsEnum"],
-	/** User who performed the action. */
+	/** User who performed the action. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AccountPermissions.MANAGE_STAFF. */
 	user?: GraphQLTypes["User"],
-	/** App which performed the action. */
+	/** App which performed the action. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AppPermission.MANAGE_APPS. */
 	app?: GraphQLTypes["App"],
 	/** Content of the event. */
 	message: string
@@ -17355,8 +19508,9 @@ error isn't associated with a particular field. */
 	/** Sort export file by the selected field. */
 	field: GraphQLTypes["ExportFileSortField"]
 };
-	/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["ExportGiftCards"]: {
 	__typename: "ExportGiftCards",
 	/** The newly created export file job which is responsible for export data. */
@@ -17383,7 +19537,7 @@ preview state and can be subject to changes at later point. */
 	/** List of product fields witch should be exported. */
 	fields?: Array<GraphQLTypes["ProductFieldEnum"]>
 };
-	/** Export products to csv file. */
+	/** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ExportProducts"]: {
 	__typename: "ExportProducts",
 	/** The newly created export file job which is responsible for export data. */
@@ -17439,8 +19593,8 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["ExternalNotificationErrorCodes"]: ExternalNotificationErrorCodes;
-	/** New in Saleor 3.1. Trigger sending a notification with the notify plugin method.
-Serializes nodes provided as ids parameter and includes this data in the
+	/** Added in Saleor 3.1. Trigger sending a notification with the notify plugin
+method. Serializes nodes provided as ids parameter and includes this data in the
 notification payload. */
 ["ExternalNotificationTrigger"]: {
 	__typename: "ExternalNotificationTrigger",
@@ -17448,7 +19602,7 @@ notification payload. */
 };
 	["ExternalNotificationTriggerInput"]: {
 		/** The list of customers or orders node IDs that will be serialized and included in the notification payload. */
-	ids?: Array<string>,
+	ids: Array<string>,
 	/** Additional payload that will be merged with the one based on the bussines object ID. */
 	extraPayload?: GraphQLTypes["JSONString"],
 	/** External event type. This field is passed to a plugin as an event type. */
@@ -17505,7 +19659,8 @@ notification payload. */
 ["FileTypesEnum"]: FileTypesEnum;
 	/** Upload a file. This mutation must be sent as a `multipart` request. More
 detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 ["FileUpload"]: {
 	__typename: "FileUpload",
 	uploadedFile?: GraphQLTypes["File"],
@@ -17516,22 +19671,51 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 ["Fulfillment"]: {
 	__typename: "Fulfillment",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	fulfillmentOrder: number,
 	status: GraphQLTypes["FulfillmentStatus"],
 	trackingNumber: string,
 	created: GraphQLTypes["DateTime"],
 	/** List of lines for the fulfillment. */
-	lines?: Array<GraphQLTypes["FulfillmentLine"] | undefined>,
+	lines?: Array<GraphQLTypes["FulfillmentLine"]>,
 	/** User-friendly fulfillment status. */
 	statusDisplay?: string,
 	/** Warehouse from fulfillment was fulfilled. */
 	warehouse?: GraphQLTypes["Warehouse"]
 };
-	/** New in Saleor 3.1. Approve existing fulfillment. */
+	/** Added in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentApprove"]: {
 	__typename: "FulfillmentApprove",
 	/** An approved fulfillment. */
@@ -17541,7 +19725,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Cancels existing fulfillment and optionally restocks items. */
+	/** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentCancel"]: {
 	__typename: "FulfillmentCancel",
 	/** A canceled fulfillment. */
@@ -17551,9 +19735,21 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
+	["FulfillmentCanceled"]: {
+	__typename: "FulfillmentCanceled",
+	/** Added in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	fulfillment?: GraphQLTypes["Fulfillment"]
+};
 	["FulfillmentCancelInput"]: {
 		/** ID of a warehouse where items will be restocked. Optional when fulfillment is in WAITING_FOR_APPROVAL state. */
 	warehouseId?: string
+};
+	["FulfillmentCreated"]: {
+	__typename: "FulfillmentCreated",
+	/** Added in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	fulfillment?: GraphQLTypes["Fulfillment"]
 };
 	/** Represents line of the fulfillment. */
 ["FulfillmentLine"]: {
@@ -17562,7 +19758,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	quantity: number,
 	orderLine?: GraphQLTypes["OrderLine"]
 };
-	/** Refund products. */
+	/** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentRefundProducts"]: {
 	__typename: "FulfillmentRefundProducts",
 	/** A refunded fulfillment. */
@@ -17572,7 +19768,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Return products. */
+	/** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentReturnProducts"]: {
 	__typename: "FulfillmentReturnProducts",
 	/** A return fulfillment. */
@@ -17588,7 +19784,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 };
 	/** An enumeration. */
 ["FulfillmentStatus"]: FulfillmentStatus;
-	/** Updates a fulfillment for an order. */
+	/** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["FulfillmentUpdateTracking"]: {
 	__typename: "FulfillmentUpdateTracking",
 	/** A fulfillment with updated tracking. */
@@ -17621,45 +19817,80 @@ used during checkout by providing a valid gift card codes. */
 ["GiftCard"]: {
 	__typename: "GiftCard",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	/** Code in format which allows displaying in a user interface. */
 	displayCode: string,
 	/** Last 4 characters of gift card code. */
 	last4CodeChars: string,
-	/** Gift card code. Can be fetched by staff member with manage gift card
-permission when gift card wasn't used yet and by the gift card owner. */
+	/** Gift card code. Can be fetched by a staff member with
+GiftcardPermissions.MANAGE_GIFT_CARD when gift card wasn't yet used and by the
+gift card owner. */
 	code: string,
 	created: GraphQLTypes["DateTime"],
-	/** New in Saleor 3.1. The user who bought or issued a gift card. Note: this
+	/** Added in Saleor 3.1. The user who bought or issued a gift card. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	createdBy?: GraphQLTypes["User"],
-	/** New in Saleor 3.1. The customer who used a gift card. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The customer who used a gift card. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	usedBy?: GraphQLTypes["User"],
-	/** New in Saleor 3.1. Email address of the user who bought or issued gift card.
-Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Email address of the user who bought or issued gift card.
+Requires one of the following permissions: AccountPermissions.MANAGE_USERS,
+AuthorizationFilters.OWNER. Note: this feature is in a preview state and can
+be subject to changes at later point. */
 	createdByEmail?: string,
-	/** New in Saleor 3.1. Email address of the customer who used a gift card. Note:
+	/** Added in Saleor 3.1. Email address of the customer who used a gift card. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	usedByEmail?: string,
 	lastUsedOn?: GraphQLTypes["DateTime"],
 	expiryDate?: GraphQLTypes["Date"],
-	/** New in Saleor 3.1. App which created the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. App which created the gift card. Requires one of the
+following permissions: AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER.
+Note: this feature is in a preview state and can be subject to changes at later point. */
 	app?: GraphQLTypes["App"],
-	/** New in Saleor 3.1. Related gift card product. Note: this feature is in a
+	/** Added in Saleor 3.1. Related gift card product. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	product?: GraphQLTypes["Product"],
-	/** New in Saleor 3.1. List of events associated with the gift card. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of events associated with the gift card. Note: this
+feature is in a preview state and can be subject to changes at later point.
+Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	events: Array<GraphQLTypes["GiftCardEvent"]>,
-	/** New in Saleor 3.1. The gift card tag. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The gift card tag. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	tags: Array<GraphQLTypes["GiftCardTag"]>,
-	/** New in Saleor 3.1. Slug of the channel where the gift card was bought. Note:
+	/** Added in Saleor 3.1. Slug of the channel where the gift card was bought. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	boughtInChannel?: string,
 	isActive: boolean,
@@ -17672,7 +19903,7 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** Start date of gift card. */
 	startDate?: GraphQLTypes["DateTime"]
 };
-	/** Activate a gift card. */
+	/** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardActivate"]: {
 	__typename: "GiftCardActivate",
 	/** Activated gift card. */
@@ -17680,8 +19911,9 @@ this feature is in a preview state and can be subject to changes at later point.
 	giftCardErrors: Array<GraphQLTypes["GiftCardError"]>,
 	errors: Array<GraphQLTypes["GiftCardError"]>
 };
-	/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardAddNote"]: {
 	__typename: "GiftCardAddNote",
 	/** Gift card with the note added. */
@@ -17694,15 +19926,18 @@ preview state and can be subject to changes at later point. */
 		/** Note message. */
 	message: string
 };
-	/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkActivate"]: {
 	__typename: "GiftCardBulkActivate",
 	/** Returns how many objects were affected. */
 	count: number,
 	errors: Array<GraphQLTypes["GiftCardError"]>
 };
-	/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Create gift cards. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkCreate"]: {
 	__typename: "GiftCardBulkCreate",
 	/** Returns how many objects were created. */
@@ -17723,15 +19958,18 @@ and can be subject to changes at later point. */
 	/** Determine if gift card is active. */
 	isActive: boolean
 };
-	/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkDeactivate"]: {
 	__typename: "GiftCardBulkDeactivate",
 	/** Returns how many objects were affected. */
 	count: number,
 	errors: Array<GraphQLTypes["GiftCardError"]>
 };
-	/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardBulkDelete"]: {
 	__typename: "GiftCardBulkDelete",
 	/** Returns how many objects were affected. */
@@ -17753,18 +19991,24 @@ state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new gift card. */
+	/** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardCreate"]: {
 	__typename: "GiftCardCreate",
 	giftCardErrors: Array<GraphQLTypes["GiftCardError"]>,
 	errors: Array<GraphQLTypes["GiftCardError"]>,
 	giftCard?: GraphQLTypes["GiftCard"]
 };
+	["GiftCardCreated"]: {
+	__typename: "GiftCardCreated",
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?: GraphQLTypes["GiftCard"]
+};
 	["GiftCardCreateInput"]: {
-		/** New in Saleor 3.1. The gift card tags to add. Note: this feature is in a
+		/** Added in Saleor 3.1. The gift card tags to add. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	addTags?: Array<string>,
-	/** New in Saleor 3.1. The gift card expiry date. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card expiry date. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	expiryDate?: GraphQLTypes["Date"],
 	/** Start date of the gift card in ISO 8601 format. 
@@ -17779,21 +20023,21 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `expiryDate` from `exp
 	balance: GraphQLTypes["PriceInput"],
 	/** Email of the customer to whom gift card will be sent. */
 	userEmail?: string,
-	/** New in Saleor 3.1. Slug of a channel from which the email should be sent.
+	/** Added in Saleor 3.1. Slug of a channel from which the email should be sent.
 Note: this feature is in a preview state and can be subject to changes at later point. */
 	channel?: string,
-	/** New in Saleor 3.1. Determine if gift card is active. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determine if gift card is active. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	isActive: boolean,
 	/** Code to use the gift card. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. The code is now auto generated. */
 	code?: string,
-	/** New in Saleor 3.1. The gift card note from the staff member. Note: this
+	/** Added in Saleor 3.1. The gift card note from the staff member. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	note?: string
 };
-	/** Deactivate a gift card. */
+	/** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardDeactivate"]: {
 	__typename: "GiftCardDeactivate",
 	/** Deactivated gift card. */
@@ -17801,11 +20045,19 @@ feature is in a preview state and can be subject to changes at later point. */
 	giftCardErrors: Array<GraphQLTypes["GiftCardError"]>,
 	errors: Array<GraphQLTypes["GiftCardError"]>
 };
-	/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift card. Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_GIFT_CARD. */
 ["GiftCardDelete"]: {
 	__typename: "GiftCardDelete",
 	giftCardErrors: Array<GraphQLTypes["GiftCardError"]>,
 	errors: Array<GraphQLTypes["GiftCardError"]>,
+	giftCard?: GraphQLTypes["GiftCard"]
+};
+	["GiftCardDeleted"]: {
+	__typename: "GiftCardDeleted",
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	giftCard?: GraphQLTypes["GiftCard"]
 };
 	["GiftCardError"]: {
@@ -17822,7 +20074,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["GiftCardErrorCode"]: GiftCardErrorCode;
-	/** New in Saleor 3.1. History log of the gift card. Note: this feature is in a
+	/** Added in Saleor 3.1. History log of the gift card. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 ["GiftCardEvent"]: {
 	__typename: "GiftCardEvent",
@@ -17831,9 +20083,12 @@ preview state and can be subject to changes at later point. */
 	date?: GraphQLTypes["DateTime"],
 	/** Gift card event type. */
 	type?: GraphQLTypes["GiftCardEventsEnum"],
-	/** User who performed the action. */
+	/** User who performed the action. Requires one of the following permissions:
+AccountPermissions.MANAGE_USERS, AccountPermissions.MANAGE_STAFF,
+AuthorizationFilters.OWNER. */
 	user?: GraphQLTypes["User"],
-	/** App that performed the action. */
+	/** App that performed the action. Requires one of the following permissions:
+AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER. */
 	app?: GraphQLTypes["App"],
 	/** Content of the event. */
 	message?: string,
@@ -17873,18 +20128,19 @@ preview state and can be subject to changes at later point. */
 ["GiftCardEventsEnum"]: GiftCardEventsEnum;
 	["GiftCardFilterInput"]: {
 		isActive?: boolean,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	tags?: Array<string | undefined>,
-	products?: Array<string | undefined>,
-	usedBy?: Array<string | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	tags?: Array<string>,
+	products?: Array<string>,
+	usedBy?: Array<string>,
 	used?: boolean,
 	currency?: string,
 	currentBalance?: GraphQLTypes["PriceRangeInput"],
 	initialBalance?: GraphQLTypes["PriceRangeInput"],
 	code?: string
 };
-	/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardResend"]: {
 	__typename: "GiftCardResend",
 	/** Gift card which has been sent. */
@@ -17921,7 +20177,7 @@ error isn't associated with a particular field. */
 ["GiftCardSettingsErrorCode"]: GiftCardSettingsErrorCode;
 	/** An enumeration. */
 ["GiftCardSettingsExpiryTypeEnum"]: GiftCardSettingsExpiryTypeEnum;
-	/** Update gift card settings. */
+	/** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardSettingsUpdate"]: {
 	__typename: "GiftCardSettingsUpdate",
 	/** Gift card settings. */
@@ -17941,7 +20197,14 @@ error isn't associated with a particular field. */
 	/** Sort gift cards by the selected field. */
 	field: GraphQLTypes["GiftCardSortField"]
 };
-	/** New in Saleor 3.1. The gift card tag. Note: this feature is in a preview state and can be subject to changes at later point. */
+	["GiftCardStatusChanged"]: {
+	__typename: "GiftCardStatusChanged",
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?: GraphQLTypes["GiftCard"]
+};
+	/** Added in Saleor 3.1. The gift card tag. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 ["GiftCardTag"]: {
 	__typename: "GiftCardTag",
 	id: string,
@@ -17965,18 +20228,24 @@ error isn't associated with a particular field. */
 	["GiftCardTagFilterInput"]: {
 		search?: string
 };
-	/** Update a gift card. */
+	/** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 ["GiftCardUpdate"]: {
 	__typename: "GiftCardUpdate",
 	giftCardErrors: Array<GraphQLTypes["GiftCardError"]>,
 	errors: Array<GraphQLTypes["GiftCardError"]>,
 	giftCard?: GraphQLTypes["GiftCard"]
 };
+	["GiftCardUpdated"]: {
+	__typename: "GiftCardUpdated",
+	/** Added in Saleor 3.2. Look up a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	giftCard?: GraphQLTypes["GiftCard"]
+};
 	["GiftCardUpdateInput"]: {
-		/** New in Saleor 3.1. The gift card tags to add. Note: this feature is in a
+		/** Added in Saleor 3.1. The gift card tags to add. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	addTags?: Array<string>,
-	/** New in Saleor 3.1. The gift card expiry date. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card expiry date. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	expiryDate?: GraphQLTypes["Date"],
 	/** Start date of the gift card in ISO 8601 format. 
@@ -17987,10 +20256,10 @@ DEPRECATED: this field will be removed in Saleor 4.0. */
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `expiryDate` from `expirySettings` instead. */
 	endDate?: GraphQLTypes["Date"],
-	/** New in Saleor 3.1. The gift card tags to remove. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card tags to remove. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	removeTags?: Array<string>,
-	/** New in Saleor 3.1. The gift card balance amount. Note: this feature is in a
+	/** Added in Saleor 3.1. The gift card balance amount. Note: this feature is in a
 preview state and can be subject to changes at later point. */
 	balanceAmount?: GraphQLTypes["PositiveDecimal"]
 };
@@ -17999,10 +20268,10 @@ preview state and can be subject to changes at later point. */
 	__typename: "Group",
 	id: string,
 	name: string,
-	/** List of group users */
-	users?: Array<GraphQLTypes["User"] | undefined>,
+	/** List of group users Requires one of the following permissions: MANAGE_STAFF. */
+	users?: Array<GraphQLTypes["User"]>,
 	/** List of group permissions */
-	permissions?: Array<GraphQLTypes["Permission"] | undefined>,
+	permissions?: Array<GraphQLTypes["Permission"]>,
 	/** True, if the currently authenticated user has rights to manage a group. */
 	userCanManage: boolean
 };
@@ -18038,10 +20307,39 @@ preview state and can be subject to changes at later point. */
 	/** Represents an Invoice. */
 ["Invoice"]: {
 	__typename: "Invoice",
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	/** Job status. */
 	status: GraphQLTypes["JobStatusEnum"],
 	createdAt: GraphQLTypes["DateTime"],
@@ -18054,7 +20352,7 @@ preview state and can be subject to changes at later point. */
 	/** URL to download an invoice. */
 	url?: string
 };
-	/** Creates a ready to send invoice. */
+	/** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceCreate"]: {
 	__typename: "InvoiceCreate",
 	invoiceErrors: Array<GraphQLTypes["InvoiceError"]>,
@@ -18067,11 +20365,17 @@ preview state and can be subject to changes at later point. */
 	/** URL of an invoice to download. */
 	url: string
 };
-	/** Deletes an invoice. */
+	/** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceDelete"]: {
 	__typename: "InvoiceDelete",
 	invoiceErrors: Array<GraphQLTypes["InvoiceError"]>,
 	errors: Array<GraphQLTypes["InvoiceError"]>,
+	invoice?: GraphQLTypes["Invoice"]
+};
+	["InvoiceDeleted"]: {
+	__typename: "InvoiceDeleted",
+	/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	invoice?: GraphQLTypes["Invoice"]
 };
 	["InvoiceError"]: {
@@ -18086,7 +20390,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["InvoiceErrorCode"]: InvoiceErrorCode;
-	/** Request an invoice for the order using plugin. */
+	/** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceRequest"]: {
 	__typename: "InvoiceRequest",
 	/** Order related to an invoice. */
@@ -18095,21 +20399,33 @@ error isn't associated with a particular field. */
 	errors: Array<GraphQLTypes["InvoiceError"]>,
 	invoice?: GraphQLTypes["Invoice"]
 };
-	/** Requests deletion of an invoice. */
+	/** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceRequestDelete"]: {
 	__typename: "InvoiceRequestDelete",
 	invoiceErrors: Array<GraphQLTypes["InvoiceError"]>,
 	errors: Array<GraphQLTypes["InvoiceError"]>,
 	invoice?: GraphQLTypes["Invoice"]
 };
-	/** Send an invoice notification to the customer. */
+	["InvoiceRequested"]: {
+	__typename: "InvoiceRequested",
+	/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	invoice?: GraphQLTypes["Invoice"]
+};
+	/** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceSendNotification"]: {
 	__typename: "InvoiceSendNotification",
 	invoiceErrors: Array<GraphQLTypes["InvoiceError"]>,
 	errors: Array<GraphQLTypes["InvoiceError"]>,
 	invoice?: GraphQLTypes["Invoice"]
 };
-	/** Updates an invoice. */
+	["InvoiceSent"]: {
+	__typename: "InvoiceSent",
+	/** Added in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	invoice?: GraphQLTypes["Invoice"]
+};
+	/** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 ["InvoiceUpdate"]: {
 	__typename: "InvoiceUpdate",
 	invoiceErrors: Array<GraphQLTypes["InvoiceError"]>,
@@ -18164,7 +20480,7 @@ error isn't associated with a particular field. */
 	version: string,
 	name: string,
 	about?: string,
-	permissions?: Array<GraphQLTypes["Permission"] | undefined>,
+	permissions?: Array<GraphQLTypes["Permission"]>,
 	appUrl?: string,
 	configurationUrl?: string,
 	tokenTargetUrl?: string,
@@ -18185,15 +20501,44 @@ error isn't associated with a particular field. */
 ["Menu"]: {
 	__typename: "Menu",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	slug: string,
-	items?: Array<GraphQLTypes["MenuItem"] | undefined>
+	items?: Array<GraphQLTypes["MenuItem"]>
 };
-	/** Deletes menus. */
+	/** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuBulkDelete"]: {
 	__typename: "MenuBulkDelete",
 	/** Returns how many objects were affected. */
@@ -18216,7 +20561,7 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new Menu. */
+	/** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuCreate"]: {
 	__typename: "MenuCreate",
 	menuErrors: Array<GraphQLTypes["MenuError"]>,
@@ -18229,9 +20574,9 @@ error isn't associated with a particular field. */
 	/** Slug of the menu. Will be generated if not provided. */
 	slug?: string,
 	/** List of menu items. */
-	items?: Array<GraphQLTypes["MenuItemInput"] | undefined>
+	items?: Array<GraphQLTypes["MenuItemInput"]>
 };
-	/** Deletes a menu. */
+	/** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuDelete"]: {
 	__typename: "MenuDelete",
 	menuErrors: Array<GraphQLTypes["MenuError"]>,
@@ -18252,8 +20597,8 @@ error isn't associated with a particular field. */
 ["MenuErrorCode"]: MenuErrorCode;
 	["MenuFilterInput"]: {
 		search?: string,
-	slug?: Array<string | undefined>,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>
+	slug?: Array<string>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>
 };
 	["MenuInput"]: {
 		/** Name of the menu. */
@@ -18265,24 +20610,58 @@ error isn't associated with a particular field. */
 ["MenuItem"]: {
 	__typename: "MenuItem",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	menu: GraphQLTypes["Menu"],
 	parent?: GraphQLTypes["MenuItem"],
 	category?: GraphQLTypes["Category"],
+	/** A collection associated with this menu item. Requires one of the following
+permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collection?: GraphQLTypes["Collection"],
+	/** A page associated with this menu item. Requires one of the following
+permissions to include unpublished items: PagePermissions.MANAGE_PAGES. */
 	page?: GraphQLTypes["Page"],
 	level: number,
-	children?: Array<GraphQLTypes["MenuItem"] | undefined>,
+	children?: Array<GraphQLTypes["MenuItem"]>,
 	/** URL to the menu item. */
 	url?: string,
 	/** Returns translated menu item fields for the given language code. */
 	translation?: GraphQLTypes["MenuItemTranslation"]
 };
-	/** Deletes menu items. */
+	/** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemBulkDelete"]: {
 	__typename: "MenuItemBulkDelete",
 	/** Returns how many objects were affected. */
@@ -18305,7 +20684,7 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new menu item. */
+	/** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemCreate"]: {
 	__typename: "MenuItemCreate",
 	menuErrors: Array<GraphQLTypes["MenuError"]>,
@@ -18328,7 +20707,7 @@ error isn't associated with a particular field. */
 	/** ID of the parent menu. If empty, menu will be top level menu. */
 	parent?: string
 };
-	/** Deletes a menu item. */
+	/** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemDelete"]: {
 	__typename: "MenuItemDelete",
 	menuErrors: Array<GraphQLTypes["MenuError"]>,
@@ -18337,7 +20716,7 @@ error isn't associated with a particular field. */
 };
 	["MenuItemFilterInput"]: {
 		search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>
 };
 	["MenuItemInput"]: {
 		/** Name of the menu item. */
@@ -18351,7 +20730,7 @@ error isn't associated with a particular field. */
 	/** Page to which item points. */
 	page?: string
 };
-	/** Moves items of menus. */
+	/** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemMove"]: {
 	__typename: "MenuItemMove",
 	/** Assigned menu to move within. */
@@ -18385,7 +20764,7 @@ the item unchanged. */
 	/** Represents a single item of the related menu. Can store categories, collection or pages. */
 	menuItem?: GraphQLTypes["MenuItem"]
 };
-	/** Creates/updates translations for a menu item. */
+	/** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["MenuItemTranslate"]: {
 	__typename: "MenuItemTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -18399,7 +20778,7 @@ the item unchanged. */
 	language: GraphQLTypes["LanguageDisplay"],
 	name: string
 };
-	/** Updates a menu item. */
+	/** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuItemUpdate"]: {
 	__typename: "MenuItemUpdate",
 	menuErrors: Array<GraphQLTypes["MenuError"]>,
@@ -18413,13 +20792,23 @@ the item unchanged. */
 	/** Sort menus by the selected field. */
 	field: GraphQLTypes["MenuSortField"]
 };
-	/** Updates a menu. */
+	/** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
 ["MenuUpdate"]: {
 	__typename: "MenuUpdate",
 	menuErrors: Array<GraphQLTypes["MenuError"]>,
 	errors: Array<GraphQLTypes["MenuError"]>,
 	menu?: GraphQLTypes["Menu"]
 };
+	/** Metadata is a map of key-value pairs, both keys and values are `String`.
+
+Example:
+```
+{
+    "key1": "value1",
+    "key2": "value2"
+}
+``` */
+["Metadata"]:any;
 	["MetadataError"]: {
 	__typename: "MetadataError",
 	/** Name of a field that caused the error. A value of `null` indicates that the
@@ -18483,403 +20872,422 @@ forward, -1 moves the item one position backward, 0 leaves the item unchanged. *
 };
 	["Mutation"]: {
 	__typename: "Mutation",
-	/** Creates a new webhook subscription. */
+	/** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 	webhookCreate?: GraphQLTypes["WebhookCreate"],
-	/** Deletes a webhook subscription. */
+	/** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 	webhookDelete?: GraphQLTypes["WebhookDelete"],
-	/** Updates a webhook subscription. */
+	/** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
 	webhookUpdate?: GraphQLTypes["WebhookUpdate"],
-	/** Retries event delivery. */
+	/** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
 	eventDeliveryRetry?: GraphQLTypes["EventDeliveryRetry"],
-	/** Creates new warehouse. */
+	/** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	createWarehouse?: GraphQLTypes["WarehouseCreate"],
-	/** Updates given warehouse. */
+	/** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	updateWarehouse?: GraphQLTypes["WarehouseUpdate"],
-	/** Deletes selected warehouse. */
+	/** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	deleteWarehouse?: GraphQLTypes["WarehouseDelete"],
-	/** Add shipping zone to given warehouse. */
+	/** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	assignWarehouseShippingZone?: GraphQLTypes["WarehouseShippingZoneAssign"],
-	/** Remove shipping zone from given warehouse. */
+	/** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	unassignWarehouseShippingZone?: GraphQLTypes["WarehouseShippingZoneUnassign"],
-	/** Creates a new staff notification recipient. */
+	/** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipientCreate?: GraphQLTypes["StaffNotificationRecipientCreate"],
-	/** Updates a staff notification recipient. */
+	/** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipientUpdate?: GraphQLTypes["StaffNotificationRecipientUpdate"],
-	/** Delete staff notification recipient. */
+	/** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 	staffNotificationRecipientDelete?: GraphQLTypes["StaffNotificationRecipientDelete"],
-	/** Updates site domain of the shop. */
+	/** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopDomainUpdate?: GraphQLTypes["ShopDomainUpdate"],
-	/** Updates shop settings. */
+	/** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopSettingsUpdate?: GraphQLTypes["ShopSettingsUpdate"],
-	/** Fetch tax rates. */
+	/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 	shopFetchTaxRates?: GraphQLTypes["ShopFetchTaxRates"],
-	/** Creates/updates translations for shop settings. */
+	/** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	shopSettingsTranslate?: GraphQLTypes["ShopSettingsTranslate"],
-	/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+	/** Update the shop's address. If the `null` value is passed, the currently
+selected address will be deleted. Requires one of the following permissions:
+MANAGE_SETTINGS. */
 	shopAddressUpdate?: GraphQLTypes["ShopAddressUpdate"],
-	/** Update shop order settings. */
+	/** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderSettingsUpdate?: GraphQLTypes["OrderSettingsUpdate"],
-	/** Update gift card settings. */
+	/** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardSettingsUpdate?: GraphQLTypes["GiftCardSettingsUpdate"],
-	/** Manage shipping method's availability in channels. */
+	/** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingMethodChannelListingUpdate?: GraphQLTypes["ShippingMethodChannelListingUpdate"],
-	/** Creates a new shipping price. */
+	/** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceCreate?: GraphQLTypes["ShippingPriceCreate"],
-	/** Deletes a shipping price. */
+	/** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceDelete?: GraphQLTypes["ShippingPriceDelete"],
-	/** Deletes shipping prices. */
+	/** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceBulkDelete?: GraphQLTypes["ShippingPriceBulkDelete"],
-	/** Updates a new shipping price. */
+	/** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceUpdate?: GraphQLTypes["ShippingPriceUpdate"],
-	/** Creates/updates translations for a shipping method. */
+	/** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	shippingPriceTranslate?: GraphQLTypes["ShippingPriceTranslate"],
-	/** Exclude products from shipping price. */
+	/** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceExcludeProducts?: GraphQLTypes["ShippingPriceExcludeProducts"],
-	/** Remove product from excluded list for shipping price. */
+	/** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingPriceRemoveProductFromExclude?: GraphQLTypes["ShippingPriceRemoveProductFromExclude"],
-	/** Creates a new shipping zone. */
+	/** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneCreate?: GraphQLTypes["ShippingZoneCreate"],
-	/** Deletes a shipping zone. */
+	/** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneDelete?: GraphQLTypes["ShippingZoneDelete"],
-	/** Deletes shipping zones. */
+	/** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneBulkDelete?: GraphQLTypes["ShippingZoneBulkDelete"],
-	/** Updates a new shipping zone. */
+	/** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZoneUpdate?: GraphQLTypes["ShippingZoneUpdate"],
-	/** Assign attributes to a given product type. */
+	/** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productAttributeAssign?: GraphQLTypes["ProductAttributeAssign"],
-	/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+	/** Added in Saleor 3.1. Update attributes assigned to product variant for given
+product type. Requires one of the following permissions:
+MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productAttributeAssignmentUpdate?: GraphQLTypes["ProductAttributeAssignmentUpdate"],
-	/** Un-assign attributes from a given product type. */
+	/** Un-assign attributes from a given product type. Requires one of the following
+permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productAttributeUnassign?: GraphQLTypes["ProductAttributeUnassign"],
-	/** Creates a new category. */
+	/** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryCreate?: GraphQLTypes["CategoryCreate"],
-	/** Deletes a category. */
+	/** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryDelete?: GraphQLTypes["CategoryDelete"],
-	/** Deletes categories. */
+	/** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryBulkDelete?: GraphQLTypes["CategoryBulkDelete"],
-	/** Updates a category. */
+	/** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	categoryUpdate?: GraphQLTypes["CategoryUpdate"],
-	/** Creates/updates translations for a category. */
+	/** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	categoryTranslate?: GraphQLTypes["CategoryTranslate"],
-	/** Adds products to a collection. */
+	/** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionAddProducts?: GraphQLTypes["CollectionAddProducts"],
-	/** Creates a new collection. */
+	/** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionCreate?: GraphQLTypes["CollectionCreate"],
-	/** Deletes a collection. */
+	/** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionDelete?: GraphQLTypes["CollectionDelete"],
-	/** Reorder the products of a collection. */
+	/** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionReorderProducts?: GraphQLTypes["CollectionReorderProducts"],
-	/** Deletes collections. */
+	/** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionBulkDelete?: GraphQLTypes["CollectionBulkDelete"],
-	/** Remove products from a collection. */
+	/** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionRemoveProducts?: GraphQLTypes["CollectionRemoveProducts"],
-	/** Updates a collection. */
+	/** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionUpdate?: GraphQLTypes["CollectionUpdate"],
-	/** Creates/updates translations for a collection. */
+	/** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	collectionTranslate?: GraphQLTypes["CollectionTranslate"],
-	/** Manage collection's availability in channels. */
+	/** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	collectionChannelListingUpdate?: GraphQLTypes["CollectionChannelListingUpdate"],
-	/** Creates a new product. */
+	/** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productCreate?: GraphQLTypes["ProductCreate"],
-	/** Deletes a product. */
+	/** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productDelete?: GraphQLTypes["ProductDelete"],
-	/** Deletes products. */
+	/** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productBulkDelete?: GraphQLTypes["ProductBulkDelete"],
-	/** Updates an existing product. */
+	/** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productUpdate?: GraphQLTypes["ProductUpdate"],
-	/** Creates/updates translations for a product. */
+	/** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	productTranslate?: GraphQLTypes["ProductTranslate"],
-	/** Manage product's availability in channels. */
+	/** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productChannelListingUpdate?: GraphQLTypes["ProductChannelListingUpdate"],
 	/** Create a media object (image or video URL) associated with product. For image,
 this mutation must be sent as a `multipart` request. More detailed specs of
 the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 	productMediaCreate?: GraphQLTypes["ProductMediaCreate"],
-	/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+	/** Reorder the variants of a product. Mutation updates updated_at on product and
+triggers PRODUCT_UPDATED webhook. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 	productVariantReorder?: GraphQLTypes["ProductVariantReorder"],
-	/** Deletes a product media. */
+	/** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaDelete?: GraphQLTypes["ProductMediaDelete"],
-	/** Deletes product media. */
+	/** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaBulkDelete?: GraphQLTypes["ProductMediaBulkDelete"],
-	/** Changes ordering of the product media. */
+	/** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaReorder?: GraphQLTypes["ProductMediaReorder"],
-	/** Updates a product media. */
+	/** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productMediaUpdate?: GraphQLTypes["ProductMediaUpdate"],
-	/** Creates a new product type. */
+	/** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeCreate?: GraphQLTypes["ProductTypeCreate"],
-	/** Deletes a product type. */
+	/** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeDelete?: GraphQLTypes["ProductTypeDelete"],
-	/** Deletes product types. */
+	/** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeBulkDelete?: GraphQLTypes["ProductTypeBulkDelete"],
-	/** Updates an existing product type. */
+	/** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeUpdate?: GraphQLTypes["ProductTypeUpdate"],
-	/** Reorder the attributes of a product type. */
+	/** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	productTypeReorderAttributes?: GraphQLTypes["ProductTypeReorderAttributes"],
-	/** Reorder product attribute values. */
+	/** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productReorderAttributeValues?: GraphQLTypes["ProductReorderAttributeValues"],
 	/** Create new digital content. This mutation must be sent as a `multipart`
 request. More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 	digitalContentCreate?: GraphQLTypes["DigitalContentCreate"],
-	/** Remove digital content assigned to given variant. */
+	/** Remove digital content assigned to given variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContentDelete?: GraphQLTypes["DigitalContentDelete"],
-	/** Update digital content. */
+	/** Update digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContentUpdate?: GraphQLTypes["DigitalContentUpdate"],
-	/** Generate new URL to digital content. */
+	/** Generate new URL to digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContentUrlCreate?: GraphQLTypes["DigitalContentUrlCreate"],
-	/** Creates a new variant for a product. */
+	/** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantCreate?: GraphQLTypes["ProductVariantCreate"],
-	/** Deletes a product variant. */
+	/** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantDelete?: GraphQLTypes["ProductVariantDelete"],
-	/** Creates product variants for a given product. */
+	/** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantBulkCreate?: GraphQLTypes["ProductVariantBulkCreate"],
-	/** Deletes product variants. */
+	/** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantBulkDelete?: GraphQLTypes["ProductVariantBulkDelete"],
-	/** Creates stocks for product variant. */
+	/** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantStocksCreate?: GraphQLTypes["ProductVariantStocksCreate"],
-	/** Delete stocks from product variant. */
+	/** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantStocksDelete?: GraphQLTypes["ProductVariantStocksDelete"],
-	/** Update stocks for product variant. */
+	/** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantStocksUpdate?: GraphQLTypes["ProductVariantStocksUpdate"],
-	/** Updates an existing variant for product. */
+	/** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantUpdate?: GraphQLTypes["ProductVariantUpdate"],
-	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook.
+Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantSetDefault?: GraphQLTypes["ProductVariantSetDefault"],
-	/** Creates/updates translations for a product variant. */
+	/** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	productVariantTranslate?: GraphQLTypes["ProductVariantTranslate"],
-	/** Manage product variant prices in channels. */
+	/** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantChannelListingUpdate?: GraphQLTypes["ProductVariantChannelListingUpdate"],
-	/** Reorder product variant attribute values. */
+	/** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	productVariantReorderAttributeValues?: GraphQLTypes["ProductVariantReorderAttributeValues"],
-	/** New in Saleor 3.1. Deactivates product variant preorder. It changes all
+	/** Added in Saleor 3.1. Deactivates product variant preorder. It changes all
 preorder allocation into regular allocation. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 	productVariantPreorderDeactivate?: GraphQLTypes["ProductVariantPreorderDeactivate"],
-	/** Assign an media to a product variant. */
+	/** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	variantMediaAssign?: GraphQLTypes["VariantMediaAssign"],
-	/** Unassign an media from a product variant. */
+	/** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	variantMediaUnassign?: GraphQLTypes["VariantMediaUnassign"],
-	/** Captures the authorized payment amount. */
+	/** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 	paymentCapture?: GraphQLTypes["PaymentCapture"],
-	/** Refunds the captured payment amount. */
+	/** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 	paymentRefund?: GraphQLTypes["PaymentRefund"],
-	/** Voids the authorized payment. */
+	/** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
 	paymentVoid?: GraphQLTypes["PaymentVoid"],
 	/** Initializes payment process when it is required by gateway. */
 	paymentInitialize?: GraphQLTypes["PaymentInitialize"],
 	/** Check payment balance. */
 	paymentCheckBalance?: GraphQLTypes["PaymentCheckBalance"],
-	/** Create payment for checkout or order. */
-	paymentCreate?: GraphQLTypes["PaymentCreate"],
-	/** Create payment for checkout or order. */
-	paymentUpdate?: GraphQLTypes["PaymentUpdate"],
-	/** Creates a new page. */
+	/** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
 	pageCreate?: GraphQLTypes["PageCreate"],
-	/** Deletes a page. */
+	/** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
 	pageDelete?: GraphQLTypes["PageDelete"],
-	/** Deletes pages. */
+	/** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
 	pageBulkDelete?: GraphQLTypes["PageBulkDelete"],
-	/** Publish pages. */
+	/** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
 	pageBulkPublish?: GraphQLTypes["PageBulkPublish"],
-	/** Updates an existing page. */
+	/** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
 	pageUpdate?: GraphQLTypes["PageUpdate"],
-	/** Creates/updates translations for a page. */
+	/** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	pageTranslate?: GraphQLTypes["PageTranslate"],
-	/** Create a new page type. */
+	/** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeCreate?: GraphQLTypes["PageTypeCreate"],
-	/** Update page type. */
+	/** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeUpdate?: GraphQLTypes["PageTypeUpdate"],
-	/** Delete a page type. */
+	/** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeDelete?: GraphQLTypes["PageTypeDelete"],
-	/** Delete page types. */
+	/** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeBulkDelete?: GraphQLTypes["PageTypeBulkDelete"],
-	/** Assign attributes to a given page type. */
+	/** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageAttributeAssign?: GraphQLTypes["PageAttributeAssign"],
-	/** Unassign attributes from a given page type. */
+	/** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageAttributeUnassign?: GraphQLTypes["PageAttributeUnassign"],
-	/** Reorder the attributes of a page type. */
+	/** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	pageTypeReorderAttributes?: GraphQLTypes["PageTypeReorderAttributes"],
-	/** Reorder page attribute values. */
+	/** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
 	pageReorderAttributeValues?: GraphQLTypes["PageReorderAttributeValues"],
-	/** Completes creating an order. */
+	/** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderComplete?: GraphQLTypes["DraftOrderComplete"],
-	/** Creates a new draft order. */
+	/** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderCreate?: GraphQLTypes["DraftOrderCreate"],
-	/** Deletes a draft order. */
+	/** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderDelete?: GraphQLTypes["DraftOrderDelete"],
-	/** Deletes draft orders. */
+	/** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderBulkDelete?: GraphQLTypes["DraftOrderBulkDelete"],
-	/** Deletes order lines. */
+	/** Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderLinesBulkDelete?: GraphQLTypes["DraftOrderLinesBulkDelete"],
-	/** Updates a draft order. */
+	/** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrderUpdate?: GraphQLTypes["DraftOrderUpdate"],
-	/** Adds note to the order. */
+	/** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderAddNote?: GraphQLTypes["OrderAddNote"],
-	/** Cancel an order. */
+	/** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderCancel?: GraphQLTypes["OrderCancel"],
-	/** Capture an order. */
+	/** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderCapture?: GraphQLTypes["OrderCapture"],
-	/** Confirms an unconfirmed order by changing status to unfulfilled. */
+	/** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderConfirm?: GraphQLTypes["OrderConfirm"],
-	/** Creates new fulfillments for an order. */
+	/** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfill?: GraphQLTypes["OrderFulfill"],
-	/** Cancels existing fulfillment and optionally restocks items. */
+	/** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentCancel?: GraphQLTypes["FulfillmentCancel"],
-	/** New in Saleor 3.1. Approve existing fulfillment. */
+	/** Added in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentApprove?: GraphQLTypes["FulfillmentApprove"],
-	/** Updates a fulfillment for an order. */
+	/** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentUpdateTracking?: GraphQLTypes["FulfillmentUpdateTracking"],
-	/** Refund products. */
+	/** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentRefundProducts?: GraphQLTypes["FulfillmentRefundProducts"],
-	/** Return products. */
+	/** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderFulfillmentReturnProducts?: GraphQLTypes["FulfillmentReturnProducts"],
-	/** Create order lines for an order. */
+	/** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLinesCreate?: GraphQLTypes["OrderLinesCreate"],
-	/** Deletes an order line from an order. */
+	/** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineDelete?: GraphQLTypes["OrderLineDelete"],
-	/** Updates an order line of an order. */
+	/** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineUpdate?: GraphQLTypes["OrderLineUpdate"],
-	/** Adds discount to the order. */
+	/** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderDiscountAdd?: GraphQLTypes["OrderDiscountAdd"],
-	/** Update discount for the order. */
+	/** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderDiscountUpdate?: GraphQLTypes["OrderDiscountUpdate"],
-	/** Remove discount from the order. */
+	/** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderDiscountDelete?: GraphQLTypes["OrderDiscountDelete"],
-	/** Update discount for the order line. */
+	/** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineDiscountUpdate?: GraphQLTypes["OrderLineDiscountUpdate"],
-	/** Remove discount applied to the order line. */
+	/** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderLineDiscountRemove?: GraphQLTypes["OrderLineDiscountRemove"],
-	/** Mark order as manually paid. */
+	/** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderMarkAsPaid?: GraphQLTypes["OrderMarkAsPaid"],
-	/** Refund an order. */
+	/** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderRefund?: GraphQLTypes["OrderRefund"],
-	/** Updates an order. */
+	/** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderUpdate?: GraphQLTypes["OrderUpdate"],
 	/** Updates a shipping method of the order. Requires shipping method ID to update,
-when null is passed then currently assigned shipping method is removed. */
+when null is passed then currently assigned shipping method is removed.
+Requires one of the following permissions: MANAGE_ORDERS. */
 	orderUpdateShipping?: GraphQLTypes["OrderUpdateShipping"],
-	/** Void an order. */
+	/** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderVoid?: GraphQLTypes["OrderVoid"],
-	/** Cancels orders. */
+	/** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderBulkCancel?: GraphQLTypes["OrderBulkCancel"],
-	/** Delete metadata of an object. */
+	/** Delete metadata of an object. To use it, you need to have access to the modified object. */
 	deleteMetadata?: GraphQLTypes["DeleteMetadata"],
-	/** Delete object's private metadata. */
+	/** Delete object's private metadata. To use it, you need to be an authenticated
+staff user or an app and have access to the modified object. */
 	deletePrivateMetadata?: GraphQLTypes["DeletePrivateMetadata"],
-	/** Updates metadata of an object. */
+	/** Updates metadata of an object. To use it, you need to have access to the modified object. */
 	updateMetadata?: GraphQLTypes["UpdateMetadata"],
-	/** Updates private metadata of an object. */
+	/** Updates private metadata of an object. To use it, you need to be an
+authenticated staff user or an app and have access to the modified object. */
 	updatePrivateMetadata?: GraphQLTypes["UpdatePrivateMetadata"],
-	/** Assigns storefront's navigation menus. */
+	/** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
 	assignNavigation?: GraphQLTypes["AssignNavigation"],
-	/** Creates a new Menu. */
+	/** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
 	menuCreate?: GraphQLTypes["MenuCreate"],
-	/** Deletes a menu. */
+	/** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
 	menuDelete?: GraphQLTypes["MenuDelete"],
-	/** Deletes menus. */
+	/** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
 	menuBulkDelete?: GraphQLTypes["MenuBulkDelete"],
-	/** Updates a menu. */
+	/** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
 	menuUpdate?: GraphQLTypes["MenuUpdate"],
-	/** Creates a new menu item. */
+	/** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemCreate?: GraphQLTypes["MenuItemCreate"],
-	/** Deletes a menu item. */
+	/** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemDelete?: GraphQLTypes["MenuItemDelete"],
-	/** Deletes menu items. */
+	/** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemBulkDelete?: GraphQLTypes["MenuItemBulkDelete"],
-	/** Updates a menu item. */
+	/** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemUpdate?: GraphQLTypes["MenuItemUpdate"],
-	/** Creates/updates translations for a menu item. */
+	/** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	menuItemTranslate?: GraphQLTypes["MenuItemTranslate"],
-	/** Moves items of menus. */
+	/** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
 	menuItemMove?: GraphQLTypes["MenuItemMove"],
-	/** Request an invoice for the order using plugin. */
+	/** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceRequest?: GraphQLTypes["InvoiceRequest"],
-	/** Requests deletion of an invoice. */
+	/** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceRequestDelete?: GraphQLTypes["InvoiceRequestDelete"],
-	/** Creates a ready to send invoice. */
+	/** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceCreate?: GraphQLTypes["InvoiceCreate"],
-	/** Deletes an invoice. */
+	/** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceDelete?: GraphQLTypes["InvoiceDelete"],
-	/** Updates an invoice. */
+	/** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceUpdate?: GraphQLTypes["InvoiceUpdate"],
-	/** Send an invoice notification to the customer. */
+	/** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
 	invoiceSendNotification?: GraphQLTypes["InvoiceSendNotification"],
-	/** Activate a gift card. */
+	/** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardActivate?: GraphQLTypes["GiftCardActivate"],
-	/** Creates a new gift card. */
+	/** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardCreate?: GraphQLTypes["GiftCardCreate"],
-	/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardDelete?: GraphQLTypes["GiftCardDelete"],
-	/** Deactivate a gift card. */
+	/** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardDeactivate?: GraphQLTypes["GiftCardDeactivate"],
-	/** Update a gift card. */
+	/** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardUpdate?: GraphQLTypes["GiftCardUpdate"],
-	/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Resend a gift card. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardResend?: GraphQLTypes["GiftCardResend"],
-	/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Adds note to the gift card. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardAddNote?: GraphQLTypes["GiftCardAddNote"],
-	/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Create gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkCreate?: GraphQLTypes["GiftCardBulkCreate"],
-	/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state
-and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Delete gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkDelete?: GraphQLTypes["GiftCardBulkDelete"],
-	/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Activate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkActivate?: GraphQLTypes["GiftCardBulkActivate"],
-	/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_GIFT_CARD. */
 	giftCardBulkDeactivate?: GraphQLTypes["GiftCardBulkDeactivate"],
-	/** Update plugin configuration. */
+	/** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
 	pluginUpdate?: GraphQLTypes["PluginUpdate"],
-	/** New in Saleor 3.1. Trigger sending a notification with the notify plugin
+	/** Added in Saleor 3.1. Trigger sending a notification with the notify plugin
 method. Serializes nodes provided as ids parameter and includes this data in
 the notification payload. */
 	externalNotificationTrigger?: GraphQLTypes["ExternalNotificationTrigger"],
-	/** Creates a new sale. */
+	/** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleCreate?: GraphQLTypes["SaleCreate"],
-	/** Deletes a sale. */
+	/** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleDelete?: GraphQLTypes["SaleDelete"],
-	/** Deletes sales. */
+	/** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleBulkDelete?: GraphQLTypes["SaleBulkDelete"],
-	/** Updates a sale. */
+	/** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleUpdate?: GraphQLTypes["SaleUpdate"],
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleCataloguesAdd?: GraphQLTypes["SaleAddCatalogues"],
-	/** Removes products, categories, collections from a sale. */
+	/** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleCataloguesRemove?: GraphQLTypes["SaleRemoveCatalogues"],
-	/** Creates/updates translations for a sale. */
+	/** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	saleTranslate?: GraphQLTypes["SaleTranslate"],
-	/** Manage sale's availability in channels. */
+	/** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	saleChannelListingUpdate?: GraphQLTypes["SaleChannelListingUpdate"],
-	/** Creates a new voucher. */
+	/** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherCreate?: GraphQLTypes["VoucherCreate"],
-	/** Deletes a voucher. */
+	/** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherDelete?: GraphQLTypes["VoucherDelete"],
-	/** Deletes vouchers. */
+	/** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherBulkDelete?: GraphQLTypes["VoucherBulkDelete"],
-	/** Updates a voucher. */
+	/** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherUpdate?: GraphQLTypes["VoucherUpdate"],
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherCataloguesAdd?: GraphQLTypes["VoucherAddCatalogues"],
-	/** Removes products, categories, collections from a voucher. */
+	/** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherCataloguesRemove?: GraphQLTypes["VoucherRemoveCatalogues"],
-	/** Creates/updates translations for a voucher. */
+	/** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	voucherTranslate?: GraphQLTypes["VoucherTranslate"],
-	/** Manage voucher's availability in channels. */
+	/** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucherChannelListingUpdate?: GraphQLTypes["VoucherChannelListingUpdate"],
-	/** Export products to csv file. */
+	/** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	exportProducts?: GraphQLTypes["ExportProducts"],
-	/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	exportGiftCards?: GraphQLTypes["ExportGiftCards"],
 	/** Upload a file. This mutation must be sent as a `multipart` request. More
 detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	fileUpload?: GraphQLTypes["FileUpload"],
 	/** Adds a gift card or a voucher to a checkout. */
 	checkoutAddPromoCode?: GraphQLTypes["CheckoutAddPromoCode"],
@@ -18893,9 +21301,11 @@ is confirmed with second call of this mutation. */
 	checkoutComplete?: GraphQLTypes["CheckoutComplete"],
 	/** Create a new checkout. */
 	checkoutCreate?: GraphQLTypes["CheckoutCreate"],
-	/** Sets the customer as the owner of the checkout. */
+	/** Sets the customer as the owner of the checkout. Requires one of the following
+permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 	checkoutCustomerAttach?: GraphQLTypes["CheckoutCustomerAttach"],
-	/** Removes the user assigned as the owner of the checkout. */
+	/** Removes the user assigned as the owner of the checkout. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 	checkoutCustomerDetach?: GraphQLTypes["CheckoutCustomerDetach"],
 	/** Updates email address in the existing checkout object. */
 	checkoutEmailUpdate?: GraphQLTypes["CheckoutEmailUpdate"],
@@ -18915,70 +21325,73 @@ is confirmed with second call of this mutation. */
 	checkoutShippingAddressUpdate?: GraphQLTypes["CheckoutShippingAddressUpdate"],
 	/** Updates the shipping method of the checkout. */
 	checkoutShippingMethodUpdate?: GraphQLTypes["CheckoutShippingMethodUpdate"],
-	/** New in Saleor 3.1. Updates the delivery method (shipping method or pick up
+	/** Added in Saleor 3.1. Updates the delivery method (shipping method or pick up
 point) of the checkout. Note: this feature is in a preview state and can be
 subject to changes at later point. */
 	checkoutDeliveryMethodUpdate?: GraphQLTypes["CheckoutDeliveryMethodUpdate"],
 	/** Update language code in the existing checkout. */
 	checkoutLanguageCodeUpdate?: GraphQLTypes["CheckoutLanguageCodeUpdate"],
-	/** Create new order from existing checkout. */
-	orderFromCheckoutCreate?: GraphQLTypes["OrderFromCheckoutCreate"],
-	/** Creates new channel. */
+	/** Added in Saleor 3.2. Create new order from existing checkout. Note: this
+feature is in a preview state and can be subject to changes at later point.
+Requires one of the following permissions: HANDLE_CHECKOUTS. */
+	orderCreateFromCheckout?: GraphQLTypes["OrderCreateFromCheckout"],
+	/** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelCreate?: GraphQLTypes["ChannelCreate"],
-	/** Update a channel. */
+	/** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelUpdate?: GraphQLTypes["ChannelUpdate"],
 	/** Delete a channel. Orders associated with the deleted channel will be moved to
-the target channel. Checkouts, product availability, and pricing will be removed. */
+the target channel. Checkouts, product availability, and pricing will be
+removed. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelDelete?: GraphQLTypes["ChannelDelete"],
-	/** Activate a channel. */
+	/** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelActivate?: GraphQLTypes["ChannelActivate"],
-	/** Deactivate a channel. */
+	/** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 	channelDeactivate?: GraphQLTypes["ChannelDeactivate"],
 	/** Creates an attribute. */
 	attributeCreate?: GraphQLTypes["AttributeCreate"],
-	/** Deletes an attribute. */
+	/** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeDelete?: GraphQLTypes["AttributeDelete"],
-	/** Updates attribute. */
+	/** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeUpdate?: GraphQLTypes["AttributeUpdate"],
-	/** Creates/updates translations for an attribute. */
+	/** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	attributeTranslate?: GraphQLTypes["AttributeTranslate"],
-	/** Deletes attributes. */
+	/** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	attributeBulkDelete?: GraphQLTypes["AttributeBulkDelete"],
-	/** Deletes values of attributes. */
+	/** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 	attributeValueBulkDelete?: GraphQLTypes["AttributeValueBulkDelete"],
-	/** Creates a value for an attribute. */
+	/** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	attributeValueCreate?: GraphQLTypes["AttributeValueCreate"],
-	/** Deletes a value of an attribute. */
+	/** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeValueDelete?: GraphQLTypes["AttributeValueDelete"],
-	/** Updates value of an attribute. */
+	/** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeValueUpdate?: GraphQLTypes["AttributeValueUpdate"],
-	/** Creates/updates translations for an attribute value. */
+	/** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	attributeValueTranslate?: GraphQLTypes["AttributeValueTranslate"],
-	/** Reorder the values of an attribute. */
+	/** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 	attributeReorderValues?: GraphQLTypes["AttributeReorderValues"],
-	/** Creates a new app. */
+	/** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 	appCreate?: GraphQLTypes["AppCreate"],
-	/** Updates an existing app. */
+	/** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
 	appUpdate?: GraphQLTypes["AppUpdate"],
-	/** Deletes an app. */
+	/** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
 	appDelete?: GraphQLTypes["AppDelete"],
-	/** Creates a new token. */
+	/** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
 	appTokenCreate?: GraphQLTypes["AppTokenCreate"],
-	/** Deletes an authentication token assigned to app. */
+	/** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
 	appTokenDelete?: GraphQLTypes["AppTokenDelete"],
 	/** Verify provided app token. */
 	appTokenVerify?: GraphQLTypes["AppTokenVerify"],
-	/** Install new app by using app manifest. */
+	/** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 	appInstall?: GraphQLTypes["AppInstall"],
-	/** Retry failed installation of new app. */
+	/** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
 	appRetryInstall?: GraphQLTypes["AppRetryInstall"],
-	/** Delete failed installation. */
+	/** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
 	appDeleteFailedInstallation?: GraphQLTypes["AppDeleteFailedInstallation"],
-	/** Fetch and validate manifest. */
+	/** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
 	appFetchManifest?: GraphQLTypes["AppFetchManifest"],
-	/** Activate the app. */
+	/** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
 	appActivate?: GraphQLTypes["AppActivate"],
-	/** Deactivate the app. */
+	/** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
 	appDeactivate?: GraphQLTypes["AppDeactivate"],
 	/** Create JWT token. */
 	tokenCreate?: GraphQLTypes["CreateToken"],
@@ -18988,7 +21401,8 @@ fails it will try to take refreshToken from the http-only cookie
 	tokenRefresh?: GraphQLTypes["RefreshToken"],
 	/** Verify JWT token. */
 	tokenVerify?: GraphQLTypes["VerifyToken"],
-	/** Deactivate all JWT tokens of the currently authenticated user. */
+	/** Deactivate all JWT tokens of the currently authenticated user. Requires one of
+the following permissions: AUTHENTICATED_USER. */
 	tokensDeactivateAll?: GraphQLTypes["DeactivateAllUserTokens"],
 	/** Prepare external authentication url for user by custom plugin. */
 	externalAuthenticationUrl?: GraphQLTypes["ExternalAuthenticationUrl"],
@@ -19006,65 +21420,67 @@ fails it will try to take refreshToken from the http-only cookie
 	confirmAccount?: GraphQLTypes["ConfirmAccount"],
 	/** Sets the user's password from the token sent by email using the RequestPasswordReset mutation. */
 	setPassword?: GraphQLTypes["SetPassword"],
-	/** Change the password of the logged in user. */
+	/** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	passwordChange?: GraphQLTypes["PasswordChange"],
-	/** Request email change of the logged in user. */
+	/** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	requestEmailChange?: GraphQLTypes["RequestEmailChange"],
-	/** Confirm the email change of the logged-in user. */
+	/** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	confirmEmailChange?: GraphQLTypes["ConfirmEmailChange"],
-	/** Create a new address for the customer. */
+	/** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountAddressCreate?: GraphQLTypes["AccountAddressCreate"],
-	/** Updates an address of the logged-in user. */
+	/** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 	accountAddressUpdate?: GraphQLTypes["AccountAddressUpdate"],
-	/** Delete an address of the logged-in user. */
+	/** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 	accountAddressDelete?: GraphQLTypes["AccountAddressDelete"],
-	/** Sets a default address for the authenticated user. */
+	/** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountSetDefaultAddress?: GraphQLTypes["AccountSetDefaultAddress"],
 	/** Register a new user. */
 	accountRegister?: GraphQLTypes["AccountRegister"],
-	/** Updates the account of the logged-in user. */
+	/** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountUpdate?: GraphQLTypes["AccountUpdate"],
-	/** Sends an email with the account removal link for the logged-in user. */
+	/** Sends an email with the account removal link for the logged-in user. Requires
+one of the following permissions: AUTHENTICATED_USER. */
 	accountRequestDeletion?: GraphQLTypes["AccountRequestDeletion"],
-	/** Remove user account. */
+	/** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
 	accountDelete?: GraphQLTypes["AccountDelete"],
-	/** Creates user address. */
+	/** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
 	addressCreate?: GraphQLTypes["AddressCreate"],
-	/** Updates an address. */
+	/** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
 	addressUpdate?: GraphQLTypes["AddressUpdate"],
-	/** Deletes an address. */
+	/** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
 	addressDelete?: GraphQLTypes["AddressDelete"],
-	/** Sets a default address for the given user. */
+	/** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
 	addressSetDefault?: GraphQLTypes["AddressSetDefault"],
-	/** Creates a new customer. */
+	/** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
 	customerCreate?: GraphQLTypes["CustomerCreate"],
-	/** Updates an existing customer. */
+	/** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
 	customerUpdate?: GraphQLTypes["CustomerUpdate"],
-	/** Deletes a customer. */
+	/** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
 	customerDelete?: GraphQLTypes["CustomerDelete"],
-	/** Deletes customers. */
+	/** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
 	customerBulkDelete?: GraphQLTypes["CustomerBulkDelete"],
-	/** Creates a new staff user. */
+	/** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
 	staffCreate?: GraphQLTypes["StaffCreate"],
-	/** Updates an existing staff user. */
+	/** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
 	staffUpdate?: GraphQLTypes["StaffUpdate"],
-	/** Deletes a staff user. */
+	/** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
 	staffDelete?: GraphQLTypes["StaffDelete"],
-	/** Deletes staff users. */
+	/** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
 	staffBulkDelete?: GraphQLTypes["StaffBulkDelete"],
 	/** Create a user avatar. Only for staff members. This mutation must be sent as a
 `multipart` request. More detailed specs of the upload format can be found
-here: https://github.com/jaydenseric/graphql-multipart-request-spec */
+here: https://github.com/jaydenseric/graphql-multipart-request-spec Requires
+one of the following permissions: AUTHENTICATED_STAFF_USER. */
 	userAvatarUpdate?: GraphQLTypes["UserAvatarUpdate"],
-	/** Deletes a user avatar. Only for staff members. */
+	/** Deletes a user avatar. Only for staff members. Requires one of the following permissions: AUTHENTICATED_STAFF_USER. */
 	userAvatarDelete?: GraphQLTypes["UserAvatarDelete"],
-	/** Activate or deactivate users. */
+	/** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
 	userBulkSetActive?: GraphQLTypes["UserBulkSetActive"],
-	/** Create new permission group. */
+	/** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroupCreate?: GraphQLTypes["PermissionGroupCreate"],
-	/** Update permission group. */
+	/** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroupUpdate?: GraphQLTypes["PermissionGroupUpdate"],
-	/** Delete permission group. */
+	/** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroupDelete?: GraphQLTypes["PermissionGroupDelete"]
 };
 	["NameTranslationInput"]: {
@@ -19073,7 +21489,7 @@ here: https://github.com/jaydenseric/graphql-multipart-request-spec */
 	["NavigationType"]: NavigationType;
 	/** An object with an ID */
 ["Node"]: {
-	__typename:"Address" | "Allocation" | "App" | "AppExtension" | "AppInstallation" | "AppToken" | "Attribute" | "AttributeTranslatableContent" | "AttributeTranslation" | "AttributeValue" | "AttributeValueTranslatableContent" | "AttributeValueTranslation" | "Category" | "CategoryTranslatableContent" | "CategoryTranslation" | "Channel" | "Checkout" | "CheckoutLine" | "Collection" | "CollectionChannelListing" | "CollectionTranslatableContent" | "CollectionTranslation" | "CustomerEvent" | "DigitalContent" | "DigitalContentUrl" | "EventDelivery" | "EventDeliveryAttempt" | "ExportEvent" | "ExportFile" | "Fulfillment" | "FulfillmentLine" | "GiftCard" | "GiftCardEvent" | "GiftCardTag" | "Group" | "Invoice" | "Menu" | "MenuItem" | "MenuItemTranslatableContent" | "MenuItemTranslation" | "Order" | "OrderDiscount" | "OrderEvent" | "OrderLine" | "Page" | "PageTranslatableContent" | "PageTranslation" | "PageType" | "Payment" | "PaymentPOC" | "Product" | "ProductChannelListing" | "ProductMedia" | "ProductTranslatableContent" | "ProductTranslation" | "ProductType" | "ProductVariant" | "ProductVariantChannelListing" | "ProductVariantTranslatableContent" | "ProductVariantTranslation" | "Sale" | "SaleChannelListing" | "SaleTranslatableContent" | "SaleTranslation" | "ShippingMethod" | "ShippingMethodChannelListing" | "ShippingMethodPostalCodeRule" | "ShippingMethodTranslatableContent" | "ShippingMethodTranslation" | "ShippingMethodType" | "ShippingZone" | "ShopTranslation" | "StaffNotificationRecipient" | "Stock" | "Transaction" | "User" | "Voucher" | "VoucherChannelListing" | "VoucherTranslatableContent" | "VoucherTranslation" | "Warehouse" | "Webhook",
+	__typename:"Address" | "Allocation" | "App" | "AppExtension" | "AppInstallation" | "AppToken" | "Attribute" | "AttributeTranslatableContent" | "AttributeTranslation" | "AttributeValue" | "AttributeValueTranslatableContent" | "AttributeValueTranslation" | "Category" | "CategoryTranslatableContent" | "CategoryTranslation" | "Channel" | "Checkout" | "CheckoutLine" | "Collection" | "CollectionChannelListing" | "CollectionTranslatableContent" | "CollectionTranslation" | "CustomerEvent" | "DigitalContent" | "DigitalContentUrl" | "EventDelivery" | "EventDeliveryAttempt" | "ExportEvent" | "ExportFile" | "Fulfillment" | "FulfillmentLine" | "GiftCard" | "GiftCardEvent" | "GiftCardTag" | "Group" | "Invoice" | "Menu" | "MenuItem" | "MenuItemTranslatableContent" | "MenuItemTranslation" | "Order" | "OrderDiscount" | "OrderEvent" | "OrderLine" | "Page" | "PageTranslatableContent" | "PageTranslation" | "PageType" | "Payment" | "Product" | "ProductChannelListing" | "ProductMedia" | "ProductTranslatableContent" | "ProductTranslation" | "ProductType" | "ProductVariant" | "ProductVariantChannelListing" | "ProductVariantTranslatableContent" | "ProductVariantTranslation" | "Sale" | "SaleChannelListing" | "SaleTranslatableContent" | "SaleTranslation" | "ShippingMethod" | "ShippingMethodChannelListing" | "ShippingMethodPostalCodeRule" | "ShippingMethodTranslatableContent" | "ShippingMethodTranslation" | "ShippingMethodType" | "ShippingZone" | "ShopTranslation" | "StaffNotificationRecipient" | "Stock" | "Transaction" | "User" | "Voucher" | "VoucherChannelListing" | "VoucherTranslatableContent" | "VoucherTranslation" | "Warehouse" | "Webhook",
 	/** The ID of the object. */
 	id: string
 	['...on Address']: '__union' & GraphQLTypes["Address"];
@@ -19125,7 +21541,6 @@ here: https://github.com/jaydenseric/graphql-multipart-request-spec */
 	['...on PageTranslation']: '__union' & GraphQLTypes["PageTranslation"];
 	['...on PageType']: '__union' & GraphQLTypes["PageType"];
 	['...on Payment']: '__union' & GraphQLTypes["Payment"];
-	['...on PaymentPOC']: '__union' & GraphQLTypes["PaymentPOC"];
 	['...on Product']: '__union' & GraphQLTypes["Product"];
 	['...on ProductChannelListing']: '__union' & GraphQLTypes["ProductChannelListing"];
 	['...on ProductMedia']: '__union' & GraphQLTypes["ProductMedia"];
@@ -19160,11 +21575,40 @@ here: https://github.com/jaydenseric/graphql-multipart-request-spec */
 	['...on Webhook']: '__union' & GraphQLTypes["Webhook"];
 };
 	["ObjectWithMetadata"]: {
-	__typename:"App" | "Attribute" | "Category" | "Checkout" | "Collection" | "DigitalContent" | "Fulfillment" | "GiftCard" | "Invoice" | "Menu" | "MenuItem" | "Order" | "Page" | "PageType" | "Payment" | "PaymentPOC" | "Product" | "ProductType" | "ProductVariant" | "Sale" | "ShippingMethod" | "ShippingMethodType" | "ShippingZone" | "User" | "Voucher" | "Warehouse",
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	__typename:"App" | "Attribute" | "Category" | "Checkout" | "Collection" | "DigitalContent" | "Fulfillment" | "GiftCard" | "Invoice" | "Menu" | "MenuItem" | "Order" | "Page" | "PageType" | "Payment" | "Product" | "ProductType" | "ProductVariant" | "Sale" | "ShippingMethod" | "ShippingMethodType" | "ShippingZone" | "User" | "Voucher" | "Warehouse",
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"]
 	['...on App']: '__union' & GraphQLTypes["App"];
 	['...on Attribute']: '__union' & GraphQLTypes["Attribute"];
 	['...on Category']: '__union' & GraphQLTypes["Category"];
@@ -19180,7 +21624,6 @@ here: https://github.com/jaydenseric/graphql-multipart-request-spec */
 	['...on Page']: '__union' & GraphQLTypes["Page"];
 	['...on PageType']: '__union' & GraphQLTypes["PageType"];
 	['...on Payment']: '__union' & GraphQLTypes["Payment"];
-	['...on PaymentPOC']: '__union' & GraphQLTypes["PaymentPOC"];
 	['...on Product']: '__union' & GraphQLTypes["Product"];
 	['...on ProductType']: '__union' & GraphQLTypes["ProductType"];
 	['...on ProductVariant']: '__union' & GraphQLTypes["ProductVariant"];
@@ -19196,37 +21639,75 @@ here: https://github.com/jaydenseric/graphql-multipart-request-spec */
 ["Order"]: {
 	__typename: "Order",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	created: GraphQLTypes["DateTime"],
 	updatedAt: GraphQLTypes["DateTime"],
 	status: GraphQLTypes["OrderStatus"],
+	/** User who placed the order. This field is set only for orders placed by
+authenticated users. Requires one of the following permissions:
+AccountPermissions.MANAGE_USERS, OrderPermissions.MANAGE_ORDERS,
+AuthorizationFilters.OWNER. */
 	user?: GraphQLTypes["User"],
 	trackingClientId: string,
+	/** Billing address. Requires one of the following permissions to view the full
+data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	billingAddress?: GraphQLTypes["Address"],
+	/** Shipping address. Requires one of the following permissions to view the full
+data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
 	shippingAddress?: GraphQLTypes["Address"],
 	shippingMethodName?: string,
 	collectionPointName?: string,
 	channel: GraphQLTypes["Channel"],
 	/** List of shipments for the order. */
-	fulfillments?: Array<GraphQLTypes["Fulfillment"]>,
+	fulfillments: Array<GraphQLTypes["Fulfillment"]>,
 	/** List of order lines. */
-	lines?: Array<GraphQLTypes["OrderLine"]>,
+	lines: Array<GraphQLTypes["OrderLine"]>,
 	/** List of actions that can be performed in the current state of an order. */
-	actions?: Array<GraphQLTypes["OrderAction"]>,
+	actions: Array<GraphQLTypes["OrderAction"]>,
 	/** Shipping methods that can be used with this order. */
-	availableShippingMethods?: Array<GraphQLTypes["ShippingMethod"] | undefined>,
+	availableShippingMethods?: Array<GraphQLTypes["ShippingMethod"]>,
 	/** Shipping methods related to this order. */
-	shippingMethods?: Array<GraphQLTypes["ShippingMethod"] | undefined>,
-	/** New in Saleor 3.1. Collection points that can be used for this order. Note:
+	shippingMethods: Array<GraphQLTypes["ShippingMethod"]>,
+	/** Added in Saleor 3.1. Collection points that can be used for this order. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	availableCollectionPoints: Array<GraphQLTypes["Warehouse"]>,
-	/** List of order invoices. */
-	invoices?: Array<GraphQLTypes["Invoice"] | undefined>,
+	/** List of order invoices. Requires one of the following permissions:
+OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER. */
+	invoices: Array<GraphQLTypes["Invoice"]>,
 	/** User-friendly number of an order. */
-	number?: string,
+	number: string,
 	/** The ID of the order that was the base for this order. */
 	original?: string,
 	/** The order origin. */
@@ -19238,9 +21719,7 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** User-friendly payment status. */
 	paymentStatusDisplay: string,
 	/** List of payments for the order. */
-	payments?: Array<GraphQLTypes["Payment"] | undefined>,
-	/** List of payments for the order */
-	pocPayments: Array<GraphQLTypes["PaymentPOC"]>,
+	payments: Array<GraphQLTypes["Payment"]>,
 	/** Total amount of the order. */
 	total: GraphQLTypes["TaxedMoney"],
 	/** Undiscounted total amount of the order. */
@@ -19253,31 +21732,32 @@ this feature is in a preview state and can be subject to changes at later point.
 	token: string,
 	voucher?: GraphQLTypes["Voucher"],
 	/** List of user gift cards. */
-	giftCards?: Array<GraphQLTypes["GiftCard"] | undefined>,
+	giftCards: Array<GraphQLTypes["GiftCard"]>,
 	displayGrossPrices: boolean,
 	customerNote: string,
-	weight?: GraphQLTypes["Weight"],
+	weight: GraphQLTypes["Weight"],
 	redirectUrl?: string,
 	/** The sum of line prices not including shipping. */
 	subtotal: GraphQLTypes["TaxedMoney"],
 	/** User-friendly order status. */
-	statusDisplay?: string,
+	statusDisplay: string,
 	/** Informs whether a draft order can be finalized(turned into a regular order). */
 	canFinalize: boolean,
 	/** Amount authorized for the order. */
 	totalAuthorized: GraphQLTypes["Money"],
 	/** Amount captured by payment. */
 	totalCaptured: GraphQLTypes["Money"],
-	/** List of events associated with the order. */
-	events?: Array<GraphQLTypes["OrderEvent"] | undefined>,
+	/** List of events associated with the order. Requires one of the following permissions: MANAGE_ORDERS. */
+	events: Array<GraphQLTypes["OrderEvent"]>,
 	/** The difference between the paid and the order total amount. */
 	totalBalance: GraphQLTypes["Money"],
-	/** Email address of the customer. */
+	/** Email address of the customer. Requires the following permissions to access
+the full data: OrderPermissions.MANAGE_ORDERS, AuthorizationFilters.OWNER */
 	userEmail?: string,
 	/** Returns True, if order requires shipping. */
 	isShippingRequired: boolean,
-	/** New in Saleor 3.1. The delivery method selected for this checkout. Note: this
-feature is in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. The delivery method selected for this checkout. Note:
+this feature is in a preview state and can be subject to changes at later point. */
 	deliveryMethod?: GraphQLTypes["DeliveryMethod"],
 	languageCode: string,
 	/** Order language code. */
@@ -19289,12 +21769,12 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** Translated discount name. */
 	translatedDiscountName?: string,
 	/** List of all discounts assigned to the order. */
-	discounts?: Array<GraphQLTypes["OrderDiscount"]>,
+	discounts: Array<GraphQLTypes["OrderDiscount"]>,
 	/** List of errors that occurred during order validation. */
 	errors: Array<GraphQLTypes["OrderError"]>
 };
 	["OrderAction"]: OrderAction;
-	/** Adds note to the order. */
+	/** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderAddNote"]: {
 	__typename: "OrderAddNote",
 	/** Order with the note added. */
@@ -19308,7 +21788,7 @@ feature is in a preview state and can be subject to changes at later point. */
 		/** Note message. */
 	message: string
 };
-	/** Cancels orders. */
+	/** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderBulkCancel"]: {
 	__typename: "OrderBulkCancel",
 	/** Returns how many objects were affected. */
@@ -19316,7 +21796,7 @@ feature is in a preview state and can be subject to changes at later point. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Cancel an order. */
+	/** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderCancel"]: {
 	__typename: "OrderCancel",
 	/** Canceled order. */
@@ -19324,7 +21804,13 @@ feature is in a preview state and can be subject to changes at later point. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Capture an order. */
+	["OrderCancelled"]: {
+	__typename: "OrderCancelled",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?: GraphQLTypes["Order"]
+};
+	/** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderCapture"]: {
 	__typename: "OrderCapture",
 	/** Captured order. */
@@ -19332,12 +21818,18 @@ feature is in a preview state and can be subject to changes at later point. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Confirms an unconfirmed order by changing status to unfulfilled. */
+	/** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderConfirm"]: {
 	__typename: "OrderConfirm",
 	order?: GraphQLTypes["Order"],
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
+};
+	["OrderConfirmed"]: {
+	__typename: "OrderConfirmed",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?: GraphQLTypes["Order"]
 };
 	["OrderCountableConnection"]: {
 	__typename: "OrderCountableConnection",
@@ -19354,6 +21846,37 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
+	["OrderCreated"]: {
+	__typename: "OrderCreated",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?: GraphQLTypes["Order"]
+};
+	/** Added in Saleor 3.2. Create new order from existing checkout. Note: this feature
+is in a preview state and can be subject to changes at later point. Requires one
+of the following permissions: HANDLE_CHECKOUTS. */
+["OrderCreateFromCheckout"]: {
+	__typename: "OrderCreateFromCheckout",
+	/** Placed order. */
+	order?: GraphQLTypes["Order"],
+	errors: Array<GraphQLTypes["OrderCreateFromCheckoutError"]>
+};
+	["OrderCreateFromCheckoutError"]: {
+	__typename: "OrderCreateFromCheckoutError",
+	/** Name of a field that caused the error. A value of `null` indicates that the
+error isn't associated with a particular field. */
+	field?: string,
+	/** The error message. */
+	message?: string,
+	/** The error code. */
+	code: GraphQLTypes["OrderCreateFromCheckoutErrorCode"],
+	/** List of variant IDs which causes the error. */
+	variants?: Array<string>,
+	/** List of line Ids which cause the error. */
+	lines?: Array<string>
+};
+	/** An enumeration. */
+["OrderCreateFromCheckoutErrorCode"]: OrderCreateFromCheckoutErrorCode;
 	["OrderDirection"]: OrderDirection;
 	/** Contains all details related to the applied discount to the order. */
 ["OrderDiscount"]: {
@@ -19366,12 +21889,12 @@ feature is in a preview state and can be subject to changes at later point. */
 	valueType: GraphQLTypes["DiscountValueTypeEnum"],
 	/** Value of the discount. Can store fixed value or percent value */
 	value: GraphQLTypes["PositiveDecimal"],
-	/** Explanation for the applied discount. */
+	/** Explanation for the applied discount. Requires one of the following permissions: MANAGE_ORDERS. */
 	reason?: string,
 	/** Returns amount of discount. */
 	amount: GraphQLTypes["Money"]
 };
-	/** Adds discount to the order. */
+	/** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountAdd"]: {
 	__typename: "OrderDiscountAdd",
 	/** Order which has been discounted. */
@@ -19387,7 +21910,7 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** Explanation for the applied discount. */
 	reason?: string
 };
-	/** Remove discount from the order. */
+	/** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountDelete"]: {
 	__typename: "OrderDiscountDelete",
 	/** Order which has removed discount. */
@@ -19397,7 +21920,7 @@ feature is in a preview state and can be subject to changes at later point. */
 };
 	/** An enumeration. */
 ["OrderDiscountType"]: OrderDiscountType;
-	/** Update discount for the order. */
+	/** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderDiscountUpdate"]: {
 	__typename: "OrderDiscountUpdate",
 	/** Order which has been discounted. */
@@ -19409,8 +21932,8 @@ feature is in a preview state and can be subject to changes at later point. */
 		customer?: string,
 	created?: GraphQLTypes["DateRangeInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	channels?: Array<string | undefined>
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	channels?: Array<string>
 };
 	["OrderError"]: {
 	__typename: "OrderError",
@@ -19442,7 +21965,9 @@ error isn't associated with a particular field. */
 	type?: GraphQLTypes["OrderEventsEnum"],
 	/** User who performed the action. */
 	user?: GraphQLTypes["User"],
-	/** App that performed the action. */
+	/** App that performed the action. Requires of of the following permissions:
+AppPermission.MANAGE_APPS, OrderPermissions.MANAGE_ORDERS,
+AuthorizationFilters.OWNER. */
 	app?: GraphQLTypes["App"],
 	/** Content of the event. */
 	message?: string,
@@ -19465,11 +21990,11 @@ error isn't associated with a particular field. */
 	/** Number of an invoice related to the order. */
 	invoiceNumber?: string,
 	/** List of oversold lines names. */
-	oversoldItems?: Array<string | undefined>,
+	oversoldItems?: Array<string>,
 	/** The concerned lines. */
-	lines?: Array<GraphQLTypes["OrderEventOrderLineObject"] | undefined>,
+	lines?: Array<GraphQLTypes["OrderEventOrderLineObject"]>,
 	/** The lines fulfilled. */
-	fulfilledItems?: Array<GraphQLTypes["FulfillmentLine"] | undefined>,
+	fulfilledItems?: Array<GraphQLTypes["FulfillmentLine"]>,
 	/** The warehouse were items were restocked. */
 	warehouse?: GraphQLTypes["Warehouse"],
 	/** The transaction reference of captured payment. */
@@ -19479,11 +22004,7 @@ error isn't associated with a particular field. */
 	/** The order which is related to this order. */
 	relatedOrder?: GraphQLTypes["Order"],
 	/** The discount applied to the order. */
-	discount?: GraphQLTypes["OrderEventDiscountObject"],
-	/** The status of payment's transaction. */
-	status?: GraphQLTypes["TransactionStatus"],
-	/** The reference of payment's transaction. */
-	reference?: string
+	discount?: GraphQLTypes["OrderEventDiscountObject"]
 };
 	["OrderEventCountableConnection"]: {
 	__typename: "OrderEventCountableConnection",
@@ -19533,53 +22054,35 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["OrderEventsEnum"]: OrderEventsEnum;
 	["OrderFilterInput"]: {
-		paymentStatus?: Array<GraphQLTypes["PaymentChargeStatusEnum"] | undefined>,
-	status?: Array<GraphQLTypes["OrderStatusFilter"] | undefined>,
+		paymentStatus?: Array<GraphQLTypes["PaymentChargeStatusEnum"]>,
+	status?: Array<GraphQLTypes["OrderStatusFilter"]>,
 	customer?: string,
 	created?: GraphQLTypes["DateRangeInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	channels?: Array<string | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	channels?: Array<string>,
 	updatedAt?: GraphQLTypes["DateTimeRangeInput"],
 	isClickAndCollect?: boolean,
 	isPreorder?: boolean,
-	ids?: Array<string | undefined>,
+	ids?: Array<string>,
 	giftCardUsed?: boolean,
 	giftCardBought?: boolean
 };
-	/** Create new order from existing checkout. */
-["OrderFromCheckoutCreate"]: {
-	__typename: "OrderFromCheckoutCreate",
-	/** Placed order. */
-	order?: GraphQLTypes["Order"],
-	checkoutErrors: Array<GraphQLTypes["OrderFromCheckoutCreateError"]>,
-	errors: Array<GraphQLTypes["OrderFromCheckoutCreateError"]>
-};
-	["OrderFromCheckoutCreateError"]: {
-	__typename: "OrderFromCheckoutCreateError",
-	/** Name of a field that caused the error. A value of `null` indicates that the
-error isn't associated with a particular field. */
-	field?: string,
-	/** The error message. */
-	message?: string,
-	/** The error code. */
-	code: GraphQLTypes["OrderFromCheckoutCreateErrorCode"],
-	/** List of varint IDs which causes the error. */
-	variants?: Array<string>,
-	/** List of line Ids which cause the error. */
-	lines?: Array<string>
-};
-	/** An enumeration. */
-["OrderFromCheckoutCreateErrorCode"]: OrderFromCheckoutCreateErrorCode;
-	/** Creates new fulfillments for an order. */
+	/** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderFulfill"]: {
 	__typename: "OrderFulfill",
 	/** List of created fulfillments. */
-	fulfillments?: Array<GraphQLTypes["Fulfillment"] | undefined>,
+	fulfillments?: Array<GraphQLTypes["Fulfillment"]>,
 	/** Fulfilled order. */
 	order?: GraphQLTypes["Order"],
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
+};
+	["OrderFulfilled"]: {
+	__typename: "OrderFulfilled",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?: GraphQLTypes["Order"]
 };
 	["OrderFulfillInput"]: {
 		/** List of items informing how to fulfill the order. */
@@ -19600,6 +22103,12 @@ error isn't associated with a particular field. */
 	quantity: number,
 	/** ID of the warehouse from which the item will be fulfilled. */
 	warehouse: string
+};
+	["OrderFullyPaid"]: {
+	__typename: "OrderFullyPaid",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	order?: GraphQLTypes["Order"]
 };
 	/** Represents order line of particular order. */
 ["OrderLine"]: {
@@ -19627,15 +22136,18 @@ error isn't associated with a particular field. */
 	unitDiscountValue: GraphQLTypes["PositiveDecimal"],
 	/** Price of the order line. */
 	totalPrice: GraphQLTypes["TaxedMoney"],
-	/** A purchased product variant. Note: this field may be null if the variant has been removed from stock at all. */
+	/** A purchased product variant. Note: this field may be null if the variant has
+been removed from stock at all. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	variant?: GraphQLTypes["ProductVariant"],
 	/** Product name in the customer's language */
 	translatedProductName: string,
 	/** Variant name in the customer's language */
 	translatedVariantName: string,
-	/** List of allocations across warehouses. */
+	/** List of allocations across warehouses. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	allocations?: Array<GraphQLTypes["Allocation"]>,
-	/** New in Saleor 3.1. A quantity of items remaining to be fulfilled. */
+	/** Added in Saleor 3.1. A quantity of items remaining to be fulfilled. */
 	quantityToFulfill: number,
 	/** Type of the discount: fixed or percent */
 	unitDiscountType?: GraphQLTypes["DiscountValueTypeEnum"]
@@ -19646,7 +22158,7 @@ error isn't associated with a particular field. */
 	/** Product variant ID. */
 	variantId: string
 };
-	/** Deletes an order line from an order. */
+	/** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDelete"]: {
 	__typename: "OrderLineDelete",
 	/** A related order. */
@@ -19656,7 +22168,7 @@ error isn't associated with a particular field. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Remove discount applied to the order line. */
+	/** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDiscountRemove"]: {
 	__typename: "OrderLineDiscountRemove",
 	/** Order line which has removed discount. */
@@ -19666,7 +22178,7 @@ error isn't associated with a particular field. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Update discount for the order line. */
+	/** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineDiscountUpdate"]: {
 	__typename: "OrderLineDiscountUpdate",
 	/** Order line which has been discounted. */
@@ -19680,7 +22192,7 @@ error isn't associated with a particular field. */
 		/** Number of variant items ordered. */
 	quantity: number
 };
-	/** Create order lines for an order. */
+	/** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLinesCreate"]: {
 	__typename: "OrderLinesCreate",
 	/** Related order. */
@@ -19690,7 +22202,7 @@ error isn't associated with a particular field. */
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>
 };
-	/** Updates an order line of an order. */
+	/** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderLineUpdate"]: {
 	__typename: "OrderLineUpdate",
 	/** Related order. */
@@ -19699,7 +22211,7 @@ error isn't associated with a particular field. */
 	errors: Array<GraphQLTypes["OrderError"]>,
 	orderLine?: GraphQLTypes["OrderLine"]
 };
-	/** Mark order as manually paid. */
+	/** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderMarkAsPaid"]: {
 	__typename: "OrderMarkAsPaid",
 	/** Order marked as paid. */
@@ -19709,7 +22221,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["OrderOriginEnum"]: OrderOriginEnum;
-	/** Refund an order. */
+	/** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderRefund"]: {
 	__typename: "OrderRefund",
 	/** A refunded order. */
@@ -19785,7 +22297,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["OrderSettingsErrorCode"]: OrderSettingsErrorCode;
-	/** Update shop order settings. */
+	/** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderSettingsUpdate"]: {
 	__typename: "OrderSettingsUpdate",
 	/** Order settings. */
@@ -19810,11 +22322,17 @@ When enabled orders from checkout will become unfulfilled immediately. */
 	/** An enumeration. */
 ["OrderStatus"]: OrderStatus;
 	["OrderStatusFilter"]: OrderStatusFilter;
-	/** Updates an order. */
+	/** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderUpdate"]: {
 	__typename: "OrderUpdate",
 	orderErrors: Array<GraphQLTypes["OrderError"]>,
 	errors: Array<GraphQLTypes["OrderError"]>,
+	order?: GraphQLTypes["Order"]
+};
+	["OrderUpdated"]: {
+	__typename: "OrderUpdated",
+	/** Added in Saleor 3.2. Look up an order. Note: this feature is in a preview
+state and can be subject to changes at later point. */
 	order?: GraphQLTypes["Order"]
 };
 	["OrderUpdateInput"]: {
@@ -19826,7 +22344,8 @@ When enabled orders from checkout will become unfulfilled immediately. */
 	shippingAddress?: GraphQLTypes["AddressInput"]
 };
 	/** Updates a shipping method of the order. Requires shipping method ID to update,
-when null is passed then currently assigned shipping method is removed. */
+when null is passed then currently assigned shipping method is removed. Requires
+one of the following permissions: MANAGE_ORDERS. */
 ["OrderUpdateShipping"]: {
 	__typename: "OrderUpdateShipping",
 	/** Order with updated shipping method. */
@@ -19838,7 +22357,7 @@ when null is passed then currently assigned shipping method is removed. */
 		/** ID of the selected shipping method, pass null to remove currently assigned shipping method. */
 	shippingMethod?: string
 };
-	/** Void an order. */
+	/** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
 ["OrderVoid"]: {
 	__typename: "OrderVoid",
 	/** A voided order. */
@@ -19850,16 +22369,47 @@ when null is passed then currently assigned shipping method is removed. */
 ["Page"]: {
 	__typename: "Page",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	seoTitle?: string,
 	seoDescription?: string,
 	title: string,
 	/** Content of the page (JSON). */
 	content?: GraphQLTypes["JSONString"],
 	publicationDate?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. The page publication date. */
+	publishedAt?: GraphQLTypes["DateTime"],
 	isPublished: boolean,
 	slug: string,
 	pageType: GraphQLTypes["PageType"],
@@ -19871,7 +22421,7 @@ when null is passed then currently assigned shipping method is removed. */
 	/** List of attributes assigned to this product. */
 	attributes: Array<GraphQLTypes["SelectedAttribute"]>
 };
-	/** Assign attributes to a given page type. */
+	/** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageAttributeAssign"]: {
 	__typename: "PageAttributeAssign",
 	/** The updated page type. */
@@ -19879,7 +22429,7 @@ when null is passed then currently assigned shipping method is removed. */
 	pageErrors: Array<GraphQLTypes["PageError"]>,
 	errors: Array<GraphQLTypes["PageError"]>
 };
-	/** Unassign attributes from a given page type. */
+	/** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageAttributeUnassign"]: {
 	__typename: "PageAttributeUnassign",
 	/** The updated page type. */
@@ -19887,7 +22437,7 @@ when null is passed then currently assigned shipping method is removed. */
 	pageErrors: Array<GraphQLTypes["PageError"]>,
 	errors: Array<GraphQLTypes["PageError"]>
 };
-	/** Deletes pages. */
+	/** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageBulkDelete"]: {
 	__typename: "PageBulkDelete",
 	/** Returns how many objects were affected. */
@@ -19895,7 +22445,7 @@ when null is passed then currently assigned shipping method is removed. */
 	pageErrors: Array<GraphQLTypes["PageError"]>,
 	errors: Array<GraphQLTypes["PageError"]>
 };
-	/** Publish pages. */
+	/** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageBulkPublish"]: {
 	__typename: "PageBulkPublish",
 	/** Returns how many objects were affected. */
@@ -19918,11 +22468,17 @@ when null is passed then currently assigned shipping method is removed. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new page. */
+	/** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageCreate"]: {
 	__typename: "PageCreate",
 	pageErrors: Array<GraphQLTypes["PageError"]>,
 	errors: Array<GraphQLTypes["PageError"]>,
+	page?: GraphQLTypes["Page"]
+};
+	["PageCreated"]: {
+	__typename: "PageCreated",
+	/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	page?: GraphQLTypes["Page"]
 };
 	["PageCreateInput"]: {
@@ -19936,18 +22492,28 @@ when null is passed then currently assigned shipping method is removed. */
 	attributes?: Array<GraphQLTypes["AttributeValueInput"]>,
 	/** Determines if page is visible in the storefront. */
 	isPublished?: boolean,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
 	publicationDate?: string,
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?: GraphQLTypes["DateTime"],
 	/** Search engine optimization fields. */
 	seo?: GraphQLTypes["SeoInput"],
 	/** ID of the page type that page belongs to. */
 	pageType: string
 };
-	/** Deletes a page. */
+	/** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageDelete"]: {
 	__typename: "PageDelete",
 	pageErrors: Array<GraphQLTypes["PageError"]>,
 	errors: Array<GraphQLTypes["PageError"]>,
+	page?: GraphQLTypes["Page"]
+};
+	["PageDeleted"]: {
+	__typename: "PageDeleted",
+	/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	page?: GraphQLTypes["Page"]
 };
 	["PageError"]: {
@@ -19968,9 +22534,9 @@ error isn't associated with a particular field. */
 ["PageErrorCode"]: PageErrorCode;
 	["PageFilterInput"]: {
 		search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
-	pageTypes?: Array<string | undefined>,
-	ids?: Array<string | undefined>
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
+	pageTypes?: Array<string>,
+	ids?: Array<string>
 };
 	/** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
 ["PageInfo"]: {
@@ -19995,12 +22561,16 @@ error isn't associated with a particular field. */
 	attributes?: Array<GraphQLTypes["AttributeValueInput"]>,
 	/** Determines if page is visible in the storefront. */
 	isPublished?: boolean,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
 	publicationDate?: string,
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?: GraphQLTypes["DateTime"],
 	/** Search engine optimization fields. */
 	seo?: GraphQLTypes["SeoInput"]
 };
-	/** Reorder page attribute values. */
+	/** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageReorderAttributeValues"]: {
 	__typename: "PageReorderAttributeValues",
 	/** Page from which attribute values are reordered. */
@@ -20026,12 +22596,12 @@ error isn't associated with a particular field. */
 	contentJson?: GraphQLTypes["JSONString"],
 	/** Returns translated page fields for the given language code. */
 	translation?: GraphQLTypes["PageTranslation"],
-	/** ('A static page that can be manually added by a shop operator ', 'through the dashboard.') */
+	/** A static page that can be manually added by a shop operator through the dashboard. */
 	page?: GraphQLTypes["Page"],
 	/** List of page content attribute values that can be translated. */
 	attributeValues: Array<GraphQLTypes["AttributeValueTranslatableContent"]>
 };
-	/** Creates/updates translations for a page. */
+	/** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["PageTranslate"]: {
 	__typename: "PageTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -20060,20 +22630,49 @@ error isn't associated with a particular field. */
 ["PageType"]: {
 	__typename: "PageType",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	slug: string,
 	/** Page attributes of that page type. */
-	attributes?: Array<GraphQLTypes["Attribute"] | undefined>,
-	/** Attributes that can be assigned to the page type. */
+	attributes?: Array<GraphQLTypes["Attribute"]>,
+	/** Attributes that can be assigned to the page type. Requires one of the following permissions: MANAGE_PAGES. */
 	availableAttributes?: GraphQLTypes["AttributeCountableConnection"],
-	/** Whether page type has pages assigned. */
+	/** Whether page type has pages assigned. Requires one of the following permissions: MANAGE_PAGES. */
 	hasPages?: boolean
 };
-	/** Delete page types. */
+	/** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeBulkDelete"]: {
 	__typename: "PageTypeBulkDelete",
 	/** Returns how many objects were affected. */
@@ -20096,7 +22695,7 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Create a new page type. */
+	/** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeCreate"]: {
 	__typename: "PageTypeCreate",
 	pageErrors: Array<GraphQLTypes["PageError"]>,
@@ -20111,7 +22710,7 @@ error isn't associated with a particular field. */
 	/** List of attribute IDs to be assigned to the page type. */
 	addAttributes?: Array<string>
 };
-	/** Delete a page type. */
+	/** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeDelete"]: {
 	__typename: "PageTypeDelete",
 	pageErrors: Array<GraphQLTypes["PageError"]>,
@@ -20121,7 +22720,7 @@ error isn't associated with a particular field. */
 	["PageTypeFilterInput"]: {
 		search?: string
 };
-	/** Reorder the attributes of a page type. */
+	/** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeReorderAttributes"]: {
 	__typename: "PageTypeReorderAttributes",
 	/** Page type from which attributes are reordered. */
@@ -20136,7 +22735,7 @@ error isn't associated with a particular field. */
 	/** Sort page types by the selected field. */
 	field: GraphQLTypes["PageTypeSortField"]
 };
-	/** Update page type. */
+	/** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 ["PageTypeUpdate"]: {
 	__typename: "PageTypeUpdate",
 	pageErrors: Array<GraphQLTypes["PageError"]>,
@@ -20153,14 +22752,20 @@ error isn't associated with a particular field. */
 	/** List of attribute IDs to be assigned to the page type. */
 	removeAttributes?: Array<string>
 };
-	/** Updates an existing page. */
+	/** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
 ["PageUpdate"]: {
 	__typename: "PageUpdate",
 	pageErrors: Array<GraphQLTypes["PageError"]>,
 	errors: Array<GraphQLTypes["PageError"]>,
 	page?: GraphQLTypes["Page"]
 };
-	/** Change the password of the logged in user. */
+	["PageUpdated"]: {
+	__typename: "PageUpdated",
+	/** Added in Saleor 3.2. Look up a page. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	page?: GraphQLTypes["Page"]
+};
+	/** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["PasswordChange"]: {
 	__typename: "PasswordChange",
 	/** A user instance with a new password. */
@@ -20172,10 +22777,39 @@ error isn't associated with a particular field. */
 ["Payment"]: {
 	__typename: "Payment",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	gateway: string,
 	isActive: boolean,
 	created: GraphQLTypes["DateTime"],
@@ -20184,27 +22818,27 @@ error isn't associated with a particular field. */
 	checkout?: GraphQLTypes["Checkout"],
 	order?: GraphQLTypes["Order"],
 	paymentMethodType: string,
+	/** IP address of the user who created the payment. Requires one of the following permissions: MANAGE_ORDERS. */
 	customerIpAddress?: string,
 	/** Internal payment status. */
 	chargeStatus: GraphQLTypes["PaymentChargeStatusEnum"],
-	/** List of actions that can be performed in the current state of a payment. */
-	actions?: Array<GraphQLTypes["OrderAction"]>,
+	/** List of actions that can be performed in the current state of a payment.
+Requires one of the following permissions: MANAGE_ORDERS. */
+	actions: Array<GraphQLTypes["OrderAction"]>,
 	/** Total amount of the payment. */
 	total?: GraphQLTypes["Money"],
 	/** Total amount captured for this payment. */
 	capturedAmount?: GraphQLTypes["Money"],
-	/** List of all transactions within this payment. */
-	transactions?: Array<GraphQLTypes["Transaction"] | undefined>,
-	/** Maximum amount of money that can be captured. */
+	/** List of all transactions within this payment. Requires one of the following permissions: MANAGE_ORDERS. */
+	transactions?: Array<GraphQLTypes["Transaction"]>,
+	/** Maximum amount of money that can be captured. Requires one of the following permissions: MANAGE_ORDERS. */
 	availableCaptureAmount?: GraphQLTypes["Money"],
-	/** Maximum amount of money that can be refunded. */
+	/** Maximum amount of money that can be refunded. Requires one of the following permissions: MANAGE_ORDERS. */
 	availableRefundAmount?: GraphQLTypes["Money"],
 	/** The details of the card used for this payment. */
 	creditCard?: GraphQLTypes["CreditCard"]
 };
-	/** An enumeration. */
-["PaymentActionEnum"]: PaymentActionEnum;
-	/** Captures the authorized payment amount. */
+	/** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentCapture"]: {
 	__typename: "PaymentCapture",
 	/** Updated payment. */
@@ -20247,24 +22881,6 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Create payment for checkout or order. */
-["PaymentCreate"]: {
-	__typename: "PaymentCreate",
-	payment: GraphQLTypes["PaymentPOC"],
-	errors: Array<GraphQLTypes["PaymentCreateError"]>
-};
-	["PaymentCreateError"]: {
-	__typename: "PaymentCreateError",
-	/** Name of a field that caused the error. A value of `null` indicates that the
-error isn't associated with a particular field. */
-	field?: string,
-	/** The error message. */
-	message?: string,
-	/** The error code. */
-	code: GraphQLTypes["PaymentCreateErrorCode"]
-};
-	/** An enumeration. */
-["PaymentCreateErrorCode"]: PaymentCreateErrorCode;
 	["PaymentError"]: {
 	__typename: "PaymentError",
 	/** Name of a field that caused the error. A value of `null` indicates that the
@@ -20280,7 +22896,7 @@ error isn't associated with a particular field. */
 	/** An enumeration. */
 ["PaymentErrorCode"]: PaymentErrorCode;
 	["PaymentFilterInput"]: {
-		checkouts?: Array<string | undefined>
+		checkouts?: Array<string>
 };
 	/** Available payment gateway backend with configuration necessary to setup client. */
 ["PaymentGateway"]: {
@@ -20292,7 +22908,7 @@ error isn't associated with a particular field. */
 	/** Payment gateway client configuration. */
 	config: Array<GraphQLTypes["GatewayConfigLine"]>,
 	/** Payment gateway supported currencies. */
-	currencies?: Array<string>
+	currencies: Array<string>
 };
 	/** Initializes payment process when it is required by gateway. */
 ["PaymentInitialize"]: {
@@ -20324,79 +22940,12 @@ amount is provided, the checkout total will be used. */
 additional actions. Payment with additional actions will not be finished if
 this field is not provided. */
 	returnUrl?: string,
-	/** New in Saleor 3.1. Payment store type. */
+	/** Added in Saleor 3.1. Payment store type. */
 	storePaymentMethod?: GraphQLTypes["StorePaymentMethodEnum"],
-	/** New in Saleor 3.1. User public metadata. */
+	/** Added in Saleor 3.1. User public metadata. */
 	metadata?: Array<GraphQLTypes["MetadataInput"]>
 };
-	/** Represents a payment of a given type. */
-["PaymentPOC"]: {
-	__typename: "PaymentPOC",
-	/** The ID of the object. */
-	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
-	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
-	status: string,
-	type: string,
-	reference: string,
-	/** List of all possible actions for the payment */
-	availableActions: Array<GraphQLTypes["PaymentActionEnum"]>,
-	/** Amount authorized by this payment. */
-	amountAuthorized: GraphQLTypes["Money"],
-	/** Amount captured by this payment. */
-	amountCaptured: GraphQLTypes["Money"],
-	/** Amount refunded by this payment. */
-	amountRefunded: GraphQLTypes["Money"],
-	/** Amount voided by this payment. */
-	amountVoided: GraphQLTypes["Money"]
-};
-	["PaymentPOCCreateInput"]: {
-		/** Status of the payment. */
-	status: string,
-	/** Payment type used for this payment. */
-	type: string,
-	/** Reference of the payment. */
-	reference?: string,
-	/** List of all possible actions for the payment */
-	availableActions?: Array<GraphQLTypes["PaymentActionEnum"]>,
-	/** Amount authorized by this payment. */
-	amountAuthorized?: GraphQLTypes["MoneyInput"],
-	/** Amount captured by this payment. */
-	amountCaptured?: GraphQLTypes["MoneyInput"],
-	/** Amount refunded by this payment. */
-	amountRefunded?: GraphQLTypes["MoneyInput"],
-	/** Amount refunded by this payment. */
-	amountVoided?: GraphQLTypes["MoneyInput"],
-	/** New in Saleor 3.1. User public metadata. */
-	publicMetadata?: Array<GraphQLTypes["MetadataInput"]>,
-	/** New in Saleor 3.1. User public metadata. */
-	privateMetadata?: Array<GraphQLTypes["MetadataInput"]>
-};
-	["PaymentPOCUpdateInput"]: {
-		/** Status of the payment. */
-	status?: string,
-	/** Payment type used for this payment. */
-	type?: string,
-	/** Reference of the payment. */
-	reference?: string,
-	/** List of all possible actions for the payment */
-	availableActions?: Array<GraphQLTypes["PaymentActionEnum"]>,
-	/** Amount authorized by this payment. */
-	amountAuthorized?: GraphQLTypes["MoneyInput"],
-	/** Amount captured by this payment. */
-	amountCaptured?: GraphQLTypes["MoneyInput"],
-	/** Amount refunded by this payment. */
-	amountRefunded?: GraphQLTypes["MoneyInput"],
-	/** Amount refunded by this payment. */
-	amountVoided?: GraphQLTypes["MoneyInput"],
-	/** New in Saleor 3.1. User public metadata. */
-	publicMetadata?: Array<GraphQLTypes["MetadataInput"]>,
-	/** New in Saleor 3.1. User public metadata. */
-	privateMetadata?: Array<GraphQLTypes["MetadataInput"]>
-};
-	/** Refunds the captured payment amount. */
+	/** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentRefund"]: {
 	__typename: "PaymentRefund",
 	/** Updated payment. */
@@ -20413,16 +22962,10 @@ this field is not provided. */
 	paymentMethodId?: string,
 	/** Stored credit card details if available. */
 	creditCardInfo?: GraphQLTypes["CreditCard"],
-	/** New in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>
+	/** Added in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
+	metadata: Array<GraphQLTypes["MetadataItem"]>
 };
-	/** Create payment for checkout or order. */
-["PaymentUpdate"]: {
-	__typename: "PaymentUpdate",
-	payment: GraphQLTypes["PaymentPOC"],
-	errors: Array<GraphQLTypes["PaymentCreateError"]>
-};
-	/** Voids the authorized payment. */
+	/** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
 ["PaymentVoid"]: {
 	__typename: "PaymentVoid",
 	/** Updated payment. */
@@ -20440,7 +22983,7 @@ this field is not provided. */
 };
 	/** An enumeration. */
 ["PermissionEnum"]: PermissionEnum;
-	/** Create new permission group. */
+	/** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupCreate"]: {
 	__typename: "PermissionGroupCreate",
 	permissionGroupErrors: Array<GraphQLTypes["PermissionGroupError"]>,
@@ -20455,7 +22998,7 @@ this field is not provided. */
 	/** Group name. */
 	name: string
 };
-	/** Delete permission group. */
+	/** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupDelete"]: {
 	__typename: "PermissionGroupDelete",
 	permissionGroupErrors: Array<GraphQLTypes["PermissionGroupError"]>,
@@ -20480,7 +23023,7 @@ error isn't associated with a particular field. */
 ["PermissionGroupErrorCode"]: PermissionGroupErrorCode;
 	["PermissionGroupFilterInput"]: {
 		search?: string,
-	ids?: Array<string | undefined>
+	ids?: Array<string>
 };
 	["PermissionGroupSortField"]: PermissionGroupSortField;
 	["PermissionGroupSortingInput"]: {
@@ -20489,7 +23032,7 @@ error isn't associated with a particular field. */
 	/** Sort permission group by the selected field. */
 	field: GraphQLTypes["PermissionGroupSortField"]
 };
-	/** Update permission group. */
+	/** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
 ["PermissionGroupUpdate"]: {
 	__typename: "PermissionGroupUpdate",
 	permissionGroupErrors: Array<GraphQLTypes["PermissionGroupError"]>,
@@ -20530,7 +23073,7 @@ error isn't associated with a particular field. */
 	/** The channel to which the plugin configuration is assigned to. */
 	channel?: GraphQLTypes["Channel"],
 	/** Configuration of the plugin. */
-	configuration?: Array<GraphQLTypes["ConfigurationItem"] | undefined>
+	configuration?: Array<GraphQLTypes["ConfigurationItem"]>
 };
 	["PluginConfigurationType"]: PluginConfigurationType;
 	["PluginCountableConnection"]: {
@@ -20576,7 +23119,7 @@ error isn't associated with a particular field. */
 		active: boolean,
 	channels: Array<string>
 };
-	/** Update plugin configuration. */
+	/** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
 ["PluginUpdate"]: {
 	__typename: "PluginUpdate",
 	plugin?: GraphQLTypes["Plugin"],
@@ -20587,7 +23130,7 @@ error isn't associated with a particular field. */
 		/** Indicates whether the plugin should be enabled. */
 	active?: boolean,
 	/** Configuration of the plugin. */
-	configuration?: Array<GraphQLTypes["ConfigurationItemInput"] | undefined>
+	configuration?: Array<GraphQLTypes["ConfigurationItemInput"]>
 };
 	/** Positive Decimal scalar implementation.
 
@@ -20598,9 +23141,9 @@ Should be used in places where value must be positive. */
 	/** Represents preorder settings for product variant. */
 ["PreorderData"]: {
 	__typename: "PreorderData",
-	/** The global preorder threshold for product variant. */
+	/** The global preorder threshold for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	globalThreshold?: number,
-	/** Total number of sold product variant during preorder. */
+	/** Total number of sold product variant during preorder. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	globalSoldUnits: number,
 	/** Preorder end date. */
 	endDate?: GraphQLTypes["DateTime"]
@@ -20635,10 +23178,39 @@ Should be used in places where value must be positive. */
 ["Product"]: {
 	__typename: "Product",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	seoTitle?: string,
 	seoDescription?: string,
 	name: string,
@@ -20666,28 +23238,34 @@ Should be used in places where value must be positive. */
 	taxType?: GraphQLTypes["TaxType"],
 	/** List of attributes assigned to this product. */
 	attributes: Array<GraphQLTypes["SelectedAttribute"]>,
-	/** List of availability in channels for the product. */
+	/** List of availability in channels for the product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	channelListings?: Array<GraphQLTypes["ProductChannelListing"]>,
 	/** Get a single product media by ID. */
 	mediaById?: GraphQLTypes["ProductMedia"],
 	/** Get a single product image by ID. */
 	imageById?: GraphQLTypes["ProductImage"],
-	/** List of variants for the product. */
-	variants?: Array<GraphQLTypes["ProductVariant"] | undefined>,
+	/** List of variants for the product. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
+	variants?: Array<GraphQLTypes["ProductVariant"]>,
 	/** List of media for the product. */
 	media?: Array<GraphQLTypes["ProductMedia"]>,
 	/** List of images for the product. */
-	images?: Array<GraphQLTypes["ProductImage"] | undefined>,
-	/** List of collections for the product. */
-	collections?: Array<GraphQLTypes["Collection"] | undefined>,
+	images?: Array<GraphQLTypes["ProductImage"]>,
+	/** List of collections for the product. Requires the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
+	collections?: Array<GraphQLTypes["Collection"]>,
 	/** Returns translated product fields for the given language code. */
 	translation?: GraphQLTypes["ProductTranslation"],
-	/** Date when product is available for purchase.  */
+	/** Date when product is available for purchase. */
 	availableForPurchase?: GraphQLTypes["Date"],
+	/** Date when product is available for purchase. */
+	availableForPurchaseAt?: GraphQLTypes["DateTime"],
 	/** Whether the product is available for purchase. */
 	isAvailableForPurchase?: boolean
 };
-	/** Assign attributes to a given product type. */
+	/** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeAssign"]: {
 	__typename: "ProductAttributeAssign",
 	/** The updated product type. */
@@ -20700,11 +23278,13 @@ Should be used in places where value must be positive. */
 	id: string,
 	/** The attribute type to be assigned as. */
 	type: GraphQLTypes["ProductAttributeType"],
-	/** New in Saleor 3.1. Whether attribute is allowed in variant selection. Allowed
-types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
+	/** Added in Saleor 3.1. Whether attribute is allowed in variant selection.
+Allowed types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	variantSelection?: boolean
 };
-	/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+	/** Added in Saleor 3.1. Update attributes assigned to product variant for given
+product type. Requires one of the following permissions:
+MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeAssignmentUpdate"]: {
 	__typename: "ProductAttributeAssignmentUpdate",
 	/** The updated product type. */
@@ -20715,12 +23295,13 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	["ProductAttributeAssignmentUpdateInput"]: {
 		/** The ID of the attribute to assign. */
 	id: string,
-	/** New in Saleor 3.1. Whether attribute is allowed in variant selection. Allowed
-types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
+	/** Added in Saleor 3.1. Whether attribute is allowed in variant selection.
+Allowed types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	variantSelection: boolean
 };
 	["ProductAttributeType"]: ProductAttributeType;
-	/** Un-assign attributes from a given product type. */
+	/** Un-assign attributes from a given product type. Requires one of the following
+permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductAttributeUnassign"]: {
 	__typename: "ProductAttributeUnassign",
 	/** The updated product type. */
@@ -20728,7 +23309,7 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Deletes products. */
+	/** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductBulkDelete"]: {
 	__typename: "ProductBulkDelete",
 	/** Returns how many objects were affected. */
@@ -20741,15 +23322,19 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	__typename: "ProductChannelListing",
 	id: string,
 	publicationDate?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. The product publication date time. */
+	publishedAt?: GraphQLTypes["DateTime"],
 	isPublished: boolean,
 	channel: GraphQLTypes["Channel"],
 	visibleInListings: boolean,
 	availableForPurchase?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. The product available for purchase date time. */
+	availableForPurchaseAt?: GraphQLTypes["DateTime"],
 	/** The price of the cheapest variant (including discounts). */
 	discountedPrice?: GraphQLTypes["Money"],
-	/** Purchase cost of product. */
+	/** Purchase cost of product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	purchaseCost?: GraphQLTypes["MoneyRange"],
-	/** Range of margin percentage value. */
+	/** Range of margin percentage value. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	margin?: GraphQLTypes["Margin"],
 	/** Whether the product is available for purchase. */
 	isAvailableForPurchase?: boolean,
@@ -20761,15 +23346,24 @@ types are: ['dropdown', 'boolean', 'swatch', 'numeric']. */
 	channelId: string,
 	/** Determines if object is visible to customers. */
 	isPublished?: boolean,
-	/** Publication date. ISO 8601 standard. */
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
 	publicationDate?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?: GraphQLTypes["DateTime"],
 	/** Determines if product is visible in product listings (doesn't apply to product collections). */
 	visibleInListings?: boolean,
 	/** Determine if product should be available for purchase. */
 	isAvailableForPurchase?: boolean,
 	/** A start date from which a product will be available for purchase. When not set
-and isAvailable is set to True, the current day is assumed. */
+and isAvailable is set to True, the current day is assumed. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `availableForPurchaseAt` field instead. */
 	availableForPurchaseDate?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. A start date time from which a product will be available
+for purchase. When not set and `isAvailable` is set to True, the current day is assumed. */
+	availableForPurchaseAt?: GraphQLTypes["DateTime"],
 	/** List of variants to which the channel should be assigned. */
 	addVariants?: Array<string>,
 	/** List of variants from which the channel should be unassigned. */
@@ -20793,7 +23387,7 @@ error isn't associated with a particular field. */
 	/** List of variants IDs which causes the error. */
 	variants?: Array<string>
 };
-	/** Manage product's availability in channels. */
+	/** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductChannelListingUpdate"]: {
 	__typename: "ProductChannelListingUpdate",
 	/** An updated product instance. */
@@ -20822,12 +23416,21 @@ error isn't associated with a particular field. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new product. */
+	/** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductCreate"]: {
 	__typename: "ProductCreate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	product?: GraphQLTypes["Product"]
+};
+	["ProductCreated"]: {
+	__typename: "ProductCreated",
+	/** Added in Saleor 3.2. Look up a product. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	product?: GraphQLTypes["Product"],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?: GraphQLTypes["Category"]
 };
 	["ProductCreateInput"]: {
 		/** List of attributes. */
@@ -20855,12 +23458,21 @@ error isn't associated with a particular field. */
 	/** ID of the type that product belongs to. */
 	productType: string
 };
-	/** Deletes a product. */
+	/** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductDelete"]: {
 	__typename: "ProductDelete",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	product?: GraphQLTypes["Product"]
+};
+	["ProductDeleted"]: {
+	__typename: "ProductDeleted",
+	/** Added in Saleor 3.2. Look up a product. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	product?: GraphQLTypes["Product"],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?: GraphQLTypes["Category"]
 };
 	["ProductError"]: {
 	__typename: "ProductError",
@@ -20881,20 +23493,20 @@ error isn't associated with a particular field. */
 	["ProductFieldEnum"]: ProductFieldEnum;
 	["ProductFilterInput"]: {
 		isPublished?: boolean,
-	collections?: Array<string | undefined>,
-	categories?: Array<string | undefined>,
+	collections?: Array<string>,
+	categories?: Array<string>,
 	hasCategory?: boolean,
-	attributes?: Array<GraphQLTypes["AttributeInput"] | undefined>,
+	attributes?: Array<GraphQLTypes["AttributeInput"]>,
 	stockAvailability?: GraphQLTypes["StockAvailability"],
 	stocks?: GraphQLTypes["ProductStockFilterInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
 	price?: GraphQLTypes["PriceRangeInput"],
 	minimalPrice?: GraphQLTypes["PriceRangeInput"],
 	updatedAt?: GraphQLTypes["DateTimeRangeInput"],
-	productTypes?: Array<string | undefined>,
+	productTypes?: Array<string>,
 	giftCard?: boolean,
-	ids?: Array<string | undefined>,
+	ids?: Array<string>,
 	hasPreorderedVariants?: boolean,
 	/** Specifies the channel by which the data should be filtered. 
 
@@ -20950,7 +23562,7 @@ the item unchanged. */
 	/** The URL of the media. */
 	url: string
 };
-	/** Deletes product media. */
+	/** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaBulkDelete"]: {
 	__typename: "ProductMediaBulkDelete",
 	/** Returns how many objects were affected. */
@@ -20961,7 +23573,8 @@ the item unchanged. */
 	/** Create a media object (image or video URL) associated with product. For image,
 this mutation must be sent as a `multipart` request. More detailed specs of the
 upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaCreate"]: {
 	__typename: "ProductMediaCreate",
 	product?: GraphQLTypes["Product"],
@@ -20979,7 +23592,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Represents an URL to an external media. */
 	mediaUrl?: string
 };
-	/** Deletes a product media. */
+	/** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaDelete"]: {
 	__typename: "ProductMediaDelete",
 	product?: GraphQLTypes["Product"],
@@ -20987,7 +23600,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Changes ordering of the product media. */
+	/** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaReorder"]: {
 	__typename: "ProductMediaReorder",
 	product?: GraphQLTypes["Product"],
@@ -20997,7 +23610,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 };
 	/** An enumeration. */
 ["ProductMediaType"]: ProductMediaType;
-	/** Updates a product media. */
+	/** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductMediaUpdate"]: {
 	__typename: "ProductMediaUpdate",
 	product?: GraphQLTypes["Product"],
@@ -21012,7 +23625,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	["ProductOrder"]: {
 		/** Specifies the direction in which to sort products. */
 	direction: GraphQLTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?: string,
@@ -21039,7 +23652,7 @@ Note: this doesn't take translations into account yet. */
 	/** The discounted price range of the product variants in the local currency. */
 	priceRangeLocalCurrency?: GraphQLTypes["TaxedMoneyRange"]
 };
-	/** Reorder product attribute values. */
+	/** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductReorderAttributeValues"]: {
 	__typename: "ProductReorderAttributeValues",
 	/** Product from which attribute values are reordered. */
@@ -21067,7 +23680,7 @@ Note: this doesn't take translations into account yet. */
 	/** List of product attribute values that can be translated. */
 	attributeValues: Array<GraphQLTypes["AttributeValueTranslatableContent"]>
 };
-	/** Creates/updates translations for a product. */
+	/** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ProductTranslate"]: {
 	__typename: "ProductTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -21090,10 +23703,39 @@ Note: this doesn't take translations into account yet. */
 ["ProductType"]: {
 	__typename: "ProductType",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	slug: string,
 	hasVariants: boolean,
@@ -21107,14 +23749,15 @@ Note: this doesn't take translations into account yet. */
 	/** A type of tax. Assigned by enabled tax gateway */
 	taxType?: GraphQLTypes["TaxType"],
 	/** Variant attributes of that product type. */
-	variantAttributes?: Array<GraphQLTypes["Attribute"] | undefined>,
-	/** New in Saleor 3.1. Variant attributes of that product type with attached variant selection. */
-	assignedVariantAttributes?: Array<GraphQLTypes["AssignedVariantAttribute"] | undefined>,
+	variantAttributes?: Array<GraphQLTypes["Attribute"]>,
+	/** Added in Saleor 3.1. Variant attributes of that product type with attached variant selection. */
+	assignedVariantAttributes?: Array<GraphQLTypes["AssignedVariantAttribute"]>,
 	/** Product attributes of that product type. */
-	productAttributes?: Array<GraphQLTypes["Attribute"] | undefined>,
+	productAttributes?: Array<GraphQLTypes["Attribute"]>,
+	/** List of attributes which can be assigned to this product type. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	availableAttributes?: GraphQLTypes["AttributeCountableConnection"]
 };
-	/** Deletes product types. */
+	/** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeBulkDelete"]: {
 	__typename: "ProductTypeBulkDelete",
 	/** Returns how many objects were affected. */
@@ -21138,14 +23781,14 @@ Note: this doesn't take translations into account yet. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new product type. */
+	/** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeCreate"]: {
 	__typename: "ProductTypeCreate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	productType?: GraphQLTypes["ProductType"]
 };
-	/** Deletes a product type. */
+	/** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeDelete"]: {
 	__typename: "ProductTypeDelete",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
@@ -21157,9 +23800,9 @@ Note: this doesn't take translations into account yet. */
 		search?: string,
 	configurable?: GraphQLTypes["ProductTypeConfigurable"],
 	productType?: GraphQLTypes["ProductTypeEnum"],
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
 	kind?: GraphQLTypes["ProductTypeKindEnum"],
-	ids?: Array<string | undefined>
+	ids?: Array<string>
 };
 	["ProductTypeInput"]: {
 		/** Name of the product type. */
@@ -21173,9 +23816,9 @@ simplifies product management in the dashboard. There is always at least one
 variant created under the hood. */
 	hasVariants?: boolean,
 	/** List of attributes shared among all product variants. */
-	productAttributes?: Array<string | undefined>,
+	productAttributes?: Array<string>,
 	/** List of attributes used to distinguish between different variants of a product. */
-	variantAttributes?: Array<string | undefined>,
+	variantAttributes?: Array<string>,
 	/** Determines if shipping is required for products of this variant. */
 	isShippingRequired?: boolean,
 	/** Determines if products are digital. */
@@ -21187,7 +23830,7 @@ variant created under the hood. */
 };
 	/** An enumeration. */
 ["ProductTypeKindEnum"]: ProductTypeKindEnum;
-	/** Reorder the attributes of a product type. */
+	/** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeReorderAttributes"]: {
 	__typename: "ProductTypeReorderAttributes",
 	/** Product type from which attributes are reordered. */
@@ -21202,28 +23845,66 @@ variant created under the hood. */
 	/** Sort product types by the selected field. */
 	field: GraphQLTypes["ProductTypeSortField"]
 };
-	/** Updates an existing product type. */
+	/** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 ["ProductTypeUpdate"]: {
 	__typename: "ProductTypeUpdate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	productType?: GraphQLTypes["ProductType"]
 };
-	/** Updates an existing product. */
+	/** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductUpdate"]: {
 	__typename: "ProductUpdate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	product?: GraphQLTypes["Product"]
 };
+	["ProductUpdated"]: {
+	__typename: "ProductUpdated",
+	/** Added in Saleor 3.2. Look up a product. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	product?: GraphQLTypes["Product"],
+	/** Added in Saleor 3.2. Look up a category. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	category?: GraphQLTypes["Category"]
+};
 	/** Represents a version of a product such as different size or color. */
 ["ProductVariant"]: {
 	__typename: "ProductVariant",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	sku?: string,
 	product: GraphQLTypes["Product"],
@@ -21233,7 +23914,8 @@ variant created under the hood. */
 	/** Channel given to retrieve this product variant. Also used by federation
 gateway to resolve this object in a federated query. */
 	channel?: string,
-	/** List of price information in channels for the product. */
+	/** List of price information in channels for the product. Requires one of the
+following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channelListings?: Array<GraphQLTypes["ProductVariantChannelListing"]>,
 	/** Lists the storefront variant's pricing, the current price and discounts, only meant for displaying. */
 	pricing?: GraphQLTypes["VariantPricingInfo"],
@@ -21241,33 +23923,43 @@ gateway to resolve this object in a federated query. */
 	attributes: Array<GraphQLTypes["SelectedAttribute"]>,
 	/** Gross margin percentage value. */
 	margin?: number,
-	/** Total quantity ordered. */
+	/** Total quantity ordered. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	quantityOrdered?: number,
 	/** Total revenue generated by a variant in given period of time. Note: this field
 should be queried using `reportProductSales` query as it uses optimizations
-suitable for such calculations. */
+suitable for such calculations. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 	revenue?: GraphQLTypes["TaxedMoney"],
 	/** List of images for the product variant. */
-	images?: Array<GraphQLTypes["ProductImage"] | undefined>,
+	images?: Array<GraphQLTypes["ProductImage"]>,
 	/** List of media for the product variant. */
 	media?: Array<GraphQLTypes["ProductMedia"]>,
 	/** Returns translated product variant fields for the given language code. */
 	translation?: GraphQLTypes["ProductVariantTranslation"],
-	/** Digital content for the product variant. */
+	/** Digital content for the product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContent?: GraphQLTypes["DigitalContent"],
-	/** Stocks for the product variant. */
-	stocks?: Array<GraphQLTypes["Stock"] | undefined>,
+	/** Stocks for the product variant. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
+	stocks?: Array<GraphQLTypes["Stock"]>,
 	/** Quantity of a product available for sale in one checkout. Field value will be
 `null` when no `limitQuantityPerCheckout` in global settings has been set, and
 `productVariant` stocks are not tracked. */
 	quantityAvailable?: number,
-	/** New in Saleor 3.1. Preorder data for product variant. Note: this feature is in
-a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Preorder data for product variant. Note: this feature is
+in a preview state and can be subject to changes at later point. */
 	preorder?: GraphQLTypes["PreorderData"],
 	created: GraphQLTypes["DateTime"],
 	updatedAt: GraphQLTypes["DateTime"]
 };
-	/** Creates product variants for a given product. */
+	["ProductVariantBackInStock"]: {
+	__typename: "ProductVariantBackInStock",
+	/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?: GraphQLTypes["ProductVariant"],
+	/** Added in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	warehouse?: GraphQLTypes["Warehouse"]
+};
+	/** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantBulkCreate"]: {
 	__typename: "ProductVariantBulkCreate",
 	/** Returns how many objects were created. */
@@ -21287,19 +23979,19 @@ quantity won't change when customers buy this item. */
 	trackInventory?: boolean,
 	/** Weight of the Product Variant. */
 	weight?: GraphQLTypes["WeightScalar"],
-	/** New in Saleor 3.1. Determines if variant is in preorder. Note: this feature is
-in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines if variant is in preorder. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	preorder?: GraphQLTypes["PreorderSettingsInput"],
-	/** New in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can be
-bought in a single checkout. Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can
+be bought in a single checkout. Note: this feature is in a preview state and
+can be subject to changes at later point. */
 	quantityLimitPerCustomer?: number,
 	/** Stocks of a product available for sale. */
 	stocks?: Array<GraphQLTypes["StockInput"]>,
 	/** List of prices assigned to channels. */
 	channelListings?: Array<GraphQLTypes["ProductVariantChannelListingAddInput"]>
 };
-	/** Deletes product variants. */
+	/** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantBulkDelete"]: {
 	__typename: "ProductVariantBulkDelete",
 	/** Returns how many objects were affected. */
@@ -21315,9 +24007,9 @@ be subject to changes at later point. */
 	price?: GraphQLTypes["Money"],
 	/** Cost price of the variant. */
 	costPrice?: GraphQLTypes["Money"],
-	/** Gross margin percentage value. */
+	/** Gross margin percentage value. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	margin?: number,
-	/** New in Saleor 3.1. Preorder variant data. Note: this feature is in a preview
+	/** Added in Saleor 3.1. Preorder variant data. Note: this feature is in a preview
 state and can be subject to changes at later point. */
 	preorderThreshold?: GraphQLTypes["PreorderThreshold"]
 };
@@ -21328,11 +24020,11 @@ state and can be subject to changes at later point. */
 	price: GraphQLTypes["PositiveDecimal"],
 	/** Cost price of the variant in channel. */
 	costPrice?: GraphQLTypes["PositiveDecimal"],
-	/** New in Saleor 3.1. The threshold for preorder variant in channel. Note: this
+	/** Added in Saleor 3.1. The threshold for preorder variant in channel. Note: this
 feature is in a preview state and can be subject to changes at later point. */
 	preorderThreshold?: number
 };
-	/** Manage product variant prices in channels. */
+	/** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantChannelListingUpdate"]: {
 	__typename: "ProductVariantChannelListingUpdate",
 	/** An updated product variant instance. */
@@ -21355,11 +24047,17 @@ feature is in a preview state and can be subject to changes at later point. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new variant for a product. */
+	/** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantCreate"]: {
 	__typename: "ProductVariantCreate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
+	productVariant?: GraphQLTypes["ProductVariant"]
+};
+	["ProductVariantCreated"]: {
+	__typename: "ProductVariantCreated",
+	/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
 	productVariant?: GraphQLTypes["ProductVariant"]
 };
 	["ProductVariantCreateInput"]: {
@@ -21372,29 +24070,35 @@ quantity won't change when customers buy this item. */
 	trackInventory?: boolean,
 	/** Weight of the Product Variant. */
 	weight?: GraphQLTypes["WeightScalar"],
-	/** New in Saleor 3.1. Determines if variant is in preorder. Note: this feature is
-in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines if variant is in preorder. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	preorder?: GraphQLTypes["PreorderSettingsInput"],
-	/** New in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can be
-bought in a single checkout. Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can
+be bought in a single checkout. Note: this feature is in a preview state and
+can be subject to changes at later point. */
 	quantityLimitPerCustomer?: number,
 	/** Product ID of which type is the variant. */
 	product: string,
 	/** Stocks of a product available for sale. */
 	stocks?: Array<GraphQLTypes["StockInput"]>
 };
-	/** Deletes a product variant. */
+	/** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantDelete"]: {
 	__typename: "ProductVariantDelete",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
 	productVariant?: GraphQLTypes["ProductVariant"]
 };
+	["ProductVariantDeleted"]: {
+	__typename: "ProductVariantDeleted",
+	/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?: GraphQLTypes["ProductVariant"]
+};
 	["ProductVariantFilterInput"]: {
 		search?: string,
-	sku?: Array<string | undefined>,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
+	sku?: Array<string>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
 	isPreorder?: boolean,
 	updatedAt?: GraphQLTypes["DateTimeRangeInput"]
 };
@@ -21408,31 +24112,43 @@ quantity won't change when customers buy this item. */
 	trackInventory?: boolean,
 	/** Weight of the Product Variant. */
 	weight?: GraphQLTypes["WeightScalar"],
-	/** New in Saleor 3.1. Determines if variant is in preorder. Note: this feature is
-in a preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines if variant is in preorder. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	preorder?: GraphQLTypes["PreorderSettingsInput"],
-	/** New in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can be
-bought in a single checkout. Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Determines maximum quantity of `ProductVariant`,that can
+be bought in a single checkout. Note: this feature is in a preview state and
+can be subject to changes at later point. */
 	quantityLimitPerCustomer?: number
 };
-	/** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder
-allocation into regular allocation. Note: this feature is in a preview state and
-can be subject to changes at later point. */
+	["ProductVariantOutOfStock"]: {
+	__typename: "ProductVariantOutOfStock",
+	/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	productVariant?: GraphQLTypes["ProductVariant"],
+	/** Added in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	warehouse?: GraphQLTypes["Warehouse"]
+};
+	/** Added in Saleor 3.1. Deactivates product variant preorder. It changes all
+preorder allocation into regular allocation. Note: this feature is in a preview
+state and can be subject to changes at later point. Requires one of the
+following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantPreorderDeactivate"]: {
 	__typename: "ProductVariantPreorderDeactivate",
 	/** Product variant with ended preorder. */
 	productVariant?: GraphQLTypes["ProductVariant"],
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+	/** Reorder the variants of a product. Mutation updates updated_at on product and
+triggers PRODUCT_UPDATED webhook. Requires one of the following permissions:
+MANAGE_PRODUCTS. */
 ["ProductVariantReorder"]: {
 	__typename: "ProductVariantReorder",
 	product?: GraphQLTypes["Product"],
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Reorder product variant attribute values. */
+	/** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantReorderAttributeValues"]: {
 	__typename: "ProductVariantReorderAttributeValues",
 	/** Product variant from which attribute values are reordered. */
@@ -21440,14 +24156,22 @@ can be subject to changes at later point. */
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+	/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook.
+Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantSetDefault"]: {
 	__typename: "ProductVariantSetDefault",
 	product?: GraphQLTypes["Product"],
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Creates stocks for product variant. */
+	["ProductVariantSortField"]: ProductVariantSortField;
+	["ProductVariantSortingInput"]: {
+		/** Specifies the direction in which to sort products. */
+	direction: GraphQLTypes["OrderDirection"],
+	/** Sort productVariants by the selected field. */
+	field: GraphQLTypes["ProductVariantSortField"]
+};
+	/** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksCreate"]: {
 	__typename: "ProductVariantStocksCreate",
 	/** Updated product variant. */
@@ -21455,7 +24179,7 @@ can be subject to changes at later point. */
 	bulkStockErrors: Array<GraphQLTypes["BulkStockError"]>,
 	errors: Array<GraphQLTypes["BulkStockError"]>
 };
-	/** Delete stocks from product variant. */
+	/** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksDelete"]: {
 	__typename: "ProductVariantStocksDelete",
 	/** Updated product variant. */
@@ -21463,7 +24187,7 @@ can be subject to changes at later point. */
 	stockErrors: Array<GraphQLTypes["StockError"]>,
 	errors: Array<GraphQLTypes["StockError"]>
 };
-	/** Update stocks for product variant. */
+	/** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantStocksUpdate"]: {
 	__typename: "ProductVariantStocksUpdate",
 	/** Updated product variant. */
@@ -21482,7 +24206,7 @@ can be subject to changes at later point. */
 	/** List of product variant attribute values that can be translated. */
 	attributeValues: Array<GraphQLTypes["AttributeValueTranslatableContent"]>
 };
-	/** Creates/updates translations for a product variant. */
+	/** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ProductVariantTranslate"]: {
 	__typename: "ProductVariantTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -21496,11 +24220,17 @@ can be subject to changes at later point. */
 	language: GraphQLTypes["LanguageDisplay"],
 	name: string
 };
-	/** Updates an existing variant for product. */
+	/** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["ProductVariantUpdate"]: {
 	__typename: "ProductVariantUpdate",
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>,
+	productVariant?: GraphQLTypes["ProductVariant"]
+};
+	["ProductVariantUpdated"]: {
+	__typename: "ProductVariantUpdated",
+	/** Added in Saleor 3.2. Look up a product variant. Note: this feature is in a
+preview state and can be subject to changes at later point. */
 	productVariant?: GraphQLTypes["ProductVariant"]
 };
 	["PublishableChannelListingInput"]: {
@@ -21508,68 +24238,83 @@ can be subject to changes at later point. */
 	channelId: string,
 	/** Determines if object is visible to customers. */
 	isPublished?: boolean,
-	/** Publication date. ISO 8601 standard. */
-	publicationDate?: GraphQLTypes["Date"]
+	/** Publication date. ISO 8601 standard. 
+
+DEPRECATED: this field will be removed in Saleor 4.0. Use `publishedAt` field instead. */
+	publicationDate?: GraphQLTypes["Date"],
+	/** Added in Saleor 3.3. Publication date time. ISO 8601 standard. */
+	publishedAt?: GraphQLTypes["DateTime"]
 };
 	["Query"]: {
 	__typename: "Query",
-	/** Look up a webhook by ID. */
+	/** Look up a webhook by ID. Requires one of the following permissions: AppPermission.MANAGE_APPS, AuthorizationFilters.OWNER */
 	webhook?: GraphQLTypes["Webhook"],
-	/** List of all available webhook events. */
-	webhookEvents?: Array<GraphQLTypes["WebhookEvent"] | undefined>,
+	/** List of all available webhook events. Requires one of the following permissions: MANAGE_APPS. */
+	webhookEvents?: Array<GraphQLTypes["WebhookEvent"]>,
 	/** Retrieve a sample payload for a given webhook event based on real data. It can
 be useful for some integrations where sample payload is required. */
 	webhookSamplePayload?: GraphQLTypes["JSONString"],
-	/** Look up a warehouse by ID. */
+	/** Look up a warehouse by ID. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING. */
 	warehouse?: GraphQLTypes["Warehouse"],
-	/** List of warehouses. */
+	/** List of warehouses. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING. */
 	warehouses?: GraphQLTypes["WarehouseCountableConnection"],
-	/** Returns a list of all translatable items of a given kind. */
+	/** Returns a list of all translatable items of a given kind. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	translations?: GraphQLTypes["TranslatableItemConnection"],
+	/**  Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 	translation?: GraphQLTypes["TranslatableItem"],
-	/** Look up a stock by ID */
+	/** Look up a stock by ID Requires one of the following permissions: MANAGE_PRODUCTS. */
 	stock?: GraphQLTypes["Stock"],
-	/** List of stocks. */
+	/** List of stocks. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	stocks?: GraphQLTypes["StockCountableConnection"],
 	/** Return information about the shop. */
 	shop: GraphQLTypes["Shop"],
-	/** Order related settings from site settings. */
+	/** Order related settings from site settings. Requires one of the following permissions: MANAGE_ORDERS. */
 	orderSettings?: GraphQLTypes["OrderSettings"],
-	/** Gift card related settings from site settings. */
+	/** Gift card related settings from site settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCardSettings: GraphQLTypes["GiftCardSettings"],
-	/** Look up a shipping zone by ID. */
+	/** Look up a shipping zone by ID. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZone?: GraphQLTypes["ShippingZone"],
-	/** List of the shop's shipping zones. */
+	/** List of the shop's shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 	shippingZones?: GraphQLTypes["ShippingZoneCountableConnection"],
-	/** Look up digital content by ID. */
+	/** Look up digital content by ID. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContent?: GraphQLTypes["DigitalContent"],
-	/** List of digital content. */
+	/** List of digital content. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	digitalContents?: GraphQLTypes["DigitalContentCountableConnection"],
 	/** List of the shop's categories. */
 	categories?: GraphQLTypes["CategoryCountableConnection"],
 	/** Look up a category by ID or slug. */
 	category?: GraphQLTypes["Category"],
-	/** Look up a collection by ID. */
+	/** Look up a collection by ID. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collection?: GraphQLTypes["Collection"],
-	/** List of the shop's collections. */
+	/** List of the shop's collections. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	collections?: GraphQLTypes["CollectionCountableConnection"],
-	/** Look up a product by ID. */
+	/** Look up a product by ID. Requires one of the following permissions to include
+the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
 	product?: GraphQLTypes["Product"],
-	/** List of the shop's products. */
+	/** List of the shop's products. Requires one of the following permissions to
+include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	products?: GraphQLTypes["ProductCountableConnection"],
 	/** Look up a product type by ID. */
 	productType?: GraphQLTypes["ProductType"],
 	/** List of the shop's product types. */
 	productTypes?: GraphQLTypes["ProductTypeCountableConnection"],
-	/** Look up a product variant by ID or SKU. */
+	/** Look up a product variant by ID or SKU. Requires one of the following
+permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS,
+MANAGE_PRODUCTS. */
 	productVariant?: GraphQLTypes["ProductVariant"],
-	/** List of product variants. */
+	/** List of product variants. Requires one of the following permissions to include
+the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
 	productVariants?: GraphQLTypes["ProductVariantCountableConnection"],
-	/** List of top selling products. */
+	/** List of top selling products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	reportProductSales?: GraphQLTypes["ProductVariantCountableConnection"],
-	/** Look up a payment by ID. */
+	/** Look up a payment by ID. Requires one of the following permissions: MANAGE_ORDERS. */
 	payment?: GraphQLTypes["Payment"],
-	/** List of payments. */
+	/** List of payments. Requires one of the following permissions: MANAGE_ORDERS. */
 	payments?: GraphQLTypes["PaymentCountableConnection"],
 	/** Look up a page by ID or slug. */
 	page?: GraphQLTypes["Page"],
@@ -21579,17 +24324,18 @@ be useful for some integrations where sample payload is required. */
 	pageType?: GraphQLTypes["PageType"],
 	/** List of the page types. */
 	pageTypes?: GraphQLTypes["PageTypeCountableConnection"],
-	/** List of activity events to display on homepage (at the moment it only contains order-events). */
+	/** List of activity events to display on homepage (at the moment it only contains
+order-events). Requires one of the following permissions: MANAGE_ORDERS. */
 	homepageEvents?: GraphQLTypes["OrderEventCountableConnection"],
-	/** Look up an order by ID. */
+	/** Look up an order by ID. Requires one of the following permissions: MANAGE_ORDERS. */
 	order?: GraphQLTypes["Order"],
-	/** List of orders. */
+	/** List of orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	orders?: GraphQLTypes["OrderCountableConnection"],
-	/** List of draft orders. */
+	/** List of draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 	draftOrders?: GraphQLTypes["OrderCountableConnection"],
-	/** Return the total sales amount from a specific period. */
+	/** Return the total sales amount from a specific period. Requires one of the following permissions: MANAGE_ORDERS. */
 	ordersTotal?: GraphQLTypes["TaxedMoney"],
-	/** Look up an order by token. */
+	/** {DEPRECATED_IN_3X_FIELD} Look up an order by token. */
 	orderByToken?: GraphQLTypes["Order"],
 	/** Look up a navigation menu by ID or name. */
 	menu?: GraphQLTypes["Menu"],
@@ -21599,75 +24345,82 @@ be useful for some integrations where sample payload is required. */
 	menuItem?: GraphQLTypes["MenuItem"],
 	/** List of the storefronts's menu items. */
 	menuItems?: GraphQLTypes["MenuItemCountableConnection"],
-	/** Look up a gift card by ID. */
+	/** Look up a gift card by ID. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCard?: GraphQLTypes["GiftCard"],
-	/** List of gift cards. */
+	/** List of gift cards. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 	giftCards?: GraphQLTypes["GiftCardCountableConnection"],
-	/** New in Saleor 3.1. List of gift card currencies. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of gift card currencies. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardCurrencies: Array<string>,
-	/** New in Saleor 3.1. List of gift card tags. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of gift card tags. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: MANAGE_GIFT_CARD. */
 	giftCardTags?: GraphQLTypes["GiftCardTagCountableConnection"],
-	/** Look up a plugin by ID. */
+	/** Look up a plugin by ID. Requires one of the following permissions: MANAGE_PLUGINS. */
 	plugin?: GraphQLTypes["Plugin"],
-	/** List of plugins. */
+	/** List of plugins. Requires one of the following permissions: MANAGE_PLUGINS. */
 	plugins?: GraphQLTypes["PluginCountableConnection"],
-	/** Look up a sale by ID. */
+	/** Look up a sale by ID. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	sale?: GraphQLTypes["Sale"],
-	/** List of the shop's sales. */
+	/** List of the shop's sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	sales?: GraphQLTypes["SaleCountableConnection"],
-	/** Look up a voucher by ID. */
+	/** Look up a voucher by ID. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	voucher?: GraphQLTypes["Voucher"],
-	/** List of the shop's vouchers. */
+	/** List of the shop's vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	vouchers?: GraphQLTypes["VoucherCountableConnection"],
-	/** Look up a export file by ID. */
+	/** Look up a export file by ID. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	exportFile?: GraphQLTypes["ExportFile"],
-	/** List of export files. */
+	/** List of export files. Requires one of the following permissions: MANAGE_PRODUCTS. */
 	exportFiles?: GraphQLTypes["ExportFileCountableConnection"],
 	/** List of all tax rates available from tax gateway. */
-	taxTypes?: Array<GraphQLTypes["TaxType"] | undefined>,
+	taxTypes?: Array<GraphQLTypes["TaxType"]>,
 	/** Look up a checkout by token and slug of channel. */
 	checkout?: GraphQLTypes["Checkout"],
-	/** List of checkouts. */
+	/** List of checkouts. Requires one of the following permissions: MANAGE_CHECKOUTS. */
 	checkouts?: GraphQLTypes["CheckoutCountableConnection"],
-	/** List of checkout lines. */
+	/** List of checkout lines. Requires one of the following permissions: MANAGE_CHECKOUTS. */
 	checkoutLines?: GraphQLTypes["CheckoutLineCountableConnection"],
-	/** Look up a channel by ID. */
+	/** Look up a channel by ID. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channel?: GraphQLTypes["Channel"],
-	/** List of all channels. */
+	/** List of all channels. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER. */
 	channels?: Array<GraphQLTypes["Channel"]>,
 	/** List of the shop's attributes. */
 	attributes?: GraphQLTypes["AttributeCountableConnection"],
 	/** Look up an attribute by ID. */
 	attribute?: GraphQLTypes["Attribute"],
-	/** List of all apps installations */
+	/** List of all apps installations Requires one of the following permissions: MANAGE_APPS. */
 	appsInstallations: Array<GraphQLTypes["AppInstallation"]>,
-	/** List of the apps. */
+	/** List of the apps. Requires one of the following permissions: MANAGE_APPS. */
 	apps?: GraphQLTypes["AppCountableConnection"],
-	/** Look up an app by ID. If ID is not provided, return the currently authenticated app. */
+	/** Look up an app by ID. If ID is not provided, return the currently
+authenticated app. Requires one of the following permissions:
+AuthorizationFilters.OWNER, AppPermission.MANAGE_APPS. */
 	app?: GraphQLTypes["App"],
-	/** New in Saleor 3.1. List of all extensions. Note: this feature is in a preview
-state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. List of all extensions. Note: this feature is in a
+preview state and can be subject to changes at later point. Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	appExtensions?: GraphQLTypes["AppExtensionCountableConnection"],
-	/** New in Saleor 3.1. Look up an app extension by ID. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Look up an app extension by ID. Note: this feature is in
+a preview state and can be subject to changes at later point. Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	appExtension?: GraphQLTypes["AppExtension"],
 	/** Returns address validation rules. */
 	addressValidationRules?: GraphQLTypes["AddressValidationData"],
 	/** Look up an address by ID. */
 	address?: GraphQLTypes["Address"],
-	/** List of the shop's customers. */
+	/** List of the shop's customers. Requires one of the following permissions: MANAGE_ORDERS, MANAGE_USERS. */
 	customers?: GraphQLTypes["UserCountableConnection"],
-	/** List of permission groups. */
+	/** List of permission groups. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroups?: GraphQLTypes["GroupCountableConnection"],
-	/** Look up permission group by ID. */
+	/** Look up permission group by ID. Requires one of the following permissions: MANAGE_STAFF. */
 	permissionGroup?: GraphQLTypes["Group"],
 	/** Return the currently authenticated user. */
 	me?: GraphQLTypes["User"],
-	/** List of the shop's staff users. */
+	/** List of the shop's staff users. Requires one of the following permissions: MANAGE_STAFF. */
 	staffUsers?: GraphQLTypes["UserCountableConnection"],
-	/** Look up a user by ID or email address. */
+	/** Look up a user by ID or email address. Requires one of the following
+permissions: MANAGE_STAFF, MANAGE_USERS, MANAGE_ORDERS. */
 	user?: GraphQLTypes["User"],
 	_entities?: Array<GraphQLTypes["_Entity"] | undefined>,
 	_service?: GraphQLTypes["_Service"]
@@ -21701,7 +24454,7 @@ the item unchanged. */
 	sortOrder?: number
 };
 	["ReportingPeriod"]: ReportingPeriod;
-	/** Request email change of the logged in user. */
+	/** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 ["RequestEmailChange"]: {
 	__typename: "RequestEmailChange",
 	/** A user instance. */
@@ -21719,10 +24472,39 @@ the item unchanged. */
 ["Sale"]: {
 	__typename: "Sale",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	type: GraphQLTypes["SaleType"],
 	startDate: GraphQLTypes["DateTime"],
@@ -21731,22 +24513,23 @@ the item unchanged. */
 	updatedAt: GraphQLTypes["DateTime"],
 	/** List of categories this sale applies to. */
 	categories?: GraphQLTypes["CategoryCountableConnection"],
-	/** List of collections this sale applies to. */
+	/** List of collections this sale applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	collections?: GraphQLTypes["CollectionCountableConnection"],
-	/** List of products this sale applies to. */
+	/** List of products this sale applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	products?: GraphQLTypes["ProductCountableConnection"],
-	/** New in Saleor 3.1. List of product variants this sale applies to. */
+	/** Added in Saleor 3.1. List of product variants this sale applies to. Requires
+one of the following permissions: MANAGE_DISCOUNTS. */
 	variants?: GraphQLTypes["ProductVariantCountableConnection"],
 	/** Returns translated sale fields for the given language code. */
 	translation?: GraphQLTypes["SaleTranslation"],
-	/** List of channels available for the sale. */
+	/** List of channels available for the sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	channelListings?: Array<GraphQLTypes["SaleChannelListing"]>,
 	/** Sale value. */
 	discountValue?: number,
 	/** Currency code for sale. */
 	currency?: string
 };
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleAddCatalogues"]: {
 	__typename: "SaleAddCatalogues",
 	/** Sale of which catalogue IDs will be modified. */
@@ -21754,7 +24537,7 @@ the item unchanged. */
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
 	errors: Array<GraphQLTypes["DiscountError"]>
 };
-	/** Deletes sales. */
+	/** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleBulkDelete"]: {
 	__typename: "SaleBulkDelete",
 	/** Returns how many objects were affected. */
@@ -21782,7 +24565,7 @@ the item unchanged. */
 	/** List of channels from which the sale should be unassigned. */
 	removeChannels?: Array<string>
 };
-	/** Manage sale's availability in channels. */
+	/** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleChannelListingUpdate"]: {
 	__typename: "SaleChannelListingUpdate",
 	/** An updated sale instance. */
@@ -21805,26 +24588,38 @@ the item unchanged. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new sale. */
+	/** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleCreate"]: {
 	__typename: "SaleCreate",
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
 	errors: Array<GraphQLTypes["DiscountError"]>,
 	sale?: GraphQLTypes["Sale"]
 };
-	/** Deletes a sale. */
+	["SaleCreated"]: {
+	__typename: "SaleCreated",
+	/** Added in Saleor 3.2. Look up a sale. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	sale?: GraphQLTypes["Sale"]
+};
+	/** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleDelete"]: {
 	__typename: "SaleDelete",
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
 	errors: Array<GraphQLTypes["DiscountError"]>,
 	sale?: GraphQLTypes["Sale"]
 };
+	["SaleDeleted"]: {
+	__typename: "SaleDeleted",
+	/** Added in Saleor 3.2. Look up a sale. Note: this feature is in a preview state
+and can be subject to changes at later point. */
+	sale?: GraphQLTypes["Sale"]
+};
 	["SaleFilterInput"]: {
-		status?: Array<GraphQLTypes["DiscountStatusEnum"] | undefined>,
+		status?: Array<GraphQLTypes["DiscountStatusEnum"]>,
 	saleType?: GraphQLTypes["DiscountValueTypeEnum"],
 	started?: GraphQLTypes["DateTimeRangeInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>,
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>,
 	updatedAt?: GraphQLTypes["DateTimeRangeInput"]
 };
 	["SaleInput"]: {
@@ -21835,18 +24630,18 @@ the item unchanged. */
 	/** Value of the voucher. */
 	value?: GraphQLTypes["PositiveDecimal"],
 	/** Products related to the discount. */
-	products?: Array<string | undefined>,
-	variants?: Array<string | undefined>,
+	products?: Array<string>,
+	variants?: Array<string>,
 	/** Categories related to the discount. */
-	categories?: Array<string | undefined>,
+	categories?: Array<string>,
 	/** Collections related to the discount. */
-	collections?: Array<string | undefined>,
+	collections?: Array<string>,
 	/** Start date of the voucher in ISO 8601 format. */
 	startDate?: GraphQLTypes["DateTime"],
 	/** End date of the voucher in ISO 8601 format. */
 	endDate?: GraphQLTypes["DateTime"]
 };
-	/** Removes products, categories, collections from a sale. */
+	/** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleRemoveCatalogues"]: {
 	__typename: "SaleRemoveCatalogues",
 	/** Sale of which catalogue IDs will be modified. */
@@ -21858,7 +24653,7 @@ the item unchanged. */
 	["SaleSortingInput"]: {
 		/** Specifies the direction in which to sort products. */
 	direction: GraphQLTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?: string,
@@ -21871,10 +24666,12 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	name: string,
 	/** Returns translated sale fields for the given language code. */
 	translation?: GraphQLTypes["SaleTranslation"],
-	/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+	/** Sales allow creating discounts for categories, collections or products and are
+visible to all the customers. Requires one of the following permissions:
+MANAGE_DISCOUNTS. */
 	sale?: GraphQLTypes["Sale"]
 };
-	/** Creates/updates translations for a sale. */
+	/** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["SaleTranslate"]: {
 	__typename: "SaleTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -21889,11 +24686,17 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	name?: string
 };
 	["SaleType"]: SaleType;
-	/** Updates a sale. */
+	/** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["SaleUpdate"]: {
 	__typename: "SaleUpdate",
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
 	errors: Array<GraphQLTypes["DiscountError"]>,
+	sale?: GraphQLTypes["Sale"]
+};
+	["SaleUpdated"]: {
+	__typename: "SaleUpdated",
+	/** Added in Saleor 3.2. Look up a sale. Note: this feature is in a preview state
+and can be subject to changes at later point. */
 	sale?: GraphQLTypes["Sale"]
 };
 	/** Represents a custom attribute. */
@@ -21902,7 +24705,7 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	/** Name of an attribute displayed in the interface. */
 	attribute: GraphQLTypes["Attribute"],
 	/** Values of an attribute. */
-	values?: Array<GraphQLTypes["AttributeValue"]>
+	values: Array<GraphQLTypes["AttributeValue"]>
 };
 	["SeoInput"]: {
 		/** SEO title. */
@@ -21945,10 +24748,39 @@ error isn't associated with a particular field. */
 	__typename: "ShippingMethod",
 	/** Unique ID of ShippingMethod available for Order. */
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	/** Type of the shipping method. */
 	type?: GraphQLTypes["ShippingMethodTypeEnum"],
 	/** Shipping method name. */
@@ -22001,7 +24833,7 @@ error isn't associated with a particular field. */
 	/** List of channels from which the shipping method should be unassigned. */
 	removeChannels?: Array<string>
 };
-	/** Manage shipping method's availability in channels. */
+	/** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingMethodChannelListingUpdate"]: {
 	__typename: "ShippingMethodChannelListingUpdate",
 	/** An updated shipping method instance. */
@@ -22028,7 +24860,9 @@ error isn't associated with a particular field. */
 	description?: GraphQLTypes["JSONString"],
 	/** Returns translated shipping method fields for the given language code. */
 	translation?: GraphQLTypes["ShippingMethodTranslation"],
-	/** Shipping method are the methods you'll use to get customer's orders  to them. They are directly exposed to the customers. */
+	/** Shipping method are the methods you'll use to get customer's orders  to them.
+They are directly exposed to the customers. Requires one of the following
+permissions: MANAGE_SHIPPING. */
 	shippingMethod?: GraphQLTypes["ShippingMethodType"]
 };
 	["ShippingMethodTranslation"]: {
@@ -22044,10 +24878,39 @@ error isn't associated with a particular field. */
 	__typename: "ShippingMethodType",
 	/** Shipping method ID. */
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	/** Shipping method name. */
 	name: string,
 	/** Shipping method description. */
@@ -22056,15 +24919,15 @@ error isn't associated with a particular field. */
 	type?: GraphQLTypes["ShippingMethodTypeEnum"],
 	/** Returns translated shipping method fields for the given language code. */
 	translation?: GraphQLTypes["ShippingMethodTranslation"],
-	/** List of channels available for the method. */
+	/** List of channels available for the method. Requires one of the following permissions: MANAGE_SHIPPING. */
 	channelListings?: Array<GraphQLTypes["ShippingMethodChannelListing"]>,
 	/** The price of the cheapest variant (including discounts). */
 	maximumOrderPrice?: GraphQLTypes["Money"],
 	/** The price of the cheapest variant (including discounts). */
 	minimumOrderPrice?: GraphQLTypes["Money"],
 	/** Postal code ranges rule of exclusion or inclusion of the shipping method. */
-	postalCodeRules?: Array<GraphQLTypes["ShippingMethodPostalCodeRule"] | undefined>,
-	/** List of excluded products for the shipping method. */
+	postalCodeRules?: Array<GraphQLTypes["ShippingMethodPostalCodeRule"]>,
+	/** List of excluded products for the shipping method. Requires one of the following permissions: MANAGE_SHIPPING. */
 	excludedProducts?: GraphQLTypes["ProductCountableConnection"],
 	/** Minimum order weight to use this shipping method. */
 	minimumOrderWeight?: GraphQLTypes["Weight"],
@@ -22083,7 +24946,7 @@ error isn't associated with a particular field. */
 	/** End range of the postal code. */
 	end?: string
 };
-	/** Deletes shipping prices. */
+	/** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceBulkDelete"]: {
 	__typename: "ShippingPriceBulkDelete",
 	/** Returns how many objects were affected. */
@@ -22091,7 +24954,7 @@ error isn't associated with a particular field. */
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>
 };
-	/** Creates a new shipping price. */
+	/** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceCreate"]: {
 	__typename: "ShippingPriceCreate",
 	/** A shipping zone to which the shipping method belongs. */
@@ -22100,7 +24963,16 @@ error isn't associated with a particular field. */
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>
 };
-	/** Deletes a shipping price. */
+	["ShippingPriceCreated"]: {
+	__typename: "ShippingPriceCreated",
+	/** Added in Saleor 3.2. Look up a shipping method. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingMethod?: GraphQLTypes["ShippingMethodType"],
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?: GraphQLTypes["ShippingZone"]
+};
+	/** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceDelete"]: {
 	__typename: "ShippingPriceDelete",
 	/** A shipping method to delete. */
@@ -22110,7 +24982,16 @@ error isn't associated with a particular field. */
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>
 };
-	/** Exclude products from shipping price. */
+	["ShippingPriceDeleted"]: {
+	__typename: "ShippingPriceDeleted",
+	/** Added in Saleor 3.2. Look up a shipping method. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingMethod?: GraphQLTypes["ShippingMethodType"],
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?: GraphQLTypes["ShippingZone"]
+};
+	/** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceExcludeProducts"]: {
 	__typename: "ShippingPriceExcludeProducts",
 	/** A shipping method with new list of excluded products. */
@@ -22120,7 +25001,7 @@ error isn't associated with a particular field. */
 };
 	["ShippingPriceExcludeProductsInput"]: {
 		/** List of products which will be excluded. */
-	products?: Array<string>
+	products: Array<string>
 };
 	["ShippingPriceInput"]: {
 		/** Name of the shipping method. */
@@ -22146,7 +25027,7 @@ error isn't associated with a particular field. */
 	/** Inclusion type for currently assigned postal code rules. */
 	inclusionType?: GraphQLTypes["PostalCodeRuleInclusionTypeEnum"]
 };
-	/** Remove product from excluded list for shipping price. */
+	/** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceRemoveProductFromExclude"]: {
 	__typename: "ShippingPriceRemoveProductFromExclude",
 	/** A shipping method with new list of excluded products. */
@@ -22154,7 +25035,7 @@ error isn't associated with a particular field. */
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>
 };
-	/** Creates/updates translations for a shipping method. */
+	/** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ShippingPriceTranslate"]: {
 	__typename: "ShippingPriceTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -22166,7 +25047,7 @@ error isn't associated with a particular field. */
 	/** Translated shipping method description (JSON). */
 	description?: GraphQLTypes["JSONString"]
 };
-	/** Updates a new shipping price. */
+	/** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingPriceUpdate"]: {
 	__typename: "ShippingPriceUpdate",
 	/** A shipping zone to which the shipping method belongs. */
@@ -22175,24 +25056,62 @@ error isn't associated with a particular field. */
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>
 };
+	["ShippingPriceUpdated"]: {
+	__typename: "ShippingPriceUpdated",
+	/** Added in Saleor 3.2. Look up a shipping method. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingMethod?: GraphQLTypes["ShippingMethodType"],
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?: GraphQLTypes["ShippingZone"]
+};
 	/** Represents a shipping zone in the shop. Zones are the concept used only for
 grouping shipping methods in the dashboard, and are never exposed to the
 customers directly. */
 ["ShippingZone"]: {
 	__typename: "ShippingZone",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	default: boolean,
 	/** Lowest and highest prices for the shipping. */
 	priceRange?: GraphQLTypes["MoneyRange"],
 	/** List of countries available for the method. */
-	countries?: Array<GraphQLTypes["CountryDisplay"] | undefined>,
+	countries: Array<GraphQLTypes["CountryDisplay"]>,
 	/** List of shipping methods available for orders shipped to countries within this shipping zone. */
-	shippingMethods?: Array<GraphQLTypes["ShippingMethodType"] | undefined>,
+	shippingMethods?: Array<GraphQLTypes["ShippingMethodType"]>,
 	/** List of warehouses for shipping zone. */
 	warehouses: Array<GraphQLTypes["Warehouse"]>,
 	/** List of channels for shipping zone. */
@@ -22200,7 +25119,7 @@ customers directly. */
 	/** Description of a shipping zone. */
 	description?: string
 };
-	/** Deletes shipping zones. */
+	/** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneBulkDelete"]: {
 	__typename: "ShippingZoneBulkDelete",
 	/** Returns how many objects were affected. */
@@ -22223,11 +25142,17 @@ customers directly. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new shipping zone. */
+	/** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneCreate"]: {
 	__typename: "ShippingZoneCreate",
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>,
+	shippingZone?: GraphQLTypes["ShippingZone"]
+};
+	["ShippingZoneCreated"]: {
+	__typename: "ShippingZoneCreated",
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
 	shippingZone?: GraphQLTypes["ShippingZone"]
 };
 	["ShippingZoneCreateInput"]: {
@@ -22236,30 +25161,42 @@ customers directly. */
 	/** Description of the shipping zone. */
 	description?: string,
 	/** List of countries in this shipping zone. */
-	countries?: Array<string | undefined>,
+	countries?: Array<string>,
 	/** Default shipping zone will be used for countries not covered by other zones. */
 	default?: boolean,
 	/** List of warehouses to assign to a shipping zone */
-	addWarehouses?: Array<string | undefined>,
+	addWarehouses?: Array<string>,
 	/** List of channels to assign to the shipping zone. */
 	addChannels?: Array<string>
 };
-	/** Deletes a shipping zone. */
+	/** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneDelete"]: {
 	__typename: "ShippingZoneDelete",
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>,
 	shippingZone?: GraphQLTypes["ShippingZone"]
 };
+	["ShippingZoneDeleted"]: {
+	__typename: "ShippingZoneDeleted",
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	shippingZone?: GraphQLTypes["ShippingZone"]
+};
 	["ShippingZoneFilterInput"]: {
 		search?: string,
-	channels?: Array<string | undefined>
+	channels?: Array<string>
 };
-	/** Updates a new shipping zone. */
+	/** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 ["ShippingZoneUpdate"]: {
 	__typename: "ShippingZoneUpdate",
 	shippingErrors: Array<GraphQLTypes["ShippingError"]>,
 	errors: Array<GraphQLTypes["ShippingError"]>,
+	shippingZone?: GraphQLTypes["ShippingZone"]
+};
+	["ShippingZoneUpdated"]: {
+	__typename: "ShippingZoneUpdated",
+	/** Added in Saleor 3.2. Look up a shipping zone. Note: this feature is in a
+preview state and can be subject to changes at later point. */
 	shippingZone?: GraphQLTypes["ShippingZone"]
 };
 	["ShippingZoneUpdateInput"]: {
@@ -22268,15 +25205,15 @@ customers directly. */
 	/** Description of the shipping zone. */
 	description?: string,
 	/** List of countries in this shipping zone. */
-	countries?: Array<string | undefined>,
+	countries?: Array<string>,
 	/** Default shipping zone will be used for countries not covered by other zones. */
 	default?: boolean,
 	/** List of warehouses to assign to a shipping zone */
-	addWarehouses?: Array<string | undefined>,
+	addWarehouses?: Array<string>,
 	/** List of channels to assign to the shipping zone. */
 	addChannels?: Array<string>,
 	/** List of warehouses to unassign from a shipping zone */
-	removeWarehouses?: Array<string | undefined>,
+	removeWarehouses?: Array<string>,
 	/** List of channels to unassign from the shipping zone. */
 	removeChannels?: Array<string>
 };
@@ -22288,36 +25225,38 @@ customers directly. */
 	/** List of available external authentications. */
 	availableExternalAuthentications: Array<GraphQLTypes["ExternalAuthentication"]>,
 	/** Shipping methods that are available for the shop. */
-	availableShippingMethods?: Array<GraphQLTypes["ShippingMethod"] | undefined>,
-	/** New in Saleor 3.1. List of all currencies supported by shop's channels. */
+	availableShippingMethods?: Array<GraphQLTypes["ShippingMethod"]>,
+	/** Added in Saleor 3.1. List of all currencies supported by shop's channels.
+Requires one of the following permissions: AUTHENTICATED_STAFF_USER,
+AUTHENTICATED_APP. */
 	channelCurrencies: Array<string>,
 	/** List of countries available in the shop. */
 	countries: Array<GraphQLTypes["CountryDisplay"]>,
 	/** Shop's default country. */
 	defaultCountry?: GraphQLTypes["CountryDisplay"],
-	/** Default shop's email sender's name. */
+	/** Default shop's email sender's name. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultMailSenderName?: string,
-	/** Default shop's email sender's address. */
+	/** Default shop's email sender's address. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultMailSenderAddress?: string,
 	/** Shop's description. */
 	description?: string,
 	/** Shop's domain data. */
 	domain: GraphQLTypes["Domain"],
 	/** List of the shops's supported languages. */
-	languages?: Array<GraphQLTypes["LanguageDisplay"]>,
+	languages: Array<GraphQLTypes["LanguageDisplay"]>,
 	/** Shop's name. */
 	name: string,
 	/** List of available permissions. */
-	permissions?: Array<GraphQLTypes["Permission"]>,
+	permissions: Array<GraphQLTypes["Permission"]>,
 	/** List of possible phone prefixes. */
-	phonePrefixes?: Array<string>,
+	phonePrefixes: Array<string>,
 	/** Header text. */
 	headerText?: string,
 	/** Include taxes in prices. */
 	includeTaxesInPrices: boolean,
-	/** New in Saleor 3.1. Automatically approve all new fulfillments. */
+	/** Added in Saleor 3.1. Automatically approve all new fulfillments. */
 	fulfillmentAutoApprove: boolean,
-	/** New in Saleor 3.1. Allow to approve fulfillments which are unpaid. */
+	/** Added in Saleor 3.1. Allow to approve fulfillments which are unpaid. */
 	fulfillmentAllowUnpaid: boolean,
 	/** Display prices with tax in store. */
 	displayGrossPrices: boolean,
@@ -22329,34 +25268,41 @@ customers directly. */
 	defaultWeightUnit?: GraphQLTypes["WeightUnitsEnum"],
 	/** Returns translated shop fields for the given language code. */
 	translation?: GraphQLTypes["ShopTranslation"],
-	/** Enable automatic fulfillment for all digital products. */
+	/** Enable automatic fulfillment for all digital products. Requires one of the following permissions: MANAGE_SETTINGS. */
 	automaticFulfillmentDigitalProducts?: boolean,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
-anonymous checkout or null when stock reservation is disabled. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
+anonymous checkout or null when stock reservation is disabled. Requires one of
+the following permissions: MANAGE_SETTINGS. */
 	reserveStockDurationAnonymousUser?: number,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
-authenticated checkout or null when stock reservation is disabled. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
+authenticated checkout or null when stock reservation is disabled. Requires
+one of the following permissions: MANAGE_SETTINGS. */
 	reserveStockDurationAuthenticatedUser?: number,
-	/** New in Saleor 3.1. Default number of maximum line quantity in single checkout
-(per single checkout line). Note: this feature is in a preview state and can
-be subject to changes at later point. */
+	/** Added in Saleor 3.1. Default number of maximum line quantity in single
+checkout (per single checkout line). Note: this feature is in a preview state
+and can be subject to changes at later point. Requires one of the following
+permissions: MANAGE_SETTINGS. */
 	limitQuantityPerCheckout?: number,
-	/** Default number of max downloads per digital content URL. */
+	/** Default number of max downloads per digital content URL. Requires one of the following permissions: MANAGE_SETTINGS. */
 	defaultDigitalMaxDownloads?: number,
-	/** Default number of days which digital content URL will be valid. */
+	/** Default number of days which digital content URL will be valid. Requires one
+of the following permissions: MANAGE_SETTINGS. */
 	defaultDigitalUrlValidDays?: number,
 	/** Company address. */
 	companyAddress?: GraphQLTypes["Address"],
 	/** URL of a view where customers can set their password. */
 	customerSetPasswordUrl?: string,
-	/** List of staff notification recipients. */
-	staffNotificationRecipients?: Array<GraphQLTypes["StaffNotificationRecipient"] | undefined>,
-	/** Resource limitations and current usage if any set for a shop */
+	/** List of staff notification recipients. Requires one of the following permissions: MANAGE_SETTINGS. */
+	staffNotificationRecipients?: Array<GraphQLTypes["StaffNotificationRecipient"]>,
+	/** Resource limitations and current usage if any set for a shop Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER. */
 	limits: GraphQLTypes["LimitInfo"],
-	/** Saleor API version. */
+	/** Saleor API version. Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
 	version: string
 };
-	/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+	/** Update the shop's address. If the `null` value is passed, the currently selected
+address will be deleted. Requires one of the following permissions:
+MANAGE_SETTINGS. */
 ["ShopAddressUpdate"]: {
 	__typename: "ShopAddressUpdate",
 	/** Updated shop. */
@@ -22364,7 +25310,7 @@ be subject to changes at later point. */
 	shopErrors: Array<GraphQLTypes["ShopError"]>,
 	errors: Array<GraphQLTypes["ShopError"]>
 };
-	/** Updates site domain of the shop. */
+	/** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopDomainUpdate"]: {
 	__typename: "ShopDomainUpdate",
 	/** Updated shop. */
@@ -22384,7 +25330,7 @@ error isn't associated with a particular field. */
 };
 	/** An enumeration. */
 ["ShopErrorCode"]: ShopErrorCode;
-	/** Fetch tax rates. */
+	/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopFetchTaxRates"]: {
 	__typename: "ShopFetchTaxRates",
 	/** Updated shop. */
@@ -22409,9 +25355,9 @@ error isn't associated with a particular field. */
 	defaultWeightUnit?: GraphQLTypes["WeightUnitsEnum"],
 	/** Enable automatic fulfillment for all digital products. */
 	automaticFulfillmentDigitalProducts?: boolean,
-	/** New in Saleor 3.1. Enable automatic approval of all new fulfillments. */
+	/** Added in Saleor 3.1. Enable automatic approval of all new fulfillments. */
 	fulfillmentAutoApprove?: boolean,
-	/** New in Saleor 3.1. Enable ability to approve fulfillments which are unpaid. */
+	/** Added in Saleor 3.1. Enable ability to approve fulfillments which are unpaid. */
 	fulfillmentAllowUnpaid?: boolean,
 	/** Default number of max downloads per digital content URL. */
 	defaultDigitalMaxDownloads?: number,
@@ -22423,17 +25369,17 @@ error isn't associated with a particular field. */
 	defaultMailSenderAddress?: string,
 	/** URL of a view where customers can set their password. */
 	customerSetPasswordUrl?: string,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for anonymous checkout. Enter 0 or null to disable. */
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for anonymous checkout. Enter 0 or null to disable. */
 	reserveStockDurationAnonymousUser?: number,
-	/** New in Saleor 3.1. Default number of minutes stock will be reserved for
+	/** Added in Saleor 3.1. Default number of minutes stock will be reserved for
 authenticated checkout. Enter 0 or null to disable. */
 	reserveStockDurationAuthenticatedUser?: number,
-	/** New in Saleor 3.1. Default number of maximum line quantity in single checkout.
-Minimum possible value is 1, default value is 50. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Default number of maximum line quantity in single
+checkout. Minimum possible value is 1, default value is 50. Note: this feature
+is in a preview state and can be subject to changes at later point. */
 	limitQuantityPerCheckout?: number
 };
-	/** Creates/updates translations for shop settings. */
+	/** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["ShopSettingsTranslate"]: {
 	__typename: "ShopSettingsTranslate",
 	/** Updated shop settings. */
@@ -22445,7 +25391,7 @@ preview state and can be subject to changes at later point. */
 		headerText?: string,
 	description?: string
 };
-	/** Updates shop settings. */
+	/** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["ShopSettingsUpdate"]: {
 	__typename: "ShopSettingsUpdate",
 	/** Updated shop. */
@@ -22467,7 +25413,7 @@ preview state and can be subject to changes at later point. */
 	/** Shop site name. */
 	name?: string
 };
-	/** Deletes staff users. */
+	/** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffBulkDelete"]: {
 	__typename: "StaffBulkDelete",
 	/** Returns how many objects were affected. */
@@ -22475,7 +25421,7 @@ preview state and can be subject to changes at later point. */
 	staffErrors: Array<GraphQLTypes["StaffError"]>,
 	errors: Array<GraphQLTypes["StaffError"]>
 };
-	/** Creates a new staff user. */
+	/** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffCreate"]: {
 	__typename: "StaffCreate",
 	staffErrors: Array<GraphQLTypes["StaffError"]>,
@@ -22498,7 +25444,7 @@ preview state and can be subject to changes at later point. */
 	/** URL of a view where users should be redirected to set the password. URL in RFC 1808 format. */
 	redirectUrl?: string
 };
-	/** Deletes a staff user. */
+	/** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffDelete"]: {
 	__typename: "StaffDelete",
 	staffErrors: Array<GraphQLTypes["StaffError"]>,
@@ -22537,14 +25483,14 @@ arbitrary email addresses. */
 	/** Determines if a notification active. */
 	active?: boolean
 };
-	/** Creates a new staff notification recipient. */
+	/** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientCreate"]: {
 	__typename: "StaffNotificationRecipientCreate",
 	shopErrors: Array<GraphQLTypes["ShopError"]>,
 	errors: Array<GraphQLTypes["ShopError"]>,
 	staffNotificationRecipient?: GraphQLTypes["StaffNotificationRecipient"]
 };
-	/** Delete staff notification recipient. */
+	/** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientDelete"]: {
 	__typename: "StaffNotificationRecipientDelete",
 	shopErrors: Array<GraphQLTypes["ShopError"]>,
@@ -22559,14 +25505,14 @@ arbitrary email addresses. */
 	/** Determines if a notification active. */
 	active?: boolean
 };
-	/** Updates a staff notification recipient. */
+	/** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 ["StaffNotificationRecipientUpdate"]: {
 	__typename: "StaffNotificationRecipientUpdate",
 	shopErrors: Array<GraphQLTypes["ShopError"]>,
 	errors: Array<GraphQLTypes["ShopError"]>,
 	staffNotificationRecipient?: GraphQLTypes["StaffNotificationRecipient"]
 };
-	/** Updates an existing staff user. */
+	/** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
 ["StaffUpdate"]: {
 	__typename: "StaffUpdate",
 	staffErrors: Array<GraphQLTypes["StaffError"]>,
@@ -22592,7 +25538,7 @@ arbitrary email addresses. */
 	["StaffUserInput"]: {
 		status?: GraphQLTypes["StaffMemberStatus"],
 	search?: string,
-	ids?: Array<string | undefined>
+	ids?: Array<string>
 };
 	/** Represents stock. */
 ["Stock"]: {
@@ -22600,11 +25546,13 @@ arbitrary email addresses. */
 	id: string,
 	warehouse: GraphQLTypes["Warehouse"],
 	productVariant: GraphQLTypes["ProductVariant"],
-	/** Quantity of a product in the warehouse's possession, including the allocated stock that is waiting for shipment. */
+	/** Quantity of a product in the warehouse's possession, including the allocated
+stock that is waiting for shipment. Requires one of the following permissions:
+MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantity: number,
-	/** Quantity allocated for orders */
+	/** Quantity allocated for orders. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantityAllocated: number,
-	/** Quantity reserved for checkouts */
+	/** Quantity reserved for checkouts. Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS. */
 	quantityReserved: number
 };
 	["StockAvailability"]: StockAvailability;
@@ -22647,6 +25595,12 @@ error isn't associated with a particular field. */
 };
 	/** Enum representing the type of a payment storage in a gateway. */
 ["StorePaymentMethodEnum"]: StorePaymentMethodEnum;
+	["Subscription"]: {
+	__typename: "Subscription",
+	/** Added in Saleor 3.2. Look up subscription event. Note: this feature is in a
+preview state and can be subject to changes at later point. */
+	event?: GraphQLTypes["Event"]
+};
 	/** Represents a monetary value with taxes. In cases where taxes were not applied, net and gross values will be equal. */
 ["TaxedMoney"]: {
 	__typename: "TaxedMoney",
@@ -22704,18 +25658,8 @@ error isn't associated with a particular field. */
 	/** Total amount of the transaction. */
 	amount?: GraphQLTypes["Money"]
 };
-	["TransactionInput"]: {
-		/** Current status of the payment transaction. */
-	status: GraphQLTypes["TransactionStatus"],
-	/** Reference of the transaction. */
-	reference?: string,
-	/** Name of the transaction. */
-	name?: string
-};
 	/** An enumeration. */
 ["TransactionKind"]: TransactionKind;
-	/** An enumeration. */
-["TransactionStatus"]: TransactionStatus;
 	["TranslatableItem"]:{
 	__typename:"ProductTranslatableContent" | "CollectionTranslatableContent" | "CategoryTranslatableContent" | "AttributeTranslatableContent" | "AttributeValueTranslatableContent" | "ProductVariantTranslatableContent" | "PageTranslatableContent" | "ShippingMethodTranslatableContent" | "SaleTranslatableContent" | "VoucherTranslatableContent" | "MenuItemTranslatableContent"
 	['...on ProductTranslatableContent']: '__union' & GraphQLTypes["ProductTranslatableContent"];
@@ -22746,6 +25690,12 @@ error isn't associated with a particular field. */
 	cursor: string
 };
 	["TranslatableKinds"]: TranslatableKinds;
+	["TranslationCreated"]: {
+	__typename: "TranslationCreated",
+	/** Added in Saleor 3.2. Look up a translation. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	translation?: GraphQLTypes["TranslationTypes"]
+};
 	["TranslationError"]: {
 	__typename: "TranslationError",
 	/** Name of a field that caused the error. A value of `null` indicates that the
@@ -22764,20 +25714,41 @@ error isn't associated with a particular field. */
 	name?: string,
 	description?: GraphQLTypes["JSONString"]
 };
+	["TranslationTypes"]:{
+	__typename:"ProductTranslation" | "CollectionTranslation" | "CategoryTranslation" | "AttributeTranslation" | "AttributeValueTranslation" | "ProductVariantTranslation" | "PageTranslation" | "ShippingMethodTranslation" | "SaleTranslation" | "VoucherTranslation" | "MenuItemTranslation"
+	['...on ProductTranslation']: '__union' & GraphQLTypes["ProductTranslation"];
+	['...on CollectionTranslation']: '__union' & GraphQLTypes["CollectionTranslation"];
+	['...on CategoryTranslation']: '__union' & GraphQLTypes["CategoryTranslation"];
+	['...on AttributeTranslation']: '__union' & GraphQLTypes["AttributeTranslation"];
+	['...on AttributeValueTranslation']: '__union' & GraphQLTypes["AttributeValueTranslation"];
+	['...on ProductVariantTranslation']: '__union' & GraphQLTypes["ProductVariantTranslation"];
+	['...on PageTranslation']: '__union' & GraphQLTypes["PageTranslation"];
+	['...on ShippingMethodTranslation']: '__union' & GraphQLTypes["ShippingMethodTranslation"];
+	['...on SaleTranslation']: '__union' & GraphQLTypes["SaleTranslation"];
+	['...on VoucherTranslation']: '__union' & GraphQLTypes["VoucherTranslation"];
+	['...on MenuItemTranslation']: '__union' & GraphQLTypes["MenuItemTranslation"];
+};
+	["TranslationUpdated"]: {
+	__typename: "TranslationUpdated",
+	/** Added in Saleor 3.2. Look up a translation. Note: this feature is in a preview
+state and can be subject to changes at later point. */
+	translation?: GraphQLTypes["TranslationTypes"]
+};
 	["UpdateInvoiceInput"]: {
 		/** Invoice number */
 	number?: string,
 	/** URL of an invoice to download. */
 	url?: string
 };
-	/** Updates metadata of an object. */
+	/** Updates metadata of an object. To use it, you need to have access to the modified object. */
 ["UpdateMetadata"]: {
 	__typename: "UpdateMetadata",
 	metadataErrors: Array<GraphQLTypes["MetadataError"]>,
 	errors: Array<GraphQLTypes["MetadataError"]>,
 	item?: GraphQLTypes["ObjectWithMetadata"]
 };
-	/** Updates private metadata of an object. */
+	/** Updates private metadata of an object. To use it, you need to be an
+authenticated staff user or an app and have access to the modified object. */
 ["UpdatePrivateMetadata"]: {
 	__typename: "UpdatePrivateMetadata",
 	metadataErrors: Array<GraphQLTypes["MetadataError"]>,
@@ -22804,38 +25775,68 @@ error isn't associated with a particular field. */
 ["User"]: {
 	__typename: "User",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	email: string,
 	firstName: string,
 	lastName: string,
 	isStaff: boolean,
 	isActive: boolean,
 	/** List of all user's addresses. */
-	addresses?: Array<GraphQLTypes["Address"] | undefined>,
+	addresses?: Array<GraphQLTypes["Address"]>,
 	/** Returns the last open checkout of this user. */
 	checkout?: GraphQLTypes["Checkout"],
 	/** Returns the checkout UUID's assigned to this user. */
 	checkoutTokens?: Array<GraphQLTypes["UUID"]>,
 	/** List of the user gift cards. */
 	giftCards?: GraphQLTypes["GiftCardCountableConnection"],
-	/** A note about the customer. */
+	/** A note about the customer. Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF. */
 	note?: string,
-	/** List of user's orders. */
+	/** List of user's orders. Requires one of the following permissions:
+AccountPermissions.MANAGE_STAFF, AuthorizationFilters.OWNER */
 	orders?: GraphQLTypes["OrderCountableConnection"],
 	/** List of user's permissions. */
-	userPermissions?: Array<GraphQLTypes["UserPermission"] | undefined>,
+	userPermissions?: Array<GraphQLTypes["UserPermission"]>,
 	/** List of user's permission groups. */
-	permissionGroups?: Array<GraphQLTypes["Group"] | undefined>,
+	permissionGroups?: Array<GraphQLTypes["Group"]>,
 	/** List of user's permission groups which user can manage. */
-	editableGroups?: Array<GraphQLTypes["Group"] | undefined>,
+	editableGroups?: Array<GraphQLTypes["Group"]>,
 	avatar?: GraphQLTypes["Image"],
-	/** List of events associated with the user. */
-	events?: Array<GraphQLTypes["CustomerEvent"] | undefined>,
+	/** List of events associated with the user. Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF. */
+	events?: Array<GraphQLTypes["CustomerEvent"]>,
 	/** List of stored payment sources. */
-	storedPaymentSources?: Array<GraphQLTypes["PaymentSource"] | undefined>,
+	storedPaymentSources?: Array<GraphQLTypes["PaymentSource"]>,
 	/** User language code. */
 	languageCode: GraphQLTypes["LanguageCodeEnum"],
 	defaultShippingAddress?: GraphQLTypes["Address"],
@@ -22844,7 +25845,7 @@ error isn't associated with a particular field. */
 	dateJoined: GraphQLTypes["DateTime"],
 	updatedAt: GraphQLTypes["DateTime"]
 };
-	/** Deletes a user avatar. Only for staff members. */
+	/** Deletes a user avatar. Only for staff members. Requires one of the following permissions: AUTHENTICATED_STAFF_USER. */
 ["UserAvatarDelete"]: {
 	__typename: "UserAvatarDelete",
 	/** An updated user instance. */
@@ -22854,7 +25855,8 @@ error isn't associated with a particular field. */
 };
 	/** Create a user avatar. Only for staff members. This mutation must be sent as a
 `multipart` request. More detailed specs of the upload format can be found here:
-https://github.com/jaydenseric/graphql-multipart-request-spec */
+https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of
+the following permissions: AUTHENTICATED_STAFF_USER. */
 ["UserAvatarUpdate"]: {
 	__typename: "UserAvatarUpdate",
 	/** An updated user instance. */
@@ -22862,7 +25864,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	accountErrors: Array<GraphQLTypes["AccountError"]>,
 	errors: Array<GraphQLTypes["AccountError"]>
 };
-	/** Activate or deactivate users. */
+	/** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
 ["UserBulkSetActive"]: {
 	__typename: "UserBulkSetActive",
 	/** Returns how many objects were affected. */
@@ -22925,7 +25927,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 };
 	["UUID"]:any;
 	["VariantAttributeScope"]: VariantAttributeScope;
-	/** Assign an media to a product variant. */
+	/** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["VariantMediaAssign"]: {
 	__typename: "VariantMediaAssign",
 	productVariant?: GraphQLTypes["ProductVariant"],
@@ -22933,7 +25935,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	productErrors: Array<GraphQLTypes["ProductError"]>,
 	errors: Array<GraphQLTypes["ProductError"]>
 };
-	/** Unassign an media from a product variant. */
+	/** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["VariantMediaUnassign"]: {
 	__typename: "VariantMediaUnassign",
 	productVariant?: GraphQLTypes["ProductVariant"],
@@ -22965,7 +25967,7 @@ https://github.com/jaydenseric/graphql-multipart-request-spec */
 	/** Standard VAT rate in percent. */
 	standardRate?: number,
 	/** Country's VAT rate exceptions for specific types of goods. */
-	reducedRates?: Array<GraphQLTypes["ReducedRate"]>
+	reducedRates: Array<GraphQLTypes["ReducedRate"]>
 };
 	/** Verify JWT token. */
 ["VerifyToken"]: {
@@ -22987,10 +25989,39 @@ valid voucher codes. */
 ["Voucher"]: {
 	__typename: "Voucher",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name?: string,
 	code: string,
 	usageLimit?: number,
@@ -23003,14 +26034,15 @@ valid voucher codes. */
 	minCheckoutItemsQuantity?: number,
 	/** List of categories this voucher applies to. */
 	categories?: GraphQLTypes["CategoryCountableConnection"],
-	/** List of collections this voucher applies to. */
+	/** List of collections this voucher applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	collections?: GraphQLTypes["CollectionCountableConnection"],
-	/** List of products this voucher applies to. */
+	/** List of products this voucher applies to. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	products?: GraphQLTypes["ProductCountableConnection"],
-	/** New in Saleor 3.1. List of product variants this voucher applies to. */
+	/** Added in Saleor 3.1. List of product variants this voucher applies to.
+Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	variants?: GraphQLTypes["ProductVariantCountableConnection"],
 	/** List of countries available for the shipping voucher. */
-	countries?: Array<GraphQLTypes["CountryDisplay"] | undefined>,
+	countries?: Array<GraphQLTypes["CountryDisplay"]>,
 	/** Returns translated voucher fields for the given language code. */
 	translation?: GraphQLTypes["VoucherTranslation"],
 	/** Determines a type of discount for voucher - value or percentage */
@@ -23023,10 +26055,10 @@ valid voucher codes. */
 	minSpent?: GraphQLTypes["Money"],
 	/** Determines a type of voucher. */
 	type: GraphQLTypes["VoucherTypeEnum"],
-	/** List of availability in channels for the voucher. */
+	/** List of availability in channels for the voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 	channelListings?: Array<GraphQLTypes["VoucherChannelListing"]>
 };
-	/** Adds products, categories, collections to a voucher. */
+	/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherAddCatalogues"]: {
 	__typename: "VoucherAddCatalogues",
 	/** Voucher of which catalogue IDs will be modified. */
@@ -23034,7 +26066,7 @@ valid voucher codes. */
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
 	errors: Array<GraphQLTypes["DiscountError"]>
 };
-	/** Deletes vouchers. */
+	/** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherBulkDelete"]: {
 	__typename: "VoucherBulkDelete",
 	/** Returns how many objects were affected. */
@@ -23065,7 +26097,7 @@ valid voucher codes. */
 	/** List of channels from which the voucher should be unassigned. */
 	removeChannels?: Array<string>
 };
-	/** Manage voucher's availability in channels. */
+	/** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherChannelListingUpdate"]: {
 	__typename: "VoucherChannelListingUpdate",
 	/** An updated voucher instance. */
@@ -23088,14 +26120,14 @@ valid voucher codes. */
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates a new voucher. */
+	/** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherCreate"]: {
 	__typename: "VoucherCreate",
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
 	errors: Array<GraphQLTypes["DiscountError"]>,
 	voucher?: GraphQLTypes["Voucher"]
 };
-	/** Deletes a voucher. */
+	/** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherDelete"]: {
 	__typename: "VoucherDelete",
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
@@ -23104,12 +26136,12 @@ valid voucher codes. */
 };
 	["VoucherDiscountType"]: VoucherDiscountType;
 	["VoucherFilterInput"]: {
-		status?: Array<GraphQLTypes["DiscountStatusEnum"] | undefined>,
+		status?: Array<GraphQLTypes["DiscountStatusEnum"]>,
 	timesUsed?: GraphQLTypes["IntRangeInput"],
-	discountType?: Array<GraphQLTypes["VoucherDiscountType"] | undefined>,
+	discountType?: Array<GraphQLTypes["VoucherDiscountType"]>,
 	started?: GraphQLTypes["DateTimeRangeInput"],
 	search?: string,
-	metadata?: Array<GraphQLTypes["MetadataFilter"] | undefined>
+	metadata?: Array<GraphQLTypes["MetadataFilter"]>
 };
 	["VoucherInput"]: {
 		/** Voucher type: PRODUCT, CATEGORY SHIPPING or ENTIRE_ORDER. */
@@ -23125,17 +26157,17 @@ valid voucher codes. */
 	/** Choices: fixed or percentage. */
 	discountValueType?: GraphQLTypes["DiscountValueTypeEnum"],
 	/** Products discounted by the voucher. */
-	products?: Array<string | undefined>,
-	/** New in Saleor 3.1. Variants discounted by the voucher. */
-	variants?: Array<string | undefined>,
+	products?: Array<string>,
+	/** Added in Saleor 3.1. Variants discounted by the voucher. */
+	variants?: Array<string>,
 	/** Collections discounted by the voucher. */
-	collections?: Array<string | undefined>,
+	collections?: Array<string>,
 	/** Categories discounted by the voucher. */
-	categories?: Array<string | undefined>,
+	categories?: Array<string>,
 	/** Minimal quantity of checkout items required to apply the voucher. */
 	minCheckoutItemsQuantity?: number,
 	/** Country codes that can be used with the shipping voucher. */
-	countries?: Array<string | undefined>,
+	countries?: Array<string>,
 	/** Voucher should be applied to the cheapest item or entire order. */
 	applyOncePerOrder?: boolean,
 	/** Voucher should be applied once per customer. */
@@ -23145,7 +26177,7 @@ valid voucher codes. */
 	/** Limit number of times this voucher can be used in total. */
 	usageLimit?: number
 };
-	/** Removes products, categories, collections from a voucher. */
+	/** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherRemoveCatalogues"]: {
 	__typename: "VoucherRemoveCatalogues",
 	/** Voucher of which catalogue IDs will be modified. */
@@ -23157,7 +26189,7 @@ valid voucher codes. */
 	["VoucherSortingInput"]: {
 		/** Specifies the direction in which to sort products. */
 	direction: GraphQLTypes["OrderDirection"],
-	/** Specifies the channel in which to sort the data. 
+	/** Specifies the channel in which to sort the data.
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead. */
 	channel?: string,
@@ -23172,10 +26204,11 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel arg
 	translation?: GraphQLTypes["VoucherTranslation"],
 	/** Vouchers allow giving discounts to particular customers on categories,
 collections or specific products. They can be used during checkout by
-providing valid voucher codes. */
+providing valid voucher codes. Requires one of the following permissions:
+MANAGE_DISCOUNTS. */
 	voucher?: GraphQLTypes["Voucher"]
 };
-	/** Creates/updates translations for a voucher. */
+	/** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 ["VoucherTranslate"]: {
 	__typename: "VoucherTranslate",
 	translationErrors: Array<GraphQLTypes["TranslationError"]>,
@@ -23190,7 +26223,7 @@ providing valid voucher codes. */
 	name?: string
 };
 	["VoucherTypeEnum"]: VoucherTypeEnum;
-	/** Updates a voucher. */
+	/** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 ["VoucherUpdate"]: {
 	__typename: "VoucherUpdate",
 	discountErrors: Array<GraphQLTypes["DiscountError"]>,
@@ -23201,10 +26234,39 @@ providing valid voucher codes. */
 ["Warehouse"]: {
 	__typename: "Warehouse",
 	id: string,
-	/** List of private metadata items.Requires proper staff permissions to access. */
-	privateMetadata?: Array<GraphQLTypes["MetadataItem"]>,
+	/** List of private metadata items. Requires staff permissions to access. */
+	privateMetadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from private metadata. Requires staff permissions to access.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafield?: string,
+	/** Private metadata. Requires staff permissions to access. Use `keys` to control
+which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	privateMetafields?: GraphQLTypes["Metadata"],
 	/** List of public metadata items. Can be accessed without permissions. */
-	metadata?: Array<GraphQLTypes["MetadataItem"]>,
+	metadata: Array<GraphQLTypes["MetadataItem"]>,
+	/** A single key from public metadata.
+
+Tip: Use GraphQL aliases to fetch multiple keys.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafield?: string,
+	/** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+
+Added in Saleor 3.3.
+
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	metafields?: GraphQLTypes["Metadata"],
 	name: string,
 	slug: string,
 	email: string,
@@ -23212,7 +26274,7 @@ providing valid voucher codes. */
 	address: GraphQLTypes["Address"],
 	/** Warehouse company name. */
 	companyName: string,
-	/** New in Saleor 3.1. Click and collect options: local, all or disabled. Note:
+	/** Added in Saleor 3.1. Click and collect options: local, all or disabled. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	clickAndCollectOption: GraphQLTypes["WarehouseClickAndCollectOptionEnum"],
 	shippingZones: GraphQLTypes["ShippingZoneCountableConnection"]
@@ -23234,7 +26296,7 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** A cursor for use in pagination. */
 	cursor: string
 };
-	/** Creates new warehouse. */
+	/** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseCreate"]: {
 	__typename: "WarehouseCreate",
 	warehouseErrors: Array<GraphQLTypes["WarehouseError"]>,
@@ -23251,9 +26313,9 @@ this feature is in a preview state and can be subject to changes at later point.
 	/** Address of the warehouse. */
 	address: GraphQLTypes["AddressInput"],
 	/** Shipping zones supported by the warehouse. */
-	shippingZones?: Array<string | undefined>
+	shippingZones?: Array<string>
 };
-	/** Deletes selected warehouse. */
+	/** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseDelete"]: {
 	__typename: "WarehouseDelete",
 	warehouseErrors: Array<GraphQLTypes["WarehouseError"]>,
@@ -23275,17 +26337,17 @@ error isn't associated with a particular field. */
 	["WarehouseFilterInput"]: {
 		clickAndCollectOption?: GraphQLTypes["WarehouseClickAndCollectOptionEnum"],
 	search?: string,
-	ids?: Array<string | undefined>,
+	ids?: Array<string>,
 	isPrivate?: boolean
 };
-	/** Add shipping zone to given warehouse. */
+	/** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseShippingZoneAssign"]: {
 	__typename: "WarehouseShippingZoneAssign",
 	warehouseErrors: Array<GraphQLTypes["WarehouseError"]>,
 	errors: Array<GraphQLTypes["WarehouseError"]>,
 	warehouse?: GraphQLTypes["Warehouse"]
 };
-	/** Remove shipping zone from given warehouse. */
+	/** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseShippingZoneUnassign"]: {
 	__typename: "WarehouseShippingZoneUnassign",
 	warehouseErrors: Array<GraphQLTypes["WarehouseError"]>,
@@ -23299,7 +26361,7 @@ error isn't associated with a particular field. */
 	/** Sort warehouses by the selected field. */
 	field: GraphQLTypes["WarehouseSortField"]
 };
-	/** Updates given warehouse. */
+	/** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 ["WarehouseUpdate"]: {
 	__typename: "WarehouseUpdate",
 	warehouseErrors: Array<GraphQLTypes["WarehouseError"]>,
@@ -23315,11 +26377,11 @@ error isn't associated with a particular field. */
 	name?: string,
 	/** Address of the warehouse. */
 	address?: GraphQLTypes["AddressInput"],
-	/** New in Saleor 3.1. Click and collect options: local, all or disabled. Note:
+	/** Added in Saleor 3.1. Click and collect options: local, all or disabled. Note:
 this feature is in a preview state and can be subject to changes at later point. */
 	clickAndCollectOption?: GraphQLTypes["WarehouseClickAndCollectOptionEnum"],
-	/** New in Saleor 3.1. Visibility of warehouse stocks. Note: this feature is in a
-preview state and can be subject to changes at later point. */
+	/** Added in Saleor 3.1. Visibility of warehouse stocks. Note: this feature is in
+a preview state and can be subject to changes at later point. */
 	isPrivate?: boolean
 };
 	/** Webhook. */
@@ -23336,11 +26398,16 @@ preview state and can be subject to changes at later point. */
 	app: GraphQLTypes["App"],
 	/** Event deliveries. */
 	eventDeliveries?: GraphQLTypes["EventDeliveryCountableConnection"],
+	/** Target URL for webhook. */
 	targetUrl: string,
+	/** Informs if webhook is activated. */
 	isActive: boolean,
-	secretKey?: string
+	/** Used to create a hash signature with each payload. */
+	secretKey?: string,
+	/** Used to define payloads for specific events. */
+	subscriptionQuery?: string
 };
-	/** Creates a new webhook subscription. */
+	/** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 ["WebhookCreate"]: {
 	__typename: "WebhookCreate",
 	webhookErrors: Array<GraphQLTypes["WebhookError"]>,
@@ -23355,7 +26422,7 @@ preview state and can be subject to changes at later point. */
 	/** The events that webhook wants to subscribe. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `syncEvents` instead. */
-	events?: Array<GraphQLTypes["WebhookEventTypeEnum"] | undefined>,
+	events?: Array<GraphQLTypes["WebhookEventTypeEnum"]>,
 	/** The asynchronous events that webhook wants to subscribe. */
 	asyncEvents?: Array<GraphQLTypes["WebhookEventTypeAsyncEnum"]>,
 	/** The synchronous events that webhook wants to subscribe. */
@@ -23365,9 +26432,12 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `sync
 	/** Determine if webhook will be set active or not. */
 	isActive?: boolean,
 	/** The secret key used to create a hash signature with each payload. */
-	secretKey?: string
+	secretKey?: string,
+	/** Added in Saleor 3.2. Subscription query used to define a webhook payload.
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	query?: string
 };
-	/** Deletes a webhook subscription. */
+	/** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 ["WebhookDelete"]: {
 	__typename: "WebhookDelete",
 	webhookErrors: Array<GraphQLTypes["WebhookError"]>,
@@ -23418,7 +26488,7 @@ error isn't associated with a particular field. */
 ["WebhookEventTypeSyncEnum"]: WebhookEventTypeSyncEnum;
 	/** An enumeration. */
 ["WebhookSampleEventTypeEnum"]: WebhookSampleEventTypeEnum;
-	/** Updates a webhook subscription. */
+	/** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
 ["WebhookUpdate"]: {
 	__typename: "WebhookUpdate",
 	webhookErrors: Array<GraphQLTypes["WebhookError"]>,
@@ -23433,7 +26503,7 @@ error isn't associated with a particular field. */
 	/** The events that webhook wants to subscribe. 
 
 DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `syncEvents` instead. */
-	events?: Array<GraphQLTypes["WebhookEventTypeEnum"] | undefined>,
+	events?: Array<GraphQLTypes["WebhookEventTypeEnum"]>,
 	/** The asynchronous events that webhook wants to subscribe. */
 	asyncEvents?: Array<GraphQLTypes["WebhookEventTypeAsyncEnum"]>,
 	/** The synchronous events that webhook wants to subscribe. */
@@ -23443,7 +26513,10 @@ DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `sync
 	/** Determine if webhook will be set active or not. */
 	isActive?: boolean,
 	/** Use to create a hash signature with each payload. */
-	secretKey?: string
+	secretKey?: string,
+	/** Added in Saleor 3.2. Subscription query used to define a webhook payload.
+Note: this feature is in a preview state and can be subject to changes at later point. */
+	query?: string
 };
 	/** Represents weight value in a specific weight unit. */
 ["Weight"]: {
@@ -23669,7 +26742,8 @@ export const enum CollectionSortField {
 	NAME = "NAME",
 	AVAILABILITY = "AVAILABILITY",
 	PRODUCT_COUNT = "PRODUCT_COUNT",
-	PUBLICATION_DATE = "PUBLICATION_DATE"
+	PUBLICATION_DATE = "PUBLICATION_DATE",
+	PUBLISHED_AT = "PUBLISHED_AT"
 }
 /** An enumeration. */
 export const enum ConfigurationTypeFieldEnum {
@@ -24009,7 +27083,8 @@ export const enum ExportEventsEnum {
 export const enum ExportFileSortField {
 	STATUS = "STATUS",
 	CREATED_AT = "CREATED_AT",
-	UPDATED_AT = "UPDATED_AT"
+	UPDATED_AT = "UPDATED_AT",
+	LAST_MODIFIED_AT = "LAST_MODIFIED_AT"
 }
 export const enum ExportScope {
 	ALL = "ALL",
@@ -24937,7 +28012,8 @@ export const enum MetadataErrorCode {
 	GRAPHQL_ERROR = "GRAPHQL_ERROR",
 	INVALID = "INVALID",
 	NOT_FOUND = "NOT_FOUND",
-	REQUIRED = "REQUIRED"
+	REQUIRED = "REQUIRED",
+	NOT_UPDATED = "NOT_UPDATED"
 }
 export const enum NavigationType {
 	MAIN = "MAIN",
@@ -24948,6 +28024,23 @@ export const enum OrderAction {
 	MARK_AS_PAID = "MARK_AS_PAID",
 	REFUND = "REFUND",
 	VOID = "VOID"
+}
+/** An enumeration. */
+export const enum OrderCreateFromCheckoutErrorCode {
+	GRAPHQL_ERROR = "GRAPHQL_ERROR",
+	CHECKOUT_NOT_FOUND = "CHECKOUT_NOT_FOUND",
+	CHANNEL_INACTIVE = "CHANNEL_INACTIVE",
+	INSUFFICIENT_STOCK = "INSUFFICIENT_STOCK",
+	VOUCHER_NOT_APPLICABLE = "VOUCHER_NOT_APPLICABLE",
+	GIFT_CARD_NOT_APPLICABLE = "GIFT_CARD_NOT_APPLICABLE",
+	TAX_ERROR = "TAX_ERROR",
+	SHIPPING_METHOD_NOT_SET = "SHIPPING_METHOD_NOT_SET",
+	BILLING_ADDRESS_NOT_SET = "BILLING_ADDRESS_NOT_SET",
+	SHIPPING_ADDRESS_NOT_SET = "SHIPPING_ADDRESS_NOT_SET",
+	INVALID_SHIPPING_METHOD = "INVALID_SHIPPING_METHOD",
+	NO_LINES = "NO_LINES",
+	EMAIL_NOT_SET = "EMAIL_NOT_SET",
+	UNAVAILABLE_VARIANT_IN_CHANNEL = "UNAVAILABLE_VARIANT_IN_CHANNEL"
 }
 export const enum OrderDirection {
 	ASC = "ASC",
@@ -25050,14 +28143,6 @@ export const enum OrderEventsEnum {
 	OTHER = "OTHER"
 }
 /** An enumeration. */
-export const enum OrderFromCheckoutCreateErrorCode {
-	GRAPHQL_ERROR = "GRAPHQL_ERROR",
-	NOT_FOUND = "NOT_FOUND",
-	INSUFFICIENT_STOCK = "INSUFFICIENT_STOCK",
-	VOUCHER_NOT_APPLICABLE = "VOUCHER_NOT_APPLICABLE",
-	TAX_ERROR = "TAX_ERROR"
-}
-/** An enumeration. */
 export const enum OrderOriginEnum {
 	CHECKOUT = "CHECKOUT",
 	DRAFT = "DRAFT",
@@ -25070,6 +28155,8 @@ export const enum OrderSettingsErrorCode {
 export const enum OrderSortField {
 	NUMBER = "NUMBER",
 	CREATION_DATE = "CREATION_DATE",
+	CREATED_AT = "CREATED_AT",
+	LAST_MODIFIED_AT = "LAST_MODIFIED_AT",
 	CUSTOMER = "CUSTOMER",
 	PAYMENT = "PAYMENT",
 	FULFILLMENT_STATUS = "FULFILLMENT_STATUS"
@@ -25109,17 +28196,12 @@ export const enum PageSortField {
 	SLUG = "SLUG",
 	VISIBILITY = "VISIBILITY",
 	CREATION_DATE = "CREATION_DATE",
-	PUBLICATION_DATE = "PUBLICATION_DATE"
+	PUBLICATION_DATE = "PUBLICATION_DATE",
+	PUBLISHED_AT = "PUBLISHED_AT"
 }
 export const enum PageTypeSortField {
 	NAME = "NAME",
 	SLUG = "SLUG"
-}
-/** An enumeration. */
-export const enum PaymentActionEnum {
-	CAPTURE = "CAPTURE",
-	REFUND = "REFUND",
-	VOID = "VOID"
 }
 /** An enumeration. */
 export const enum PaymentChargeStatusEnum {
@@ -25131,11 +28213,6 @@ export const enum PaymentChargeStatusEnum {
 	FULLY_REFUNDED = "FULLY_REFUNDED",
 	REFUSED = "REFUSED",
 	CANCELLED = "CANCELLED"
-}
-/** An enumeration. */
-export const enum PaymentCreateErrorCode {
-	GRAPHQL_ERROR = "GRAPHQL_ERROR",
-	NOT_FOUND = "NOT_FOUND"
 }
 /** An enumeration. */
 export const enum PaymentErrorCode {
@@ -25177,7 +28254,8 @@ export const enum PermissionEnum {
 	MANAGE_SHIPPING = "MANAGE_SHIPPING",
 	MANAGE_SETTINGS = "MANAGE_SETTINGS",
 	MANAGE_TRANSLATIONS = "MANAGE_TRANSLATIONS",
-	MANAGE_CHECKOUTS = "MANAGE_CHECKOUTS"
+	MANAGE_CHECKOUTS = "MANAGE_CHECKOUTS",
+	HANDLE_CHECKOUTS = "HANDLE_CHECKOUTS"
 }
 /** An enumeration. */
 export const enum PermissionGroupErrorCode {
@@ -25225,6 +28303,7 @@ export const enum ProductErrorCode {
 	ATTRIBUTE_ALREADY_ASSIGNED = "ATTRIBUTE_ALREADY_ASSIGNED",
 	ATTRIBUTE_CANNOT_BE_ASSIGNED = "ATTRIBUTE_CANNOT_BE_ASSIGNED",
 	ATTRIBUTE_VARIANTS_DISABLED = "ATTRIBUTE_VARIANTS_DISABLED",
+	MEDIA_ALREADY_ASSIGNED = "MEDIA_ALREADY_ASSIGNED",
 	DUPLICATED_INPUT_ITEM = "DUPLICATED_INPUT_ITEM",
 	GRAPHQL_ERROR = "GRAPHQL_ERROR",
 	INVALID = "INVALID",
@@ -25269,6 +28348,8 @@ export const enum ProductOrderField {
 	TYPE = "TYPE",
 	PUBLISHED = "PUBLISHED",
 	PUBLICATION_DATE = "PUBLICATION_DATE",
+	PUBLISHED_AT = "PUBLISHED_AT",
+	LAST_MODIFIED_AT = "LAST_MODIFIED_AT",
 	COLLECTION = "COLLECTION",
 	RATING = "RATING"
 }
@@ -25290,6 +28371,9 @@ export const enum ProductTypeSortField {
 	DIGITAL = "DIGITAL",
 	SHIPPING_REQUIRED = "SHIPPING_REQUIRED"
 }
+export const enum ProductVariantSortField {
+	LAST_MODIFIED_AT = "LAST_MODIFIED_AT"
+}
 export const enum ReportingPeriod {
 	TODAY = "TODAY",
 	THIS_MONTH = "THIS_MONTH"
@@ -25299,7 +28383,9 @@ export const enum SaleSortField {
 	START_DATE = "START_DATE",
 	END_DATE = "END_DATE",
 	VALUE = "VALUE",
-	TYPE = "TYPE"
+	TYPE = "TYPE",
+	CREATED_AT = "CREATED_AT",
+	LAST_MODIFIED_AT = "LAST_MODIFIED_AT"
 }
 export const enum SaleType {
 	FIXED = "FIXED",
@@ -25374,12 +28460,6 @@ export const enum TransactionKind {
 	CONFIRM = "CONFIRM",
 	CANCEL = "CANCEL"
 }
-/** An enumeration. */
-export const enum TransactionStatus {
-	PENDING = "PENDING",
-	SUCCESS = "SUCCESS",
-	FAILURE = "FAILURE"
-}
 export const enum TranslatableKinds {
 	ATTRIBUTE = "ATTRIBUTE",
 	ATTRIBUTE_VALUE = "ATTRIBUTE_VALUE",
@@ -25408,7 +28488,9 @@ export const enum UserSortField {
 	FIRST_NAME = "FIRST_NAME",
 	LAST_NAME = "LAST_NAME",
 	EMAIL = "EMAIL",
-	ORDER_COUNT = "ORDER_COUNT"
+	ORDER_COUNT = "ORDER_COUNT",
+	CREATED_AT = "CREATED_AT",
+	LAST_MODIFIED_AT = "LAST_MODIFIED_AT"
 }
 export const enum VariantAttributeScope {
 	ALL = "ALL",
@@ -25479,6 +28561,17 @@ export const enum WebhookErrorCode {
 /** Enum determining type of webhook. */
 export const enum WebhookEventTypeAsyncEnum {
 	ANY_EVENTS = "ANY_EVENTS",
+	CATEGORY_CREATED = "CATEGORY_CREATED",
+	CATEGORY_UPDATED = "CATEGORY_UPDATED",
+	CATEGORY_DELETED = "CATEGORY_DELETED",
+	CHANNEL_CREATED = "CHANNEL_CREATED",
+	CHANNEL_UPDATED = "CHANNEL_UPDATED",
+	CHANNEL_DELETED = "CHANNEL_DELETED",
+	CHANNEL_STATUS_CHANGED = "CHANNEL_STATUS_CHANGED",
+	GIFT_CARD_CREATED = "GIFT_CARD_CREATED",
+	GIFT_CARD_UPDATED = "GIFT_CARD_UPDATED",
+	GIFT_CARD_DELETED = "GIFT_CARD_DELETED",
+	GIFT_CARD_STATUS_CHANGED = "GIFT_CARD_STATUS_CHANGED",
 	ORDER_CREATED = "ORDER_CREATED",
 	ORDER_CONFIRMED = "ORDER_CONFIRMED",
 	ORDER_FULLY_PAID = "ORDER_FULLY_PAID",
@@ -25515,12 +28608,29 @@ export const enum WebhookEventTypeAsyncEnum {
 	PAGE_CREATED = "PAGE_CREATED",
 	PAGE_UPDATED = "PAGE_UPDATED",
 	PAGE_DELETED = "PAGE_DELETED",
+	SHIPPING_PRICE_CREATED = "SHIPPING_PRICE_CREATED",
+	SHIPPING_PRICE_UPDATED = "SHIPPING_PRICE_UPDATED",
+	SHIPPING_PRICE_DELETED = "SHIPPING_PRICE_DELETED",
+	SHIPPING_ZONE_CREATED = "SHIPPING_ZONE_CREATED",
+	SHIPPING_ZONE_UPDATED = "SHIPPING_ZONE_UPDATED",
+	SHIPPING_ZONE_DELETED = "SHIPPING_ZONE_DELETED",
 	TRANSLATION_CREATED = "TRANSLATION_CREATED",
 	TRANSLATION_UPDATED = "TRANSLATION_UPDATED"
 }
 /** Enum determining type of webhook. */
 export const enum WebhookEventTypeEnum {
 	ANY_EVENTS = "ANY_EVENTS",
+	CATEGORY_CREATED = "CATEGORY_CREATED",
+	CATEGORY_UPDATED = "CATEGORY_UPDATED",
+	CATEGORY_DELETED = "CATEGORY_DELETED",
+	CHANNEL_CREATED = "CHANNEL_CREATED",
+	CHANNEL_UPDATED = "CHANNEL_UPDATED",
+	CHANNEL_DELETED = "CHANNEL_DELETED",
+	CHANNEL_STATUS_CHANGED = "CHANNEL_STATUS_CHANGED",
+	GIFT_CARD_CREATED = "GIFT_CARD_CREATED",
+	GIFT_CARD_UPDATED = "GIFT_CARD_UPDATED",
+	GIFT_CARD_DELETED = "GIFT_CARD_DELETED",
+	GIFT_CARD_STATUS_CHANGED = "GIFT_CARD_STATUS_CHANGED",
 	ORDER_CREATED = "ORDER_CREATED",
 	ORDER_CONFIRMED = "ORDER_CONFIRMED",
 	ORDER_FULLY_PAID = "ORDER_FULLY_PAID",
@@ -25557,6 +28667,12 @@ export const enum WebhookEventTypeEnum {
 	PAGE_CREATED = "PAGE_CREATED",
 	PAGE_UPDATED = "PAGE_UPDATED",
 	PAGE_DELETED = "PAGE_DELETED",
+	SHIPPING_PRICE_CREATED = "SHIPPING_PRICE_CREATED",
+	SHIPPING_PRICE_UPDATED = "SHIPPING_PRICE_UPDATED",
+	SHIPPING_PRICE_DELETED = "SHIPPING_PRICE_DELETED",
+	SHIPPING_ZONE_CREATED = "SHIPPING_ZONE_CREATED",
+	SHIPPING_ZONE_UPDATED = "SHIPPING_ZONE_UPDATED",
+	SHIPPING_ZONE_DELETED = "SHIPPING_ZONE_DELETED",
 	TRANSLATION_CREATED = "TRANSLATION_CREATED",
 	TRANSLATION_UPDATED = "TRANSLATION_UPDATED",
 	PAYMENT_AUTHORIZE = "PAYMENT_AUTHORIZE",
@@ -25585,6 +28701,17 @@ export const enum WebhookEventTypeSyncEnum {
 }
 /** An enumeration. */
 export const enum WebhookSampleEventTypeEnum {
+	CATEGORY_CREATED = "CATEGORY_CREATED",
+	CATEGORY_UPDATED = "CATEGORY_UPDATED",
+	CATEGORY_DELETED = "CATEGORY_DELETED",
+	CHANNEL_CREATED = "CHANNEL_CREATED",
+	CHANNEL_UPDATED = "CHANNEL_UPDATED",
+	CHANNEL_DELETED = "CHANNEL_DELETED",
+	CHANNEL_STATUS_CHANGED = "CHANNEL_STATUS_CHANGED",
+	GIFT_CARD_CREATED = "GIFT_CARD_CREATED",
+	GIFT_CARD_UPDATED = "GIFT_CARD_UPDATED",
+	GIFT_CARD_DELETED = "GIFT_CARD_DELETED",
+	GIFT_CARD_STATUS_CHANGED = "GIFT_CARD_STATUS_CHANGED",
 	ORDER_CREATED = "ORDER_CREATED",
 	ORDER_CONFIRMED = "ORDER_CONFIRMED",
 	ORDER_FULLY_PAID = "ORDER_FULLY_PAID",
@@ -25621,6 +28748,12 @@ export const enum WebhookSampleEventTypeEnum {
 	PAGE_CREATED = "PAGE_CREATED",
 	PAGE_UPDATED = "PAGE_UPDATED",
 	PAGE_DELETED = "PAGE_DELETED",
+	SHIPPING_PRICE_CREATED = "SHIPPING_PRICE_CREATED",
+	SHIPPING_PRICE_UPDATED = "SHIPPING_PRICE_UPDATED",
+	SHIPPING_PRICE_DELETED = "SHIPPING_PRICE_DELETED",
+	SHIPPING_ZONE_CREATED = "SHIPPING_ZONE_CREATED",
+	SHIPPING_ZONE_UPDATED = "SHIPPING_ZONE_UPDATED",
+	SHIPPING_ZONE_DELETED = "SHIPPING_ZONE_DELETED",
 	TRANSLATION_CREATED = "TRANSLATION_CREATED",
 	TRANSLATION_UPDATED = "TRANSLATION_UPDATED"
 }
@@ -26102,17 +29235,18 @@ export const apiSubscription = (options: chainOptions) => (
 
 const allOperations = {
     "query": "Query",
-    "mutation": "Mutation"
+    "mutation": "Mutation",
+    "subscription": "Subscription"
 }
 
 export type GenericOperation<O> = O extends 'query'
   ? "Query"
   : O extends 'mutation'
   ? "Mutation"
-  : never
+  : "Subscription"
 
 export const Thunder = (fn: FetchFunction) => <
-  O extends 'query' | 'mutation',
+  O extends 'query' | 'mutation' | 'subscription',
   R extends keyof ValueTypes = GenericOperation<O>
 >(
   operation: O,
@@ -26122,7 +29256,7 @@ export const Thunder = (fn: FetchFunction) => <
 export const Chain = (...options: chainOptions) => Thunder(apiFetch(options));  
   
 export const SubscriptionThunder = (fn: SubscriptionFunction) => <
-  O extends 'query' | 'mutation',
+  O extends 'query' | 'mutation' | 'subscription',
   R extends keyof ValueTypes = GenericOperation<O>
 >(
   operation: O,
@@ -26138,7 +29272,7 @@ export const SubscriptionThunder = (fn: SubscriptionFunction) => <
 export const Subscription = (...options: chainOptions) => SubscriptionThunder(apiSubscription(options));
 export const Zeus = <
   Z extends ValueTypes[R],
-  O extends 'query' | 'mutation',
+  O extends 'query' | 'mutation' | 'subscription',
   R extends keyof ValueTypes = GenericOperation<O>
 >(
   operation: O,
